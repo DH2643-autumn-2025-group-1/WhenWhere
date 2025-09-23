@@ -14,4 +14,5 @@ if [ $lint_exit_code -ne 0 ] || [ $format_exit_code -ne 0 ]; then
   exit 1
 fi
 
+
 echo "✅ Pre-commit checks passed!"
