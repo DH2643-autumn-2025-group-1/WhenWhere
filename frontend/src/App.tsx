@@ -1,7 +1,12 @@
+import { Button } from "@mui/material";
 import styled from "styled-components";
 
 function App() {
-  return <Container>testing testing</Container>;
+  return (
+    <Container>
+      <Button variant="contained">Hello World</Button>
+    </Container>
+  );
 }
 
 const Container = styled.div`
