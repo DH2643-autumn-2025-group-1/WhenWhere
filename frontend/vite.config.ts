@@ -9,4 +9,7 @@ export default defineConfig({
       "@mui/styled-engine": "@mui/styled-engine-sc",
     },
   },
+  optimizeDeps: {
+    include: ["@mui/styled-engine-sc"],
+  },
 });
