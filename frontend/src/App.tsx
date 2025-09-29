@@ -1,11 +1,19 @@
+import Calendar from "./components/Calendar";
 import styled from "styled-components";
+import { StyledEngineProvider } from "@mui/styled-engine-sc";
 
 function App() {
-  return <Container>testing testing</Container>;
+  return (
+    <StyledEngineProvider injectFirst>
+      <Container>
+        <Calendar />
+      </Container>
+    </StyledEngineProvider>
+  );
 }
 
 const Container = styled.div`
-  background-color: ${(props) => props.theme.colors.primary};
+  background-color: white;
   color: white;
   height: 100vh;
   display: flex;
