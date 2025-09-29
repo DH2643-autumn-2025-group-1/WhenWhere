@@ -1,16 +1,16 @@
-import { Button } from "@mui/material";
+import Calendar from "./components/Calendar";
 import styled from "styled-components";
 
 function App() {
   return (
     <Container>
-      <Button variant="contained">Hello World</Button>
+      <Calendar />
     </Container>
   );
 }
 
 const Container = styled.div`
-  background-color: blue;
+  background-color: white;
   color: white;
   height: 100vh;
   display: flex;
