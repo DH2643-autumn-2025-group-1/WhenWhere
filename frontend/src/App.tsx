@@ -19,6 +19,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: ${(props) => props.theme.fontSizes.xlarge};
 `;
 
 export default App;
