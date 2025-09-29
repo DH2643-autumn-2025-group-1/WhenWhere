@@ -1,4 +1,4 @@
-import Calendar from "./components/Calendar";
+import Calendar from "./Calendar";
 import { StyledEngineProvider } from "@mui/styled-engine-sc";
 
 function App() {
