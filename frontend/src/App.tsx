@@ -1,16 +1,12 @@
-import styled from "styled-components";
+import Calendar from "./components/Calendar";
+import { StyledEngineProvider } from "@mui/styled-engine-sc";
 
 function App() {
-  return <Container>testing testing</Container>;
+  return (
+    <StyledEngineProvider injectFirst>
+      <Calendar />
+    </StyledEngineProvider>
+  );
 }
-
-const Container = styled.div`
-  background-color: blue;
-  color: white;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
 
 export default App;
