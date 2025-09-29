@@ -1,11 +1,14 @@
 import Calendar from "./components/Calendar";
 import styled from "styled-components";
+import { StyledEngineProvider } from "@mui/styled-engine-sc";
 
 function App() {
   return (
-    <Container>
-      <Calendar />
-    </Container>
+    <StyledEngineProvider injectFirst>
+      <Container>
+        <Calendar />
+      </Container>
+    </StyledEngineProvider>
   );
 }
 
