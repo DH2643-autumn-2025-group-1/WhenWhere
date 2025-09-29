@@ -1,5 +1,3 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import styled, { ThemeProvider } from "styled-components";
 import { theme } from "./styles/theme.ts";
@@ -9,6 +7,8 @@ import {
   ThemeProvider as MuiThemeProvider,
   THEME_ID,
 } from "@mui/material";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Route, Routes } from "react-router";
 
 const StyledAppBar = styled(AppBar)`
   background-color: ${(props) => props.theme.colors.primary};
@@ -32,10 +32,13 @@ const NavigationLink = styled.span`
 
 const muiTheme = createTheme({});
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ThemeProvider theme={theme}>
-      <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
+const root = document.getElementById("root");
+if (!root) throw new Error("Failed to find the root element");
+
+ReactDOM.createRoot(root).render(
+  <ThemeProvider theme={theme}>
+    <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
+      <BrowserRouter>
         <StyledAppBar position="static">
           WhenWhere
           <LinkContainer>
@@ -43,8 +46,11 @@ createRoot(document.getElementById("root")!).render(
             <NavigationLink>Log in/out</NavigationLink>
           </LinkContainer>
         </StyledAppBar>
-        <App />
-      </MuiThemeProvider>
-    </ThemeProvider>
-  </StrictMode>,
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/login" element={<div>Login Page</div>} />
+        </Routes>
+      </BrowserRouter>
+    </MuiThemeProvider>
+  </ThemeProvider>,
 );
