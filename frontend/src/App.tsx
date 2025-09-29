@@ -1,11 +1,14 @@
 import { Button } from "@mui/material";
+import { StyledEngineProvider } from "@mui/styled-engine-sc";
 import styled from "styled-components";
 
 function App() {
   return (
-    <Container>
-      <Button variant="contained">Hello World</Button>
-    </Container>
+    <StyledEngineProvider injectFirst>
+      <Container>
+        <Button variant="contained">Hello World</Button>
+      </Container>
+    </StyledEngineProvider>
   );
 }
 
