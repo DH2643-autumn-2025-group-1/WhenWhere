@@ -18,6 +18,11 @@ export const theme = {
     large: "20px",
     xlarge: "24px",
   },
+  breakpoints: {
+    mobile: "600px",
+    tablet: "900px",
+    desktop: "1200px",
+  },
 };
 
 export type ThemeType = typeof theme;
