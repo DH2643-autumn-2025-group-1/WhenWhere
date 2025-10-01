@@ -36,12 +36,12 @@ const LinkContainer = styled.div`
   gap: ${(props) => props.theme.spacing.large};
 `;
 
-const NavigationLink = styled.span<{ active: boolean }>`
+const NavigationLink = styled.span<{ $active?: boolean }>`
   font-size: ${(props) => props.theme.fontSizes.large};
   cursor: pointer;
 
   ${(props) =>
-    props.active &&
+    props.$active &&
     css`
       color: ${props.theme.colors.secondary};
       font-weight: bold;
@@ -66,13 +66,13 @@ export function Root() {
           <LinkContainer>
             <NavigationLink
               onClick={() => navigate("/events")}
-              active={location.pathname === "/events"}
+              $active={location.pathname === "/events"}
             >
               My events
             </NavigationLink>
             <NavigationLink
               onClick={() => navigate("/login")}
-              active={location.pathname === "/login"}
+              $active={location.pathname === "/login"}
             >
               Log in
             </NavigationLink>
