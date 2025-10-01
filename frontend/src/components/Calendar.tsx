@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useCallback } from "react";
+import styled from "styled-components";
 
 import { Box, Typography, IconButton } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -22,6 +23,161 @@ type CalendarProps = {
   onNavigateWeek?: (nextAnchor: Date) => void;
 };
 
+const CalendarContainer = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 16px 24px;
+`;
+
+const NavigationHeader = styled(Box)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-bottom: 1px solid transparent;
+  background-color: transparent;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+`;
+
+const NavigationControls = styled(Box)`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const WeekNumber = styled(Typography)`
+  font-weight: 700;
+  color: #000;
+`;
+
+const Spacer = styled(Box)`
+  width: 40px;
+`;
+
+const CalendarGrid = styled(Box)`
+  display: grid;
+  grid-template-columns: 96px repeat(7, 1fr);
+  grid-template-rows: 80px repeat(24, 1fr);
+  height: 100%;
+  min-height: 85vh;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  overflow: auto;
+  position: relative;
+  background-color: #fff;
+  border-radius: 24px;
+  box-shadow: inset 0 0 0 1px #eee;
+`;
+
+const CornerCell = styled(Box)`
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+`;
+
+const DayHeaderContainer = styled(Box)<{ $isToday: boolean }>`
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  text-align: center;
+  background-color: #fff;
+  border-bottom: 1px solid #e6e6e6;
+  padding: 10px 0;
+`;
+
+const DayNumber = styled(Box)<{ $isToday: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: ${(props) =>
+    props.$isToday ? "2px solid #1976d2" : "1px solid #cfcfcf"};
+  background-color: ${(props) => (props.$isToday ? "#1976d2" : "#fff")};
+  margin-top: 4px;
+  min-width: 24px;
+  min-height: 24px;
+`;
+
+const DayNumberText = styled(Typography)<{ $isToday: boolean }>`
+  color: ${(props) => (props.$isToday ? "#fff" : "#000")};
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
+`;
+
+const HourLabel = styled(Box)<{ $rowIndex: number }>`
+  grid-row: ${(props) => props.$rowIndex};
+  grid-column: 1;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: #fafafa;
+  border-right: 1px solid #e8e8e8;
+  border-bottom: 1px solid #efefef;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #8a8a8a;
+`;
+
+const DayCell = styled(Box)<{ $rowIndex: number; $dayIndex: number }>`
+  grid-row: ${(props) => props.$rowIndex};
+  grid-column: ${(props) => props.$dayIndex + 2};
+  border-right: 1px solid #efefef;
+  border-bottom: 1px solid #efefef;
+  background-color: #fff;
+`;
+
+const EventOverlay = styled(Box)<{ $dayIndex: number }>`
+  grid-column: ${(props) => props.$dayIndex + 2};
+  grid-row: 2 / span 24;
+  position: relative;
+  pointer-events: none;
+`;
+
+const StyledEventBlock = styled(Box)<{
+  $topPct: number;
+  $heightPct: number;
+  $backgroundColor: string;
+}>`
+  position: absolute;
+  top: ${(props) => props.$topPct}%;
+  left: 10px;
+  right: 10px;
+  height: ${(props) => props.$heightPct}%;
+  background-color: ${(props) => props.$backgroundColor};
+  color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  padding: 4px 8px;
+  overflow: hidden;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+`;
+
+const EventTitle = styled(Typography)`
+  font-weight: 700;
+  white-space: nowrap;
+`;
+
+const EventTime = styled(Typography)`
+  opacity: 0.9;
+  white-space: nowrap;
+`;
+
 function minutesFromMidnight(date: Date): number {
   return date.getHours() * 60 + date.getMinutes();
 }
@@ -44,17 +200,7 @@ const DayHeader: React.FC<{ day: Date; isToday: boolean }> = ({
   day,
   isToday,
 }) => (
-  <Box
-    sx={{
-      position: "sticky",
-      top: 0,
-      zIndex: 1,
-      textAlign: "center",
-      bgcolor: "#fff",
-      borderBottom: "1px solid #e6e6e6",
-      py: 1.25,
-    }}
-  >
+  <DayHeaderContainer $isToday={isToday}>
     <Typography
       variant="subtitle2"
       fontWeight={800}
@@ -63,28 +209,12 @@ const DayHeader: React.FC<{ day: Date; isToday: boolean }> = ({
     >
       {format(day, "EEE")}
     </Typography>
-    <Box
-      sx={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 24,
-        height: 24,
-        borderRadius: "999px",
-        border: isToday ? "2px solid #1976d2" : "1px solid #cfcfcf",
-        bgcolor: isToday ? "#1976d2" : "#fff",
-        mt: 0.5,
-      }}
-    >
-      <Typography
-        variant="caption"
-        color={isToday ? "#fff" : "text.primary"}
-        sx={{ fontWeight: 600 }}
-      >
+    <DayNumber $isToday={isToday}>
+      <DayNumberText variant="caption" $isToday={isToday}>
         {format(day, "d")}
-      </Typography>
-    </Box>
-  </Box>
+      </DayNumberText>
+    </DayNumber>
+  </DayHeaderContainer>
 );
 
 const EventBlock: React.FC<{
@@ -97,33 +227,16 @@ const EventBlock: React.FC<{
   const background = event.colorHex ?? "#d86a6a";
 
   return (
-    <Box
-      sx={{
-        position: "absolute",
-        top: `${topPct}%`,
-        left: 10,
-        right: 10,
-        height: `${heightPct}%`,
-        bgcolor: background,
-        color: "#fff",
-        borderRadius: 2,
-        boxShadow: "0 2px 6px rgba(0,0,0,0.12)",
-        px: 1,
-        py: 0.5,
-        overflow: "hidden",
-        pointerEvents: "auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: 0.25,
-      }}
+    <StyledEventBlock
+      $topPct={topPct}
+      $heightPct={heightPct}
+      $backgroundColor={background}
     >
-      <Typography variant="caption" fontWeight={700} noWrap>
-        {event.title}
-      </Typography>
-      <Typography variant="caption" sx={{ opacity: 0.9 }} noWrap>
+      <EventTitle variant="caption">{event.title}</EventTitle>
+      <EventTime variant="caption">
         {format(event.start, "HH:mm")} – {format(event.end, "HH:mm")}
-      </Typography>
-    </Box>
+      </EventTime>
+    </StyledEventBlock>
   );
 };
 
@@ -159,67 +272,24 @@ const Calendar: React.FC<CalendarProps> = ({
   );
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      height="100%"
-      width="100%"
-      px={3}
-      py={2}
-    >
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        px={2}
-        py={1}
-        borderBottom="1px solid transparent"
-        bgcolor="transparent"
-        position="sticky"
-        top={0}
-        zIndex={2}
-      >
-        <Box display="flex" alignItems="center" gap={1}>
+    <CalendarContainer>
+      <NavigationHeader>
+        <NavigationControls>
           <IconButton onClick={() => navigateWeek("prev")} size="small">
             <ArrowBackIosNewIcon fontSize="inherit" />
           </IconButton>
           <IconButton onClick={() => navigateWeek("next")} size="small">
             <ArrowForwardIosIcon fontSize="inherit" />
           </IconButton>
-        </Box>
-        <Typography variant="subtitle1" fontWeight={700} color="text.primary">
+        </NavigationControls>
+        <WeekNumber variant="subtitle1">
           Week {format(weekStart, "II")}
-        </Typography>
-        <Box width={40} />
-      </Box>
+        </WeekNumber>
+        <Spacer />
+      </NavigationHeader>
 
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "96px repeat(7, 1fr)",
-          gridTemplateRows: "80px repeat(24, 1fr)",
-          height: "100%",
-          minHeight: "85vh",
-          width: "100%",
-          maxWidth: 1280,
-          mx: "auto",
-          overflow: "auto",
-          position: "relative",
-          backgroundColor: "#fff",
-          borderRadius: 3,
-          boxShadow: "inset 0 0 0 1px #eee",
-        }}
-      >
-        <Box
-          sx={{
-            position: "sticky",
-            top: 0,
-            left: 0,
-            zIndex: 2,
-            bgcolor: "#fff",
-            borderBottom: "1px solid #eee",
-          }}
-        />
+      <CalendarGrid>
+        <CornerCell />
 
         {weekDays.map((day) => (
           <DayHeader
@@ -233,37 +303,16 @@ const Calendar: React.FC<CalendarProps> = ({
           const rowIndex = hour + 2;
           return (
             <React.Fragment key={hour}>
-              <Box
-                sx={{
-                  gridRow: rowIndex,
-                  gridColumn: 1,
-                  position: "sticky",
-                  left: 0,
-                  zIndex: 1,
-                  bgcolor: "#fafafa",
-                  borderRight: "1px solid #e8e8e8",
-                  borderBottom: "1px solid #efefef",
-                  px: 1.25,
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: 13,
-                  color: "#8a8a8a",
-                }}
-              >
+              <HourLabel $rowIndex={rowIndex}>
                 {String(hour).padStart(2, "0")}:00
-              </Box>
+              </HourLabel>
 
               {weekDays.map((day, dayIndex) => {
                 return (
-                  <Box
+                  <DayCell
                     key={`${day.toISOString()}-${hour}`}
-                    sx={{
-                      gridRow: rowIndex,
-                      gridColumn: dayIndex + 2,
-                      borderRight: "1px solid #efefef",
-                      borderBottom: "1px solid #efefef",
-                      backgroundColor: "#fff",
-                    }}
+                    $rowIndex={rowIndex}
+                    $dayIndex={dayIndex}
                   />
                 );
               })}
@@ -291,23 +340,18 @@ const Calendar: React.FC<CalendarProps> = ({
             .sort((a, b) => a.clamp.startMin - b.clamp.startMin);
 
           return (
-            <Box
+            <EventOverlay
               key={`overlay-${day.toISOString()}`}
-              sx={{
-                gridColumn: dayIndex + 2,
-                gridRow: "2 / span 24",
-                position: "relative",
-                pointerEvents: "none",
-              }}
+              $dayIndex={dayIndex}
             >
               {dayEvents.map(({ ev, clamp }) => (
                 <EventBlock key={ev.id} event={ev} clamp={clamp} />
               ))}
-            </Box>
+            </EventOverlay>
           );
         })}
-      </Box>
-    </Box>
+      </CalendarGrid>
+    </CalendarContainer>
   );
 };
 
