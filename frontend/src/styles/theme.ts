@@ -1,7 +1,7 @@
 export const theme = {
   colors: {
     primary: "#4a90e2",
-    secondary: "#9ac2ef",
+    secondary: "#cceafd",
     background: "#f5f5f5",
     warning: "#f1c40f",
     danger: "#e74c3c",
@@ -17,6 +17,11 @@ export const theme = {
     medium: "16px",
     large: "20px",
     xlarge: "24px",
+  },
+  breakpoints: {
+    mobile: "600px",
+    tablet: "900px",
+    desktop: "1200px",
   },
 };
 
