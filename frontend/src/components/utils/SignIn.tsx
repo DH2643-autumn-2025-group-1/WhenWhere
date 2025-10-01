@@ -3,8 +3,17 @@ import { Typography } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 import { SignInPage } from "@toolpad/core/SignInPage";
 import { Link, useNavigate } from "react-router";
-import { signInWithGoogle, signInWithGithub, signInWithAnonymous, signIn } from "../../firebase/firebaseAuth";
-import { StyledTitle, StyledSubtitle, StyledButton } from "../../styles/authStyles";
+import {
+  signInWithGoogle,
+  signInWithGithub,
+  signInWithAnonymous,
+  signIn,
+} from "../../firebase/firebaseAuth";
+import {
+  StyledTitle,
+  StyledSubtitle,
+  StyledButton,
+} from "../../styles/authStyles";
 
 function SignUpLink() {
   return (
@@ -15,19 +24,11 @@ function SignUpLink() {
 }
 
 function Title() {
-  return (
-    <StyledTitle variant="h5">
-      Sign In
-    </StyledTitle>
-  );
+  return <StyledTitle variant="h5">Sign In</StyledTitle>;
 }
 
 function Subtitle() {
-  return (
-    <StyledSubtitle variant="body2">
-      Sign in to continue
-    </StyledSubtitle>
-  );
+  return <StyledSubtitle variant="body2">Sign in to continue</StyledSubtitle>;
 }
 
 function CustomButton() {

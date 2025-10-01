@@ -4,7 +4,11 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { SignInPage } from "@toolpad/core/SignInPage";
 import { Link, useNavigate } from "react-router";
 import { signUp } from "../../firebase/firebaseAuth";
-import { StyledTitle, StyledSubtitle, StyledButton } from "../../styles/authStyles";
+import {
+  StyledTitle,
+  StyledSubtitle,
+  StyledButton,
+} from "../../styles/authStyles";
 
 function SignUpLink() {
   return (
@@ -15,11 +19,7 @@ function SignUpLink() {
 }
 
 function Title() {
-  return (
-    <StyledTitle variant="h5">
-      Sign Up
-    </StyledTitle>
-  );
+  return <StyledTitle variant="h5">Sign Up</StyledTitle>;
 }
 
 function Subtitle() {
@@ -82,9 +82,7 @@ export default function SignUpView() {
           submitButton: CustomButton,
           signUpLink: SignUpLink,
         }}
-
       />
     </div>
   );
 }
-  
