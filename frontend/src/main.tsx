@@ -1,6 +1,8 @@
 import App from "./App.tsx";
 import { ThemeProvider } from "styled-components";
 import { theme } from "./styles/theme.ts";
+import SignIn from "./components/utils/SignIn.tsx";
+import SignUp from "./components/utils/SignUp.tsx";
 import {
   createTheme,
   ThemeProvider as MuiThemeProvider,
@@ -21,7 +23,8 @@ ReactDOM.createRoot(root).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />} />
-          <Route path="/login" element={<div>Login Page</div>} />
+          <Route path="/SignIn" element={<SignIn />} />
+          <Route path="/SignUp" element={<SignUp />} />
         </Routes>
       </BrowserRouter>
     </MuiThemeProvider>
