@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import AuthPage from "../components/utils/authPage";
 
 const Container = styled.div`
   display: flex;
@@ -75,7 +76,9 @@ export function Login() {
           your own events and send a link invite to your friends or colleagues.
         </Text>
       </TitleAndText>
-      <LoginComponent>login component</LoginComponent>
+      <LoginComponent>
+        <AuthPage />
+      </LoginComponent>
     </Container>
   );
 }

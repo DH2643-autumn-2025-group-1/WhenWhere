@@ -5,14 +5,14 @@
     "outDir": "./dist",
 
     /* Environment */
-    "module": "commonjs",          // Node uses CommonJS in most setups
-    "target": "ES2020",            // modern but safe for Node 18+
+    "module": "commonjs", // Node uses CommonJS in most setups
+    "target": "ES2020", // modern but safe for Node 18+
     "lib": ["esnext"],
-    "types": ["node"],             // include Node.js types
+    "types": ["node"], // include Node.js types
 
     /* Output Helpers */
-    "sourceMap": true,             // helpful for debugging
-    "declaration": true,           // generates .d.ts files
+    "sourceMap": true, // helpful for debugging
+    "declaration": true, // generates .d.ts files
     "declarationMap": true,
 
     /* Strictness */
@@ -21,7 +21,7 @@
     "exactOptionalPropertyTypes": true,
 
     /* Compatibility / performance */
-    "esModuleInterop": true,       // allows `import express from "express"`
+    "esModuleInterop": true, // allows `import express from "express"`
     "skipLibCheck": true
   },
   "include": ["src"],
