@@ -1,14 +1,10 @@
-import styled, { css, ThemeProvider } from "styled-components";
-import {
-  AppBar,
-  createTheme,
-  ThemeProvider as MuiThemeProvider,
-  THEME_ID,
-} from "@mui/material";
+import styled, { css } from "styled-components";
+import { AppBar } from "@mui/material";
 import { Route, Routes, useLocation, useNavigate } from "react-router";
-import { theme } from "../styles/theme.ts";
 import App from "./App.tsx";
 import { Login } from "./Login.tsx";
+import { HomePage } from "./Homepage.tsx";
+import { ScheduleEventView } from "./ScheduleEventView.tsx";
 
 const StyledAppBar = styled(AppBar)`
   background-color: ${(props) => props.theme.colors.primary};
@@ -52,38 +48,29 @@ const NavigationLink = styled.span<{ $active?: boolean }>`
   }
 `;
 
-const muiTheme = createTheme({});
-
 export function Root() {
   const navigate = useNavigate();
   const location = useLocation();
 
   return (
-    <ThemeProvider theme={theme}>
-      <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
-        <StyledAppBar position="static" id="appBar">
-          <Title onClick={() => navigate("/")}>WhenWhere</Title>
-          <LinkContainer>
-            <NavigationLink
-              onClick={() => navigate("/events")}
-              $active={location.pathname === "/events"}
-            >
-              My events
-            </NavigationLink>
-            <NavigationLink
-              onClick={() => navigate("/login")}
-              $active={location.pathname === "/login"}
-            >
-              Log in
-            </NavigationLink>
-          </LinkContainer>
-        </StyledAppBar>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/events" element={<div>My Events Page</div>} />
-        </Routes>
-      </MuiThemeProvider>
-    </ThemeProvider>
+    <>
+      <StyledAppBar position="static" id="appBar">
+        <Title onClick={() => navigate("/")}>WhenWhere</Title>
+        <LinkContainer>
+          <NavigationLink
+            onClick={() => navigate("/login")}
+            $active={location.pathname === "/login"}
+          >
+            Log in
+          </NavigationLink>
+        </LinkContainer>
+      </StyledAppBar>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/mark-availibility" element={<App />} />
+        <Route path="/create-event" element={<ScheduleEventView />} />
+      </Routes>
+    </>
   );
 }
