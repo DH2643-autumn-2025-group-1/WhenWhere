@@ -1,17 +1,26 @@
 import { Router } from "express";
-import Event from "../models/Event";
+import { getAllEvents, createEvent } from "../services/eventService";
 
 const router = Router();
 
+// GET /events → list all events
 router.get("/", async (_req, res) => {
-  const events = await Event.find();
-  res.json(events);
+  try {
+    const events = await getAllEvents();
+    res.json(events);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch events" });
+  }
 });
 
+// POST /events → create new event
 router.post("/", async (req, res) => {
-  const event = new Event(req.body);
-  await event.save();
-  res.status(201).json(event);
+  try {
+    const event = await createEvent(req.body);
+    res.status(201).json(event);
+  } catch (err) {
+    res.status(400).json({ error: "Failed to create event" });
+  }
 });
 
 export default router;
