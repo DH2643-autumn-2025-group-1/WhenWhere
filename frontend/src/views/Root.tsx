@@ -9,6 +9,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router";
 import { theme } from "../styles/theme.ts";
 import App from "./App.tsx";
 import { Login } from "./Login.tsx";
+import AvailabilityCalendar from "./AvailabilityCalendar.tsx";
 
 const StyledAppBar = styled(AppBar)`
   background-color: ${(props) => props.theme.colors.primary};
@@ -82,6 +83,7 @@ export function Root() {
           <Route path="/" element={<App />} />
           <Route path="/login" element={<Login />} />
           <Route path="/events" element={<div>My Events Page</div>} />
+          <Route path="/availability" element={<AvailabilityCalendar />} />
         </Routes>
       </MuiThemeProvider>
     </ThemeProvider>
