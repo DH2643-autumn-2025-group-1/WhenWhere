@@ -1,64 +1,90 @@
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import styled from "styled-components";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import AlertDialog from "../components/Dialog";
+import { deleteEvent, fetchEvents } from "../services/backendCommunication";
 
 export function HomePage() {
   const navigate = useNavigate();
 
+  const [myEvents, setMyEvents] = useState<
+    Array<{ id: number; title: string }>
+  >([]);
+  const [friendsEvents, setFriendsEvents] = useState<
+    Array<{ id: number; title: string }>
+  >([]);
+  const [loading, setLoading] = useState(true);
   const [openWarningDialog, setOpenWarningDialog] = useState(false);
 
-  // TODO remove when model exists
-  const myEvents = ["lunch meeting", "project plan discussion"];
-  const friendsEvents = ["dinner with friends", "gym session"];
+  // TODO FIX THIS
+  fetchEvents().then((res) => {
+    setMyEvents(res);
+    setFriendsEvents(res);
+    setLoading(false);
+  });
 
   return (
     <Container>
       <Card>
         <Title>My Events:</Title>
-        <EventList>
-          {myEvents.length > 0 ? (
-            myEvents.map((event, index) => (
-              <EventContainer key={index}>
-                {openWarningDialog && (
-                  <AlertDialog
-                    open={openWarningDialog}
-                    setOpen={setOpenWarningDialog}
-                    onAgree={() => console.log("delete event")}
-                    itemToDelete={event}
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <EventList>
+            {myEvents.length > 0 ? (
+              myEvents.map((event, index) => (
+                <EventContainer key={index}>
+                  {openWarningDialog && (
+                    <AlertDialog
+                      open={openWarningDialog}
+                      setOpen={setOpenWarningDialog}
+                      onAgree={async () =>
+                        await deleteEvent(event.id.toString())
+                      }
+                      itemToDelete={event.title}
+                    />
+                  )}
+                  <StyledRemoveIcon
+                    onClick={() => setOpenWarningDialog(true)}
                   />
-                )}
-                <StyledRemoveIcon onClick={() => setOpenWarningDialog(true)} />
-                <Event onClick={() => navigate("/event-result")}>{event}</Event>
-              </EventContainer>
-            ))
-          ) : (
-            <NoEventsText>No events created yet</NoEventsText>
-          )}
-        </EventList>
+                  <Event onClick={() => navigate("/event-result")}>
+                    {event.title}
+                  </Event>
+                </EventContainer>
+              ))
+            ) : (
+              <NoEventsText>No events created yet</NoEventsText>
+            )}
+          </EventList>
+        )}
         <StyledButton
           variant="outlined"
           fullWidth
           onClick={() => navigate("create-event")}
+          disabled={loading}
         >
           Create event
         </StyledButton>
       </Card>
       <Card>
         <Title>Friends' Events</Title>
-        <EventList>
-          {friendsEvents.length > 0 ? (
-            friendsEvents.map((event, index) => (
-              <Event key={index} onClick={() => navigate("/event-result")}>
-                {event}
-              </Event>
-            ))
-          ) : (
-            <NoEventsText>No friends' events available</NoEventsText>
-          )}
-        </EventList>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <EventList>
+            {friendsEvents.length > 0 ? (
+              friendsEvents.map((event, index) => (
+                <Event key={index} onClick={() => navigate("/event-result")}>
+                  {event.title}
+                </Event>
+              ))
+            ) : (
+              <NoEventsText>No friends' events available</NoEventsText>
+            )}
+          </EventList>
+        )}
       </Card>
     </Container>
   );
@@ -101,8 +127,9 @@ const Title = styled.h2`
   text-decoration: underline;
 `;
 
-const StyledButton = styled(Button)`
-  background-color: ${(props) => props.theme.colors.primary};
+const StyledButton = styled(Button)<{ disabled?: boolean }>`
+  background-color: ${(props) =>
+    props.disabled ? props.theme.colors.secondary : props.theme.colors.primary};
   color: #fff;
 
   &&:hover {
