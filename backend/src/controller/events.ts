@@ -9,7 +9,7 @@ router.get("/", async (_req, res) => {
     const events = await getAllEvents();
     res.json(events);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch events" });
+    res.status(500).json({ error: "Failed to fetch events", err });
   }
 });
 
@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
     const event = await createEvent(req.body);
     res.status(201).json(event);
   } catch (err) {
-    res.status(400).json({ error: "Failed to create event" });
+    res.status(400).json({ error: "Failed to create event", err });
   }
 });
 
