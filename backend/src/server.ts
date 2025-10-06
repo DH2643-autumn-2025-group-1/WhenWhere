@@ -3,7 +3,7 @@ dotenv.config();
 
 import express from "express";
 import { connectDB } from "./database";
-import eventsRouter from "./routes/events";
+import eventsRouter from "./controller/events";
 
 const app = express();
 app.use(express.json());
