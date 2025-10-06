@@ -9,6 +9,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router";
 import { theme } from "../styles/theme.ts";
 import App from "./App.tsx";
 import { Login } from "./Login.tsx";
+import { ScheduleEventView } from "./ScheduleEventView.tsx";
 
 const StyledAppBar = styled(AppBar)`
   background-color: ${(props) => props.theme.colors.primary};
@@ -76,12 +77,19 @@ export function Root() {
             >
               Log in
             </NavigationLink>
+            <NavigationLink
+              onClick={() => navigate("/create-event")}
+              $active={location.pathname === "/create-event"}
+            >
+              Create Event
+            </NavigationLink>
           </LinkContainer>
         </StyledAppBar>
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/login" element={<Login />} />
           <Route path="/events" element={<div>My Events Page</div>} />
+          <Route path="/create-event" element={<ScheduleEventView />} />
         </Routes>
       </MuiThemeProvider>
     </ThemeProvider>
