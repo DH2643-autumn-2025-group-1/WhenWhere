@@ -33,7 +33,7 @@ export default function AlertDialog({
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           {itemToDelete
-            ? `Are you sure you want to remove \"${itemToDelete}\"? This action cannot be
+            ? `Are you sure you want to remove "${itemToDelete}"? This action cannot be
           undone.`
             : `Are you sure you want to remove this event? This action cannot be
           undone.`}
