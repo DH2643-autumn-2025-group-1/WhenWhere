@@ -1,7 +1,15 @@
 import { Button } from "@mui/material";
 import styled from "styled-components";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { useNavigate } from "react-router";
+import { useState } from "react";
+import AlertDialog from "../components/Dialog";
 
 export function HomePage() {
+  const navigate = useNavigate();
+
+  const [openWarningDialog, setOpenWarningDialog] = useState(false);
+
   // TODO remove when model exists
   const myEvents = ["lunch meeting", "project plan discussion"];
   const friendsEvents = ["dinner with friends", "gym session"];
@@ -12,7 +20,20 @@ export function HomePage() {
         <Title>My Events:</Title>
         <EventList>
           {myEvents.length > 0 ? (
-            myEvents.map((event, index) => <Event key={index}>{event}</Event>)
+            myEvents.map((event, index) => (
+              <EventContainer key={index}>
+                {openWarningDialog && (
+                  <AlertDialog
+                    open={openWarningDialog}
+                    setOpen={setOpenWarningDialog}
+                    onAgree={() => console.log("delete event")}
+                    itemToDelete={event}
+                  />
+                )}
+                <StyledRemoveIcon onClick={() => setOpenWarningDialog(true)} />
+                <Event onClick={() => navigate("/event-result")}>{event}</Event>
+              </EventContainer>
+            ))
           ) : (
             <NoEventsText>No events created yet</NoEventsText>
           )}
@@ -20,7 +41,7 @@ export function HomePage() {
         <StyledButton
           variant="outlined"
           fullWidth
-          onClick={() => console.log("not implemented")}
+          onClick={() => navigate("create-event")}
         >
           Create event
         </StyledButton>
@@ -30,7 +51,9 @@ export function HomePage() {
         <EventList>
           {friendsEvents.length > 0 ? (
             friendsEvents.map((event, index) => (
-              <Event key={index}>{event}</Event>
+              <Event key={index} onClick={() => navigate("/event-result")}>
+                {event}
+              </Event>
             ))
           ) : (
             <NoEventsText>No friends' events available</NoEventsText>
@@ -43,10 +66,16 @@ export function HomePage() {
 
 const Container = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   gap: ${(props) => props.theme.spacing.large};
   margin: ${(props) => props.theme.spacing.xlarge};
+
+  @media (min-width: ${(props) => props.theme.breakpoints.mobile}) {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+  }
 `;
 
 const Card = styled.div`
@@ -57,17 +86,19 @@ const Card = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: #fff;
-  width: 450px;
-  height: 550px;
+  width: 95%;
   padding: ${(props) => props.theme.spacing.large};
-  gap: ${(props) => props.theme.spacing.medium};
+  gap: ${(props) => props.theme.spacing.large};
+
+  @media (min-width: ${(props) => props.theme.breakpoints.desktop}) {
+    width: 450px;
+  }
 `;
 
 const Title = styled.h2`
   all: unset;
   font-size: ${(props) => props.theme.fontSizes.xlarge};
   text-decoration: underline;
-  margin-bottom: ${(props) => props.theme.spacing.small};
 `;
 
 const StyledButton = styled(Button)`
@@ -88,17 +119,36 @@ const EventList = styled.div`
   overflow-y: auto;
 `;
 
-const Event = styled(Button)`
+const EventContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.small};
+`;
+
+const Event = styled.div`
   border: 1px solid #ddd;
   border-radius: 8px;
   width: 100%;
   text-align: center;
   cursor: pointer;
   text-transform: capitalize;
+  padding: ${(props) => props.theme.spacing.small};
   color: ${(props) => props.theme.colors.primary};
+  position: relative;
 
   &&:hover {
-    background-color: ${(props) => props.theme.colors.secondary};
+    text-decoration: underline;
+    background-color: #f9f9f9;
+  }
+`;
+
+const StyledRemoveIcon = styled(RemoveCircleOutlineIcon)`
+  cursor: pointer;
+  color: #f2a097;
+
+  &&:hover {
+    color: ${(props) => props.theme.colors.danger};
   }
 `;
 

@@ -69,6 +69,7 @@ export function Root() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/mark-availibility" element={<App />} />
+        <Route path="/event-result" element={<div>event result</div>} />
         <Route path="/create-event" element={<ScheduleEventView />} />
       </Routes>
     </>
