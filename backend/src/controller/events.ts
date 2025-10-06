@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { getAllEvents, createEvent } from "../services/eventService";
+import {
+  getAllEvents,
+  createEvent,
+  deleteEvent,
+} from "../services/eventService";
 
 const router = Router();
 
@@ -20,6 +24,15 @@ router.post("/", async (req, res) => {
     res.status(201).json(event);
   } catch (err) {
     res.status(400).json({ error: "Failed to create event", err });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const event = await deleteEvent(req.body);
+    res.status(201).json(event);
+  } catch (err) {
+    res.status(400).json({ error: "Failed to delete event", err });
   }
 });
 
