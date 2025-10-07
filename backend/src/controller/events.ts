@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { getAllEvents, createEvent } from "../services/eventService";
+import {
+  getAllEvents,
+  createEvent,
+  deleteEvent,
+} from "../services/eventService";
 
 const router = Router();
 
@@ -9,7 +13,7 @@ router.get("/", async (_req, res) => {
     const events = await getAllEvents();
     res.json(events);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch events" });
+    res.status(500).json({ error: "Failed to fetch events", details: err });
   }
 });
 
@@ -19,7 +23,18 @@ router.post("/", async (req, res) => {
     const event = await createEvent(req.body);
     res.status(201).json(event);
   } catch (err) {
-    res.status(400).json({ error: "Failed to create event" });
+    res.status(400).json({ error: "Failed to create event", details: err });
+  }
+});
+
+// DELETE /events/:id → delete event by ID
+router.delete("/:id", async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    await deleteEvent(eventId);
+    res.status(204).send();
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete event", details: err });
   }
 });
 
