@@ -10,12 +10,14 @@ export default function AlertDialog({
   open,
   setOpen,
   onAgree,
-  itemToDelete,
+  title,
+  description,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
   onAgree: () => void;
-  itemToDelete?: string;
+  title?: string;
+  description?: string;
 }) {
   const handleClose = () => {
     setOpen(false);
@@ -29,14 +31,10 @@ export default function AlertDialog({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">Remove event?</DialogTitle>
+      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          {itemToDelete
-            ? `Are you sure you want to remove "${itemToDelete}"? This action cannot be
-          undone.`
-            : `Are you sure you want to remove this event? This action cannot be
-          undone.`}
+          {description}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
