@@ -6,11 +6,17 @@ export async function getAllEvents(): Promise<IEvent[]> {
 
 export async function createEvent(data: Partial<IEvent>): Promise<IEvent> {
   const event = new Event(data);
-  return event.save();
+  await event.save();
+  return event;
 }
 
 export async function deleteEvent(eventId: string): Promise<void> {
-  await Event.findByIdAndDelete(eventId);
+  try {
+    await Event.findByIdAndDelete(eventId);
+  } catch (err) {
+    console.error("Error deleting event:", err);
+    throw err;
+  }
 }
 
 // get events created by a specific user
