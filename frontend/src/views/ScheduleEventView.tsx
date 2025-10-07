@@ -11,31 +11,41 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import styled from "styled-components";
 import { useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { Dayjs } from "dayjs";
-import { EventModel } from "../models/EventModel";
 import {
   EventPresenter,
   type EventFormData,
-} from "../presenters/EventPresenter";
+} from "../presenters/ScheduleEventPresenter";
+import { useNavigate } from "react-router";
 
 const Container = styled.div`
-  background-color: ${({ theme }) => theme.colors.background};
-  min-height: 100vh;
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding: 4rem;
-  gap: 6rem;
+  flex-direction: column;
+  gap: ${(props) => props.theme.spacing.large};
+  margin: ${(props) => props.theme.spacing.xlarge};
+
+  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+  }
 `;
 
 const Form = styled.div`
   background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: ${(props) => props.theme.spacing.large};
   width: 100%;
-  max-width: 400px;
+
+  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
+    width: 100%;
+    max-width: 400px;
+  }
 `;
 
 const PlaceContainer = styled.div`
@@ -46,9 +56,10 @@ const PlaceContainer = styled.div`
 
 const CalendarWrapper = styled.div`
   background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: ${(props) => props.theme.spacing.large};
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const SubmitButton = styled(Button)`
@@ -94,18 +105,17 @@ export function ScheduleEventView() {
     severity: "success" | "error";
   }>({ open: false, message: "", severity: "success" });
 
-  const [model] = useState(() => new EventModel());
+  const navigate = useNavigate();
+
   const [presenter] = useState(
     () =>
       new EventPresenter(
-        model,
         () => {
           setSnackbar({
             open: true,
             message: "Event created successfully!",
             severity: "success",
           });
-          //reset form
           setTitle("");
           setDescription("");
           setPlaces([]);
@@ -158,8 +168,9 @@ export function ScheduleEventView() {
       const creatorId = "user123";
 
       await presenter.createEvent(formData, creatorId);
+      navigate("/");
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error submitting event:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -211,7 +222,7 @@ export function ScheduleEventView() {
               aria-label="remove place"
               onClick={() => handleRemovePlace(index)}
             >
-              <CloseIcon />
+              <RemoveCircleOutlineIcon />
             </IconButton>
           </PlaceContainer>
         ))}
