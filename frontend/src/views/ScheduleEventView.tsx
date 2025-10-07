@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { Dayjs } from "dayjs";
+import { Location } from "./Location";
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.colors.background};
@@ -29,7 +30,7 @@ const Form = styled.div`
 const PlaceContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.2rem;
 `;
 
 const CalendarWrapper = styled.div`
@@ -103,13 +104,14 @@ export function ScheduleEventView() {
         </Typography>
         {places.map((place, index) => (
           <PlaceContainer key={index}>
-            <TextField
-              label={`Place ${index + 1}`}
-              variant="outlined"
-              fullWidth
-              margin="normal"
+            <Location
               value={place}
-              onChange={(e) => handlePlaceChange(index, e.target.value)}
+              label={`Place ${index + 1}`}
+              onSelectFuntion={(value) =>
+                value
+                  ? handlePlaceChange(index, value?.toString())
+                  : console.error("No place selected")
+              }
             />
             <IconButton
               aria-label="remove place"
@@ -124,7 +126,7 @@ export function ScheduleEventView() {
           color="primary"
           fullWidth
           onClick={handleAddPlace}
-          style={{ marginBottom: "1rem" }}
+          style={{ margin: "1rem 0" }}
         >
           + Add Place
         </Button>
