@@ -8,6 +8,12 @@ export interface IEvent extends Document {
   places: string[];
   availability: { userId: string; availableSlots: Date[] }[];
   suggestions: { placeName: string; availableDates: Date[]; votes: number }[];
+  inviteLinks: {
+    token: string;
+    createdAt: Date;
+    expiresAt?: Date; 
+  }[];
+
 }
 
 const EventSchema: Schema = new Schema({
@@ -27,6 +33,13 @@ const EventSchema: Schema = new Schema({
       placeName: { type: String },
       availableDates: [Date],
       votes: { type: Number, default: 0 },
+    },
+  ],
+  inviteLinks: [
+    {
+      token: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now },
+      expiresAt: { type: Date },
     },
   ],
 });

@@ -10,6 +10,7 @@ import { theme } from "../styles/theme.ts";
 import App from "./App.tsx";
 import { Login } from "./Login.tsx";
 import { ScheduleEventView } from "./ScheduleEventView.tsx";
+import StringBoxWithActions from "../components/text/boxWithActions.tsx"
 
 const StyledAppBar = styled(AppBar)`
   background-color: ${(props) => props.theme.colors.primary};
@@ -88,7 +89,7 @@ export function Root() {
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/events" element={<div>My Events Page</div>} />
+          <Route path="/events" element={<StringBoxWithActions value="burh" onResetACB={() => "adsadasdasdaddadaddaddadadddasddasd" } title="Shareable link" />} />
           <Route path="/create-event" element={<ScheduleEventView />} />
         </Routes>
       </MuiThemeProvider>

@@ -1,7 +1,9 @@
 import { Router } from "express";
 import {
   getAllEvents,
-  createEvent,
+  createEvent, 
+  createInviteLink, 
+  getEventByInviteToken,
   deleteEvent,
 } from "../services/eventService";
 
@@ -37,5 +39,30 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to delete event", details: err });
   }
 });
+
+// POST /:eventid/invite → create invite link
+router.post("/:eventId/invite", async (req, res) => {
+  const { eventId } = req.params;
+
+  try {
+    const link = await createInviteLink(eventId);
+    res.status(201).json({ link });
+  } catch (err) {
+    res.status(400).json({ error: "Failed to generate invite link", details: err });
+  }
+});
+
+// GET /invite/:token
+router.get("/invite/:token", async (req, res) => {
+  const { token } = req.params;
+
+  try {
+    const event = await getEventByInviteToken(token);
+    res.json({ event });
+  } catch (err) {
+    res.status(404).json({ error: "Invalid invite link", details: err });
+  }
+});
+
 
 export default router;
