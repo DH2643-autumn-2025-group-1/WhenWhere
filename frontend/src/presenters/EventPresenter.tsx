@@ -1,14 +1,7 @@
 import { useState } from "react";
 import { Dayjs } from "dayjs";
-import { EventModel, type EventData } from "../models/EventModel";
+import { type EventData, type EventModelType } from "../models/EventModel";
 import { ScheduleEventView } from "../views/ScheduleEventView";
-
-export interface EventFormData {
-  title: string;
-  description: string;
-  places: string[];
-  selectedDates: Date[];
-}
 
 export interface ScheduleEventViewProps {
   places: string[];
@@ -31,7 +24,7 @@ export interface ScheduleEventViewProps {
   onCloseSnackbar: () => void;
 }
 
-export function EventPresenter() {
+export function EventPresenter({ model }: { model: EventModelType }) {
   const [places, setPlaces] = useState<string[]>([]);
   const [selectedDates, setSelectedDates] = useState<Dayjs[]>([]);
   const [title, setTitle] = useState<string>("");
@@ -77,32 +70,28 @@ export function EventPresenter() {
     setDescription(value);
   };
 
-  const createEvent = async (
-    formData: EventFormData,
-    creatorId: string,
-  ): Promise<void> => {
+  const createEvent = async (eventData: EventData): Promise<void> => {
     try {
-      if (!formData.title.trim()) {
+      if (!eventData.title.trim()) {
         throw new Error("Event title is required");
       }
 
-      if (formData.selectedDates.length === 0) {
+      if (eventData.dateOptions.length === 0) {
         throw new Error("At least one date must be selected");
       }
 
-      const validPlaces = formData.places.filter(
-        (place) => place.trim() !== "",
+      const validPlaces = eventData.places.filter(
+        (place: string) => place.trim() !== "",
       );
 
-      const eventData: EventData = {
-        title: formData.title.trim(),
-        description: formData.description.trim() || undefined,
+      const finalEventData: EventData = {
+        ...eventData,
+        title: eventData.title.trim(),
+        description: eventData.description?.trim() || undefined,
         places: validPlaces,
-        dateOptions: formData.selectedDates,
-        creatorId: creatorId,
       };
 
-      await EventModel.createEvent(eventData);
+      await model.createEvent(finalEventData);
 
       setSnackbar({
         open: true,
@@ -126,17 +115,18 @@ export function EventPresenter() {
   const handleSubmit = async () => {
     setIsSubmitting(true);
 
-    const formData: EventFormData = {
-      title,
-      description,
-      places,
-      selectedDates: selectedDates.map((date) => date.toDate()),
-    };
-
     // Placeholder
     const creatorId = "user123";
 
-    await createEvent(formData, creatorId);
+    const eventData: EventData = {
+      title,
+      description,
+      places,
+      dateOptions: selectedDates.map((date) => date.toDate()),
+      creatorId,
+    };
+
+    await createEvent(eventData);
     setIsSubmitting(false);
   };
 
