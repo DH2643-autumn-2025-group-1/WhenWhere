@@ -3,8 +3,9 @@ import { AppBar } from "@mui/material";
 import { Route, Routes, useLocation, useNavigate } from "react-router";
 import App from "./App.tsx";
 import { Login } from "./Login.tsx";
+import { eventModel } from "../models/EventModel.ts";
+import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
 import { EventPresenter } from "../presenters/EventPresenter.tsx";
-import { HomePage } from "./Homepage.tsx";
 
 const StyledAppBar = styled(AppBar)`
   background-color: ${(props) => props.theme.colors.primary};
@@ -66,7 +67,7 @@ export function Root() {
         </LinkContainer>
       </StyledAppBar>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomepagePresenter model={eventModel} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/mark-availibility" element={<App />} />
         <Route path="/event-result" element={<div>event result</div>} />

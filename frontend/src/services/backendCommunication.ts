@@ -1,3 +1,5 @@
+import type { EventData } from "../models/EventModel";
+
 export const fetchEvents = async () => {
   const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/events`);
   if (!response.ok) {
@@ -6,11 +8,7 @@ export const fetchEvents = async () => {
   return response.json();
 };
 
-export const createEvent = async (eventData: {
-  title: string;
-  date: string;
-  userId: string;
-}) => {
+export const createEventOnDB = async (eventData: EventData) => {
   const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/events`, {
     method: "POST",
     headers: {
@@ -24,7 +22,7 @@ export const createEvent = async (eventData: {
   return response.json();
 };
 
-export const deleteEvent = async (eventId: string) => {
+export const deleteEventOnDB = async (eventId: string) => {
   const response = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/events/${eventId}`,
     {
@@ -33,6 +31,26 @@ export const deleteEvent = async (eventId: string) => {
   );
   if (!response.ok) {
     throw new Error("Failed to delete event");
+  }
+  return;
+};
+
+export const fetchCreatedEvents = async (userId: string) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/events/created/${userId}`,
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch created events");
+  }
+  return response.json();
+};
+
+export const fetchInvitedEvents = async (userId: string) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/events/invited/${userId}`,
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch invited events");
   }
   return response.json();
 };

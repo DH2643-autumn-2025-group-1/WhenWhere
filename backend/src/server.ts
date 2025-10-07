@@ -3,7 +3,6 @@ dotenv.config();
 import cors from "cors";
 
 import express from "express";
-import cors from "cors";
 import { connectDB } from "./database";
 import eventsRouter from "./controller/events";
 

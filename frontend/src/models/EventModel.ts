@@ -1,3 +1,10 @@
+import {
+  createEventOnDB,
+  deleteEventOnDB,
+  fetchCreatedEvents,
+  fetchInvitedEvents,
+} from "../services/backendCommunication";
+
 export interface EventData {
   title: string;
   description?: string;
@@ -6,7 +13,7 @@ export interface EventData {
   creatorId: string;
 }
 
-export interface EventResponse {
+export interface Event {
   _id: string;
   title: string;
   description?: string;
@@ -17,27 +24,44 @@ export interface EventResponse {
   suggestions: { placeName: string; availableDates: Date[]; votes: number }[];
 }
 
-export const EventModel = {
-  baseUrl: import.meta.env.VITE_API_BASE_URL,
+export const eventModel = {
+  userId: null as string | null,
+  myEvents: [] as Event[],
+  friendsEvents: [] as Event[],
 
-  async createEvent(
-    eventData: EventData,
-    baseUrl?: string,
-  ): Promise<EventResponse> {
-    const apiUrl = baseUrl || this.baseUrl;
-    const response = await fetch(`${apiUrl}/events`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(eventData),
-    });
+  setuserId(id: string | null) {
+    this.userId = id;
+  },
 
-    if (!response.ok) {
-      throw new Error(`Failed to create event: ${response.statusText}`);
+  async createEvent(eventData: EventData): Promise<Event> {
+    const response = await createEventOnDB(eventData);
+    this.myEvents.push(response);
+    return response;
+  },
+
+  async deleteEvent(eventId: string): Promise<void> {
+    const response = await deleteEventOnDB(eventId);
+    this.myEvents = this.myEvents.filter(
+      (event) => event._id.toString() !== eventId,
+    );
+    return response;
+  },
+
+  async fetchMyEvents() {
+    if (!this.userId) {
+      throw new Error("User ID is not set");
     }
+    const events = await fetchCreatedEvents(this.userId);
+    this.myEvents = events;
+  },
 
-    const result = await response.json();
-    return result;
+  async fetchFriendsEvents() {
+    if (!this.userId) {
+      throw new Error("User ID is not set");
+    }
+    const events = await fetchInvitedEvents(this.userId);
+    this.friendsEvents = events;
   },
 };
+
+export type EventModelType = typeof eventModel;

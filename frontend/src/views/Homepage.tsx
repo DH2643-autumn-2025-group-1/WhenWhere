@@ -4,32 +4,25 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import AlertDialog from "../components/Dialog";
-import { deleteEvent, fetchEvents } from "../services/backendCommunication";
+import type { Event } from "../models/EventModel";
 
-export function HomePage() {
+export function HomePage({
+  myEvents,
+  friendsEvents,
+  deleteEvent,
+}: {
+  myEvents: Array<Event>;
+  friendsEvents: Array<Event>;
+  deleteEvent: (id: string) => void;
+}) {
   const navigate = useNavigate();
-
-  const [myEvents, setMyEvents] = useState<
-    Array<{ id: number; title: string }>
-  >([]);
-  const [friendsEvents, setFriendsEvents] = useState<
-    Array<{ id: number; title: string }>
-  >([]);
-  const [loading, setLoading] = useState(true);
   const [openWarningDialog, setOpenWarningDialog] = useState(false);
-
-  // TODO FIX THIS
-  fetchEvents().then((res) => {
-    setMyEvents(res);
-    setFriendsEvents(res);
-    setLoading(false);
-  });
 
   return (
     <Container>
       <Card>
         <Title>My Events:</Title>
-        {loading ? (
+        {!myEvents ? (
           <CircularProgress />
         ) : (
           <EventList>
@@ -40,10 +33,13 @@ export function HomePage() {
                     <AlertDialog
                       open={openWarningDialog}
                       setOpen={setOpenWarningDialog}
-                      onAgree={async () =>
-                        await deleteEvent(event.id.toString())
+                      onAgree={() => deleteEvent(event._id)}
+                      title={"Remove event?"}
+                      description={
+                        event.title
+                          ? `Are you sure you want to remove "${event.title}"? This action cannot be undone.`
+                          : `Are you sure you want to remove this event? This action cannot be undone.`
                       }
-                      itemToDelete={event.title}
                     />
                   )}
                   <StyledRemoveIcon
@@ -63,14 +59,14 @@ export function HomePage() {
           variant="outlined"
           fullWidth
           onClick={() => navigate("create-event")}
-          disabled={loading}
+          disabled={!myEvents}
         >
           Create event
         </StyledButton>
       </Card>
       <Card>
         <Title>Friends' Events</Title>
-        {loading ? (
+        {!friendsEvents ? (
           <CircularProgress />
         ) : (
           <EventList>

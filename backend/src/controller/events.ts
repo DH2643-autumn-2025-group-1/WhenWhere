@@ -15,7 +15,7 @@ router.get("/", async (_req, res) => {
     const events = await getAllEvents();
     res.json(events);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch events", err });
+    res.status(500).json({ error: "Failed to fetch events", details: err });
   }
 });
 
@@ -26,15 +26,6 @@ router.post("/", async (req, res) => {
     res.status(201).json(event);
   } catch (err) {
     res.status(400).json({ error: "Failed to create event", err });
-  }
-});
-
-router.delete("/:id", async (req, res) => {
-  try {
-    const event = await deleteEvent(req.body);
-    res.status(201).json(event);
-  } catch (err) {
-    res.status(400).json({ error: "Failed to delete event", err });
   }
 });
 
