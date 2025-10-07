@@ -17,62 +17,27 @@ export interface EventResponse {
   suggestions: { placeName: string; availableDates: Date[]; votes: number }[];
 }
 
-export class EventModel {
-  private baseUrl: string;
+export const EventModel = {
+  baseUrl: import.meta.env.VITE_API_BASE_URL,
 
-  constructor(baseUrl?: string) {
-    this.baseUrl = baseUrl || import.meta.env.VITE_API_BASE_URL;
-  }
+  async createEvent(
+    eventData: EventData,
+    baseUrl?: string,
+  ): Promise<EventResponse> {
+    const apiUrl = baseUrl || this.baseUrl;
+    const response = await fetch(`${apiUrl}/events`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(eventData),
+    });
 
-  async createEvent(eventData: EventData): Promise<EventResponse> {
-    try {
-      const response = await fetch(`${this.baseUrl}/events`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to create event: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      console.error("Error creating event:", error);
-      throw error;
+    if (!response.ok) {
+      throw new Error(`Failed to create event: ${response.statusText}`);
     }
-  }
 
-  async getAllEvents(): Promise<EventResponse[]> {
-    try {
-      const response = await fetch(`${this.baseUrl}/events`);
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch events: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error("Error fetching events:", error);
-      throw error;
-    }
-  }
-
-  async deleteEvent(eventId: string): Promise<void> {
-    try {
-      const response = await fetch(`${this.baseUrl}/events/${eventId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to delete event: ${response.statusText}`);
-      }
-    } catch (error) {
-      console.error("Error deleting event:", error);
-      throw error;
-    }
-  }
-}
+    const result = await response.json();
+    return result;
+  },
+};
