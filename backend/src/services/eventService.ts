@@ -20,5 +20,5 @@ export async function getEventsCreatedByUser(userId: string): Promise<IEvent[]> 
 
 // get events where user is invited (in availability list)
 export async function getEventsUserIsInvitedTo(userId: string): Promise<IEvent[]> {
-  return Event.find({ "availability.userId": userId });
+  return Event.find({ "availability.userId": userId      });
 }
