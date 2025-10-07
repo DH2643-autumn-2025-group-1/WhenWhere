@@ -60,4 +60,19 @@ export class EventModel {
       throw error;
     }
   }
+
+  async deleteEvent(eventId: string): Promise<void> {
+    try {
+      const response = await fetch(`${this.baseUrl}/events/${eventId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete event: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      throw error;
+    }
+  }
 }

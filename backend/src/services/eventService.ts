@@ -8,3 +8,7 @@ export async function createEvent(data: Partial<IEvent>): Promise<IEvent> {
   const event = new Event(data);
   return event.save();
 }
+
+export async function deleteEvent(eventId: string): Promise<void> {
+  await Event.findByIdAndDelete(eventId);
+}

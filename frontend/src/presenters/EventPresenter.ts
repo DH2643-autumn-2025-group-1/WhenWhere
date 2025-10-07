@@ -14,16 +14,19 @@ export interface EventFormData {
 export class EventPresenter {
   private model: EventModel;
   private onEventCreated?: (event: EventResponse) => void;
+  private onEventDeleted?: (eventId: string) => void;
   private onError?: (error: string) => void;
 
   constructor(
     model: EventModel,
     onEventCreated?: (event: EventResponse) => void,
     onError?: (error: string) => void,
+    onEventDeleted?: (eventId: string) => void,
   ) {
     this.model = model;
     this.onEventCreated = onEventCreated;
     this.onError = onError;
+    this.onEventDeleted = onEventDeleted;
   }
 
   async createEvent(formData: EventFormData, creatorId: string): Promise<void> {
@@ -76,6 +79,28 @@ export class EventPresenter {
         this.onError(errorMessage);
       }
       throw error;
+    }
+  }
+
+  async deleteEvent(eventId: string): Promise<void> {
+    try {
+      if (!eventId) {
+        throw new Error("Event ID is required");
+      }
+
+      await this.model.deleteEvent(eventId);
+
+      if (this.onEventDeleted) {
+        this.onEventDeleted(eventId);
+      }
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to delete event";
+      console.error("Error in EventPresenter.deleteEvent:", error);
+
+      if (this.onError) {
+        this.onError(errorMessage);
+      }
     }
   }
 
