@@ -11,9 +11,8 @@ export interface IEvent extends Document {
   inviteLinks: {
     token: string;
     createdAt: Date;
-    expiresAt?: Date; 
+    expiresAt?: Date;
   }[];
-
 }
 
 const EventSchema: Schema = new Schema({

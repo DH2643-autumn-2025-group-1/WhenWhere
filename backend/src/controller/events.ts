@@ -1,8 +1,8 @@
 import { Router } from "express";
 import {
   getAllEvents,
-  createEvent, 
-  createInviteLink, 
+  createEvent,
+  createInviteLink,
   getEventByInviteToken,
   deleteEvent,
 } from "../services/eventService";
@@ -48,7 +48,9 @@ router.post("/:eventId/invite", async (req, res) => {
     const link = await createInviteLink(eventId);
     res.status(201).json({ link });
   } catch (err) {
-    res.status(400).json({ error: "Failed to generate invite link", details: err });
+    res
+      .status(400)
+      .json({ error: "Failed to generate invite link", details: err });
   }
 });
 
@@ -63,6 +65,5 @@ router.get("/invite/:token", async (req, res) => {
     res.status(404).json({ error: "Invalid invite link", details: err });
   }
 });
-
 
 export default router;

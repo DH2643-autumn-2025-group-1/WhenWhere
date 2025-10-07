@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  Box,
-  IconButton,
-  Stack,
-  Tooltip,
-} from "@mui/material";
+import { Box, IconButton, Stack, Tooltip } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import {
@@ -45,7 +40,9 @@ export default function StringBoxWithActions(props: StringBoxWithActionsProps) {
 
   return (
     <StyledContainer spacing={1}>
-      {props.title && <StyledTitle variant="subtitle1">{props.title}</StyledTitle>}
+      {props.title && (
+        <StyledTitle variant="subtitle1">{props.title}</StyledTitle>
+      )}
 
       <StyledPaper elevation={3}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
