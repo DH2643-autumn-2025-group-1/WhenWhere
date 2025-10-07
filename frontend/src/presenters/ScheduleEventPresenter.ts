@@ -1,8 +1,4 @@
-import {
-  EventModel,
-  type EventData,
-  type EventResponse,
-} from "../models/EventModel";
+import { eventModel, type EventData, type Event } from "../models/EventModel";
 
 export interface EventFormData {
   title: string;
@@ -12,18 +8,16 @@ export interface EventFormData {
 }
 
 export class EventPresenter {
-  private model: EventModel;
-  private onEventCreated?: (event: EventResponse) => void;
+  private model = eventModel;
+  private onEventCreated?: (event: Event) => void;
   private onEventDeleted?: (eventId: string) => void;
   private onError?: (error: string) => void;
 
   constructor(
-    model: EventModel,
-    onEventCreated?: (event: EventResponse) => void,
+    onEventCreated?: (event: Event) => void,
     onError?: (error: string) => void,
     onEventDeleted?: (eventId: string) => void,
   ) {
-    this.model = model;
     this.onEventCreated = onEventCreated;
     this.onError = onError;
     this.onEventDeleted = onEventDeleted;
@@ -67,7 +61,7 @@ export class EventPresenter {
     }
   }
 
-  async getAllEvents(): Promise<EventResponse[]> {
+  async getAllEvents(): Promise<Event[]> {
     try {
       return await this.model.getAllEvents();
     } catch (error) {
