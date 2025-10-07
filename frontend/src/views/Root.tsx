@@ -77,6 +77,12 @@ export function Root() {
             >
               Log in
             </NavigationLink>
+            <NavigationLink
+              onClick={() => navigate("/create-event")}
+              $active={location.pathname === "/create-event"}
+            >
+              Create Event
+            </NavigationLink>
           </LinkContainer>
         </StyledAppBar>
         <Routes>
