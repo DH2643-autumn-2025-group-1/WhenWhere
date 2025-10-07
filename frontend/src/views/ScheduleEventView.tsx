@@ -13,11 +13,11 @@ import styled from "styled-components";
 import { useState } from "react";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { Dayjs } from "dayjs";
-import { EventModel } from "../models/EventModel";
 import {
   EventPresenter,
   type EventFormData,
-} from "../presenters/EventPresenter";
+} from "../presenters/ScheduleEventPresenter";
+import { useNavigate } from "react-router";
 
 const Container = styled.div`
   display: flex;
@@ -105,18 +105,17 @@ export function ScheduleEventView() {
     severity: "success" | "error";
   }>({ open: false, message: "", severity: "success" });
 
-  const [model] = useState(() => new EventModel());
+  const navigate = useNavigate();
+
   const [presenter] = useState(
     () =>
       new EventPresenter(
-        model,
         () => {
           setSnackbar({
             open: true,
             message: "Event created successfully!",
             severity: "success",
           });
-          //reset form
           setTitle("");
           setDescription("");
           setPlaces([]);
@@ -169,8 +168,9 @@ export function ScheduleEventView() {
       const creatorId = "user123";
 
       await presenter.createEvent(formData, creatorId);
+      navigate("/");
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error submitting event:", error);
     } finally {
       setIsSubmitting(false);
     }
