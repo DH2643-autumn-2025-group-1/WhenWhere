@@ -9,15 +9,10 @@ import { DateCalendar, PickersDay } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import styled from "styled-components";
-import { useState } from "react";
+import type { ScheduleEventViewProps } from "../presenters/EventPresenter.tsx";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import { Dayjs } from "dayjs";
-import {
-  EventPresenter,
-  type EventFormData,
-} from "../presenters/ScheduleEventPresenter";
-import { useNavigate } from "react-router";
 import { ButtonComponent } from "../components/Button";
+import { Location } from "./Location.tsx";
 
 const Container = styled.div`
   display: flex;
@@ -51,7 +46,7 @@ const Form = styled.div`
 const PlaceContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.2rem;
 `;
 
 const CalendarWrapper = styled.div`
@@ -84,93 +79,22 @@ const LargeAlert = styled(Alert)`
   }
 `;
 
-export function ScheduleEventView() {
-  const [places, setPlaces] = useState<string[]>([]);
-  const [selectedDates, setSelectedDates] = useState<Dayjs[]>([]);
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [snackbar, setSnackbar] = useState<{
-    open: boolean;
-    message: string;
-    severity: "success" | "error";
-  }>({ open: false, message: "", severity: "success" });
-
-  const navigate = useNavigate();
-
-  const [presenter] = useState(
-    () =>
-      new EventPresenter(
-        () => {
-          setSnackbar({
-            open: true,
-            message: "Event created successfully!",
-            severity: "success",
-          });
-          setTitle("");
-          setDescription("");
-          setPlaces([]);
-          setSelectedDates([]);
-        },
-        (error) => {
-          setSnackbar({ open: true, message: error, severity: "error" });
-        },
-      ),
-  );
-
-  const handleAddPlace = () => {
-    setPlaces([...places, ""]);
-  };
-
-  const handlePlaceChange = (index: number, value: string) => {
-    const updatedPlaces = [...places];
-    updatedPlaces[index] = value;
-    setPlaces(updatedPlaces);
-  };
-
-  const handleRemovePlace = (index: number) => {
-    const updatedPlaces = places.filter((_, i) => i !== index);
-    setPlaces(updatedPlaces);
-  };
-
-  const handleDateClick = (date: Dayjs | null) => {
-    if (!date) return;
-    const isSelected = selectedDates.some((d) => d.isSame(date, "day"));
-
-    if (isSelected) {
-      setSelectedDates(selectedDates.filter((d) => !d.isSame(date, "day")));
-    } else {
-      setSelectedDates([...selectedDates, date]);
-    }
-  };
-
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-
-    try {
-      const formData: EventFormData = {
-        title,
-        description,
-        places,
-        selectedDates: selectedDates.map((date) => date.toDate()),
-      };
-
-      // placeholder för tillfället
-      const creatorId = "user123";
-
-      await presenter.createEvent(formData, creatorId);
-      navigate("/");
-    } catch (error) {
-      console.error("Error submitting event:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleCloseSnackbar = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
-
+export function ScheduleEventView({
+  places,
+  selectedDates,
+  title,
+  description,
+  isSubmitting,
+  snackbar,
+  onAddPlace,
+  onRemovePlace,
+  onDateClick,
+  onPlaceChange,
+  onTitleChange,
+  onDescriptionChange,
+  onSubmit,
+  onCloseSnackbar,
+}: ScheduleEventViewProps) {
   return (
     <Container>
       <Form>
@@ -183,7 +107,7 @@ export function ScheduleEventView() {
           fullWidth
           margin="normal"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => onTitleChange(e.target.value)}
           required
         />
         <TextField
@@ -194,38 +118,39 @@ export function ScheduleEventView() {
           rows={4}
           margin="normal"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={(e) => onDescriptionChange(e.target.value)}
         />
         <Typography variant="h6" gutterBottom>
           Places
         </Typography>
         {places.map((place, index) => (
           <PlaceContainer key={index}>
-            <TextField
-              label={`Place ${index + 1}`}
-              variant="outlined"
-              fullWidth
-              margin="normal"
+            <Location
               value={place}
-              onChange={(e) => handlePlaceChange(index, e.target.value)}
+              label={`Place ${index + 1}`}
+              onSelectFuntion={(value) =>
+                value
+                  ? onPlaceChange(index, value?.toString())
+                  : console.error("No place selected")
+              }
             />
             <IconButton
               aria-label="remove place"
-              onClick={() => handleRemovePlace(index)}
+              onClick={() => onRemovePlace(index)}
             >
               <RemoveCircleOutlineIcon />
             </IconButton>
           </PlaceContainer>
         ))}
         <ButtonComponent
-          onClickFunction={handleAddPlace}
+          onClickFunction={onAddPlace}
           text="+ Add Place"
           variant="outlined"
           style={{ marginBottom: "1rem" }}
         />
         <ButtonComponent
           variant="primary"
-          onClickFunction={handleSubmit}
+          onClickFunction={onSubmit}
           disabled={isSubmitting}
           text={isSubmitting ? "Creating Event..." : "Submit"}
         />
@@ -236,7 +161,7 @@ export function ScheduleEventView() {
         </Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateCalendar
-            onChange={(date) => handleDateClick(date)}
+            onChange={(date) => onDateClick(date)}
             displayWeekNumber
             slots={{
               day: (props) => {
@@ -267,10 +192,10 @@ export function ScheduleEventView() {
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
+        onClose={onCloseSnackbar}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
-        <LargeAlert onClose={handleCloseSnackbar} severity={snackbar.severity}>
+        <LargeAlert onClose={onCloseSnackbar} severity={snackbar.severity}>
           {snackbar.message}
         </LargeAlert>
       </Snackbar>

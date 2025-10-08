@@ -150,6 +150,7 @@ export default function AuthPage() {
     <div style={{ position: "relative" }}>
       {loading && <LinearProgress />}
       <SignInPage
+        sx={{ minHeight: 0 }}
         providers={providers}
         signIn={handleAuth}
         slots={{
