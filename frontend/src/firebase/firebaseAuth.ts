@@ -10,6 +10,7 @@ import {
   signInAnonymously,
   type User,
 } from "firebase/auth";
+import { eventModel } from "../models/EventModel";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -23,6 +24,7 @@ export async function signUp(email: string, password: string): Promise<User> {
   );
   const user = userCredential.user;
   if (!user) throw new Error("No user returned");
+  eventModel.setuserId(user.uid);
   return user;
 }
 
@@ -35,6 +37,7 @@ export async function signIn(email: string, password: string): Promise<User> {
   );
   const user = userCredential.user;
   if (!user) throw new Error("No user returned");
+  eventModel.setuserId(user.uid);
   return user;
 }
 
@@ -42,6 +45,7 @@ export async function signIn(email: string, password: string): Promise<User> {
 export async function signInWithGoogle() {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
+  eventModel.setuserId(result.user.uid);
   return result.user;
 }
 
@@ -49,6 +53,7 @@ export async function signInWithGoogle() {
 export async function signInWithGithub() {
   const provider = new GithubAuthProvider();
   const result = await signInWithPopup(auth, provider);
+  eventModel.setuserId(result.user.uid);
   return result.user;
 }
 
@@ -57,5 +62,6 @@ export async function signInWithAnonymous() {
   const userCredential = await signInAnonymously(auth);
   const user = userCredential.user;
   if (!user) throw new Error("No user returned");
+  eventModel.setuserId(user.uid);
   return user;
 }

@@ -1,15 +1,17 @@
 import styled, { css, ThemeProvider } from "styled-components";
 import {
-  AppBar,
   createTheme,
   ThemeProvider as MuiThemeProvider,
   THEME_ID,
 } from "@mui/material";
+import { AppBar } from "@mui/material";
 import { Route, Routes, useLocation, useNavigate } from "react-router";
-import { theme } from "../styles/theme.ts";
 import App from "./App.tsx";
 import { Login } from "./Login.tsx";
-import { ScheduleEventView } from "./ScheduleEventView.tsx";
+import { eventModel } from "../models/EventModel.ts";
+import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
+import { EventPresenter } from "../presenters/EventPresenter.tsx";
+import { theme } from "../styles/theme.ts";
 
 const StyledAppBar = styled(AppBar)`
   background-color: ${(props) => props.theme.colors.primary};
@@ -86,11 +88,14 @@ export function Root() {
           </LinkContainer>
         </StyledAppBar>
         <Routes>
-          <Route path="/" element={<div>home</div>} />
+          <Route path="/" element={<HomepagePresenter model={eventModel} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/mark-availibility" element={<App />} />
           <Route path="/event-result" element={<div>event result</div>} />
-          <Route path="/create-event" element={<ScheduleEventView />} />
+          <Route
+            path="/create-event"
+            element={<EventPresenter model={eventModel} />}
+          />
         </Routes>
       </MuiThemeProvider>
     </ThemeProvider>
