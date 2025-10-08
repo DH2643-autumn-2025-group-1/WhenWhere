@@ -18,6 +18,7 @@ import {
   type EventFormData,
 } from "../presenters/ScheduleEventPresenter";
 import { useNavigate } from "react-router";
+import { ButtonComponent } from "../components/Button";
 
 const Container = styled.div`
   display: flex;
@@ -60,15 +61,6 @@ const CalendarWrapper = styled.div`
   border-radius: 20px;
   border: 1px solid #ddd;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-`;
-
-const SubmitButton = styled(Button)`
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: white;
-
-  &:hover {
-    background-color: #89cff0;
-  }
 `;
 
 const LargeAlert = styled(Alert)`
@@ -226,18 +218,18 @@ export function ScheduleEventView() {
             </IconButton>
           </PlaceContainer>
         ))}
-        <Button
+        <ButtonComponent
+          onClickFunction={handleAddPlace}
+          text="+ Add Place"
           variant="outlined"
-          color="primary"
-          fullWidth
-          onClick={handleAddPlace}
           style={{ marginBottom: "1rem" }}
-        >
-          + Add Place
-        </Button>
-        <SubmitButton fullWidth onClick={handleSubmit} disabled={isSubmitting}>
-          {isSubmitting ? "Creating Event..." : "Submit"}
-        </SubmitButton>
+        />
+        <ButtonComponent
+          variant="primary"
+          onClickFunction={handleSubmit}
+          disabled={isSubmitting}
+          text={isSubmitting ? "Creating Event..." : "Submit"}
+        />
       </Form>
       <CalendarWrapper>
         <Typography variant="h6" gutterBottom>
