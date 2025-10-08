@@ -1,21 +1,18 @@
 import styled from "styled-components";
-import AuthPage from "../components/utils/authPage";
+import AuthPage from "../components/utils/AuthPage";
 
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  width: 100vw;
   flex-direction: column;
   align-items: center;
-  padding: 48px;
+  justify-content: center;
+  padding: ${(props) => props.theme.spacing.xlarge};
   gap: 48px;
 
   @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
     gap: 96px;
     padding: 96px;
-  }
-
-  @media (min-width: ${(props) => props.theme.breakpoints.desktop}) {
     flex-direction: row;
     align-items: flex-start;
   }
@@ -32,9 +29,10 @@ const TitleAndText = styled.div`
   flex-direction: column;
   max-width: 100%;
   gap: ${(props) => props.theme.spacing.medium};
+  padding: 0 16px;
 
   @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
-    max-width: 80%;
+    max-width: 40%;
   }
 
   @media (min-width: ${(props) => props.theme.breakpoints.desktop}) {
@@ -48,23 +46,6 @@ const Text = styled.p`
   font-size: 18px;
 `;
 
-const LoginComponent = styled.div`
-  height: 400px;
-  width: 100%;
-  background-color: aliceblue;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
-    max-width: 80%;
-  }
-
-  @media (min-width: ${(props) => props.theme.breakpoints.desktop}) {
-    max-width: 100%;
-  }
-`;
-
 export function Login() {
   return (
     <Container>
@@ -72,13 +53,10 @@ export function Login() {
         <Title>WhenWhere</Title>
         <Text>
           You have been invited to a meeting. Login to mark your availibility to
-          the meeting and vote for place of the meeting. Also, you can create
-          your own events and send a link invite to your friends or colleagues.
+          the meeting and vote for place of the meeting.
         </Text>
       </TitleAndText>
-      <LoginComponent>
-        <AuthPage />
-      </LoginComponent>
+      <AuthPage />
     </Container>
   );
 }

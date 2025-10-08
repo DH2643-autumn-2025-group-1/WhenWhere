@@ -1,10 +1,14 @@
-import styled, { css } from "styled-components";
+import { styled } from "styled-components";
 import { AppBar } from "@mui/material";
+import { ButtonComponent } from "../components/Button";
+import { type User } from "firebase/auth";
+import { useLocation } from "react-router";
 
-export interface HeaderViewProps {
+interface HeaderViewProps {
+  user: User | null;
   onTitleClick: () => void;
-  onLoginClick: () => void;
-  isLoginActive: boolean;
+  onAuthButtonClick: () => void;
+  onCreateEventClick: () => void;
 }
 
 const StyledAppBar = styled(AppBar)`
@@ -33,6 +37,9 @@ const LinkContainer = styled.div`
   gap: ${(props) => props.theme.spacing.large};
 `;
 
+/**
+import { css } from "styled-components";
+
 const NavigationLink = styled.span<{ $active?: boolean }>`
   font-size: ${(props) => props.theme.fontSizes.large};
   cursor: pointer;
@@ -48,19 +55,34 @@ const NavigationLink = styled.span<{ $active?: boolean }>`
     color: ${(props) => props.theme.colors.secondary};
   }
 `;
+*/
 
 export function HeaderView({
+  user,
   onTitleClick,
-  onLoginClick,
-  isLoginActive,
+  onAuthButtonClick,
+  onCreateEventClick,
 }: HeaderViewProps) {
+  const location = useLocation();
+  const isSignInRoute = location.pathname === "/sign-in";
   return (
     <StyledAppBar position="static" id="appBar">
       <Title onClick={onTitleClick}>WhenWhere</Title>
       <LinkContainer>
-        <NavigationLink onClick={onLoginClick} $active={isLoginActive}>
-          Log in
-        </NavigationLink>
+        {user && (
+          <ButtonComponent
+            variant="outlined"
+            text="Create event"
+            onClickFunction={onCreateEventClick}
+          />
+        )}
+        {!isSignInRoute && (
+          <ButtonComponent
+            variant={user ? "negative" : "outlined"}
+            text={user ? "Sign out" : "Sign in"}
+            onClickFunction={onAuthButtonClick}
+          />
+        )}
       </LinkContainer>
     </StyledAppBar>
   );

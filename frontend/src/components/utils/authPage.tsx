@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Typography, Link, LinearProgress } from "@mui/material";
 import { SignInPage } from "@toolpad/core/SignInPage";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import {
   signInWithGoogle,
   signInWithGithub,
@@ -77,6 +77,8 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const [mode, setMode] = React.useState<AuthMode>("signin");
   const [loading, setLoading] = React.useState(false);
+  const [searchParams] = useSearchParams();
+  const callbackUrlParam = searchParams.get("callbackUrl") || "/";
 
   const isSignUpMode = mode === "signup";
 
@@ -86,13 +88,12 @@ export default function AuthPage() {
         { id: "google", name: "Google" },
         { id: "github", name: "Github" },
         { id: "credentials", name: "Credentials" },
-        { id: "anonymous", name: "a Guest Account" },
+        //{ id: "anonymous", name: "a Guest Account" },
       ];
 
   const handleAuth = async (
     provider: { id: string },
     formData: FormData | null,
-    callbackUrl?: string,
   ) => {
     setLoading(true);
     try {
@@ -128,9 +129,7 @@ export default function AuthPage() {
       }
 
       if (user) {
-        const token = await user.getIdToken();
-        localStorage.setItem("token", token);
-        navigate(callbackUrl || "/events", { replace: true });
+        navigate(callbackUrlParam, { replace: true });
         return {};
       }
       return {
@@ -150,6 +149,7 @@ export default function AuthPage() {
     <div style={{ position: "relative" }}>
       {loading && <LinearProgress />}
       <SignInPage
+        sx={{ minHeight: 0 }}
         providers={providers}
         signIn={handleAuth}
         slots={{
