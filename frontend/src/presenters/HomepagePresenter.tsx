@@ -1,16 +1,19 @@
 import type { EventModelType } from "../models/EventModel";
 import { HomePage } from "../views/Homepage";
+import { observer } from "mobx-react-lite";
 
-export function HomepagePresenter({ model }: { model: EventModelType }) {
-  function deleteEvent(id: string) {
-    model.deleteEvent(id);
-  }
+export const HomepagePresenter = observer(
+  ({ model }: { model: EventModelType }) => {
+    function deleteEvent(id: string) {
+      model.deleteEvent(id);
+    }
 
-  return (
-    <HomePage
-      deleteEvent={deleteEvent}
-      friendsEvents={model.friendsEvents}
-      myEvents={model.myEvents}
-    />
-  );
-}
+    return (
+      <HomePage
+        deleteEvent={deleteEvent}
+        friendsEvents={model.friendsEvents}
+        myEvents={model.myEvents}
+      />
+    );
+  },
+);
