@@ -68,12 +68,6 @@ export function Root() {
           <Title onClick={() => navigate("/")}>WhenWhere</Title>
           <LinkContainer>
             <NavigationLink
-              onClick={() => navigate("/events")}
-              $active={location.pathname === "/events"}
-            >
-              My events
-            </NavigationLink>
-            <NavigationLink
               onClick={() => navigate("/login")}
               $active={location.pathname === "/login"}
             >
