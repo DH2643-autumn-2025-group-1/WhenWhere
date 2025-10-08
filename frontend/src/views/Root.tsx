@@ -10,6 +10,11 @@ import { theme } from "../styles/theme.ts";
 import App from "./App.tsx";
 import { Login } from "./Login.tsx";
 import AvailabilityCalendar from "./AvailabilityCalendar.tsx";
+import { eventModel } from "../models/EventModel.ts";
+import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
+import { EventPresenter } from "../presenters/EventPresenter.tsx";
+
+const muiTheme = createTheme();
 
 const StyledAppBar = styled(AppBar)`
   background-color: ${(props) => props.theme.colors.primary};
@@ -37,12 +42,12 @@ const LinkContainer = styled.div`
   gap: ${(props) => props.theme.spacing.large};
 `;
 
-const NavigationLink = styled.span<{ active: boolean }>`
+const NavigationLink = styled.span<{ $active?: boolean }>`
   font-size: ${(props) => props.theme.fontSizes.large};
   cursor: pointer;
 
   ${(props) =>
-    props.active &&
+    props.$active &&
     css`
       color: ${props.theme.colors.secondary};
       font-weight: bold;
@@ -52,8 +57,6 @@ const NavigationLink = styled.span<{ active: boolean }>`
     color: ${(props) => props.theme.colors.secondary};
   }
 `;
-
-const muiTheme = createTheme({});
 
 export function Root() {
   const navigate = useNavigate();
@@ -67,23 +70,29 @@ export function Root() {
           <LinkContainer>
             <NavigationLink
               onClick={() => navigate("/events")}
-              active={location.pathname === "/events"}
+              $active={location.pathname === "/events"}
             >
               My events
             </NavigationLink>
             <NavigationLink
               onClick={() => navigate("/login")}
-              active={location.pathname === "/login"}
+              $active={location.pathname === "/login"}
             >
               Log in
             </NavigationLink>
           </LinkContainer>
         </StyledAppBar>
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" element={<HomepagePresenter model={eventModel} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/events" element={<div>My Events Page</div>} />
           <Route path="/availability" element={<AvailabilityCalendar />} />
+          <Route path="/mark-availibility" element={<App />} />
+          <Route path="/event-result" element={<div>event result</div>} />
+          <Route
+            path="/create-event"
+            element={<EventPresenter model={eventModel} />}
+          />
         </Routes>
       </MuiThemeProvider>
     </ThemeProvider>
