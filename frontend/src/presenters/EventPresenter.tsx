@@ -115,8 +115,11 @@ export function EventPresenter({ model }: { model: EventModelType }) {
   const handleSubmit = async () => {
     setIsSubmitting(true);
 
-    // Placeholder
-    const creatorId = "user123";
+    const creatorId = model.userId;
+
+    if (!creatorId) {
+      throw new Error("User is not logged in");
+    }
 
     const eventData: EventData = {
       title,
