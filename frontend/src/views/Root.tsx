@@ -13,7 +13,6 @@ import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { eventModel } from "../models/EventModel.ts";
 import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
 import { EventPresenter } from "../presenters/EventPresenter.tsx";
-import { theme } from "../styles/theme.ts";
 
 const muiTheme = createTheme();
 
@@ -58,8 +57,6 @@ const NavigationLink = styled.span<{ $active?: boolean }>`
     color: ${(props) => props.theme.colors.secondary};
   }
 `;
-
-const muiTheme = createTheme({});
 
 export function Root() {
   const navigate = useNavigate();
