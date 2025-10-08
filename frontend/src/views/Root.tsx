@@ -6,7 +6,8 @@ import {
 } from "@mui/material";
 import { Route, Routes } from "react-router";
 import App from "./App.tsx";
-import { Login } from "./Login.tsx";
+import { Login } from "./LogIn.tsx";
+import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { eventModel } from "../models/EventModel.ts";
 import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
 import { EventPresenter } from "../presenters/EventPresenter.tsx";
@@ -46,6 +47,11 @@ export function Root() {
                 <div>event result</div>
               </ProtectedRoute>
             }
+          />
+          <Route path="/events" element={<div>My Events Page</div>} />
+          <Route
+            path="/availability"
+            element={<AvailabilityPresenter model={eventModel} />}
           />
           <Route
             path="/create-event"
