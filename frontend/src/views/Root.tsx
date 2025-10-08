@@ -9,7 +9,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router";
 import { theme } from "../styles/theme.ts";
 import App from "./App.tsx";
 import { Login } from "./Login.tsx";
-import AvailabilityCalendar from "./AvailabilityCalendar.tsx";
+import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { eventModel } from "../models/EventModel.ts";
 import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
 import { EventPresenter } from "../presenters/EventPresenter.tsx";
@@ -86,7 +86,10 @@ export function Root() {
           <Route path="/" element={<HomepagePresenter model={eventModel} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/events" element={<div>My Events Page</div>} />
-          <Route path="/availability" element={<AvailabilityCalendar />} />
+          <Route
+            path="/availability"
+            element={<AvailabilityPresenter model={eventModel} />}
+          />
           <Route path="/mark-availibility" element={<App />} />
           <Route path="/event-result" element={<div>event result</div>} />
           <Route

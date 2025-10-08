@@ -1,6 +1,8 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { addDays, isSameDay, startOfWeek } from "date-fns";
 import { enGB } from "date-fns/locale";
+import type { EventModelType } from "../models/EventModel";
+import { AvailabilityCalendar } from "../views/AvailabilityCalendar";
 
 type SelectionIndex = { dayIdx: number; hour: number };
 
@@ -38,7 +40,9 @@ function toggleSlots(prev: TimeSlot[], range: TimeSlot[]): TimeSlot[] {
   return next;
 }
 
-export function AvailabilityPresenter() {
+export function AvailabilityPresenter({
+  model,
+}: Readonly<{ model: EventModelType }>) {
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<TimeSlot[]>([]);
   const [weekAnchor, setWeekAnchor] = useState<Date>(new Date());
 
@@ -172,23 +176,29 @@ export function AvailabilityPresenter() {
     setSelectEnd(null);
   }, [isSelecting, selectStart, selectEnd, weekDays]);
 
-  return {
-    calendarHostRef,
-    overlayRef,
-    overlayTopPx,
-    overlayLeftPx,
-    overlayWidthPx,
-    overlayHeightPx,
-    weekAnchor,
-    weekDays,
-    hours,
-    isSelecting,
-    selectStart,
-    selectEnd,
-    isTimeSlotSelected,
-    handleNavigateWeek,
-    handleOverlayMouseDown,
-    handleOverlayMouseMove,
-    handleOverlayMouseUp,
-  } as const;
+  // Note: model parameter is available for future use when availability data needs to be saved/loaded
+  // We can access model properties like model.userId, model.myEvents, etc. when needed
+  console.debug("AvailabilityPresenter initialized with model:", model);
+
+  return (
+    <AvailabilityCalendar
+      calendarHostRef={calendarHostRef}
+      overlayRef={overlayRef}
+      overlayTopPx={overlayTopPx}
+      overlayLeftPx={overlayLeftPx}
+      overlayWidthPx={overlayWidthPx}
+      overlayHeightPx={overlayHeightPx}
+      weekAnchor={weekAnchor}
+      weekDays={weekDays}
+      hours={hours}
+      isSelecting={isSelecting}
+      selectStart={selectStart}
+      selectEnd={selectEnd}
+      isTimeSlotSelected={isTimeSlotSelected}
+      handleNavigateWeek={handleNavigateWeek}
+      handleOverlayMouseDown={handleOverlayMouseDown}
+      handleOverlayMouseMove={handleOverlayMouseMove}
+      handleOverlayMouseUp={handleOverlayMouseUp}
+    />
+  );
 }

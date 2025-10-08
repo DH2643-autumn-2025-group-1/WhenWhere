@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { Box } from "@mui/material";
 import Calendar from "../components/Calendar";
-import { AvailabilityPresenter } from "../presenters/availability/AvailabilityPresenter";
 
 const CalendarWrapper = styled(Box)`
   display: flex;
@@ -62,27 +61,47 @@ const TimeSlot = styled(Box)<{
   }
 `;
 
-const AvailabilityCalendar = () => {
-  const {
-    calendarHostRef,
-    overlayRef,
-    overlayTopPx,
-    overlayLeftPx,
-    overlayWidthPx,
-    overlayHeightPx,
-    weekAnchor,
-    weekDays,
-    hours,
-    isSelecting,
-    selectStart,
-    selectEnd,
-    isTimeSlotSelected,
-    handleNavigateWeek,
-    handleOverlayMouseDown,
-    handleOverlayMouseMove,
-    handleOverlayMouseUp,
-  } = AvailabilityPresenter();
+type SelectionIndex = { dayIdx: number; hour: number };
 
+interface AvailabilityCalendarProps {
+  calendarHostRef: React.RefObject<HTMLDivElement | null>;
+  overlayRef: React.RefObject<HTMLDivElement | null>;
+  overlayTopPx: number;
+  overlayLeftPx: number;
+  overlayWidthPx: number;
+  overlayHeightPx: number;
+  weekAnchor: Date;
+  weekDays: Date[];
+  hours: number[];
+  isSelecting: boolean;
+  selectStart: SelectionIndex | null;
+  selectEnd: SelectionIndex | null;
+  isTimeSlotSelected: (day: Date, hour: number) => boolean;
+  handleNavigateWeek: (nextAnchor: Date) => void;
+  handleOverlayMouseDown: (e: React.MouseEvent) => void;
+  handleOverlayMouseMove: (e: React.MouseEvent) => void;
+  handleOverlayMouseUp: () => void;
+}
+
+export function AvailabilityCalendar({
+  calendarHostRef,
+  overlayRef,
+  overlayTopPx,
+  overlayLeftPx,
+  overlayWidthPx,
+  overlayHeightPx,
+  weekAnchor,
+  weekDays,
+  hours,
+  isSelecting,
+  selectStart,
+  selectEnd,
+  isTimeSlotSelected,
+  handleNavigateWeek,
+  handleOverlayMouseDown,
+  handleOverlayMouseMove,
+  handleOverlayMouseUp,
+}: Readonly<AvailabilityCalendarProps>) {
   return (
     <CalendarWrapper ref={calendarHostRef}>
       <Calendar weekAnchor={weekAnchor} onNavigateWeek={handleNavigateWeek} />
@@ -145,6 +164,4 @@ const AvailabilityCalendar = () => {
       </TimeSelectionOverlay>
     </CalendarWrapper>
   );
-};
-
-export default AvailabilityCalendar;
+}
