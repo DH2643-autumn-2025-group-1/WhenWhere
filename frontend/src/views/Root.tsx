@@ -7,12 +7,13 @@ import {
 } from "@mui/material";
 import { Route, Routes, useLocation, useNavigate } from "react-router";
 import { theme } from "../styles/theme.ts";
-import App from "./App.tsx";
 import { Login } from "./Login.tsx";
 import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { eventModel } from "../models/EventModel.ts";
 import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
 import { EventPresenter } from "../presenters/EventPresenter.tsx";
+import { StyledEngineProvider } from "@mui/styled-engine-sc";
+import VoteTimeAndPlace from "./VoteTimeAndPlace.tsx";
 
 const muiTheme = createTheme();
 
@@ -63,41 +64,49 @@ export function Root() {
   const location = useLocation();
 
   return (
-    <ThemeProvider theme={theme}>
-      <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
-        <StyledAppBar position="static" id="appBar">
-          <Title onClick={() => navigate("/")}>WhenWhere</Title>
-          <LinkContainer>
-            <NavigationLink
-              onClick={() => navigate("/events")}
-              $active={location.pathname === "/events"}
-            >
-              My events
-            </NavigationLink>
-            <NavigationLink
-              onClick={() => navigate("/login")}
-              $active={location.pathname === "/login"}
-            >
-              Log in
-            </NavigationLink>
-          </LinkContainer>
-        </StyledAppBar>
-        <Routes>
-          <Route path="/" element={<HomepagePresenter model={eventModel} />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/events" element={<div>My Events Page</div>} />
-          <Route
-            path="/availability"
-            element={<AvailabilityPresenter model={eventModel} />}
-          />
-          <Route path="/mark-availibility" element={<App />} />
-          <Route path="/event-result" element={<div>event result</div>} />
-          <Route
-            path="/create-event"
-            element={<EventPresenter model={eventModel} />}
-          />
-        </Routes>
-      </MuiThemeProvider>
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
+          <StyledAppBar position="static" id="appBar">
+            <Title onClick={() => navigate("/")}>WhenWhere</Title>
+            <LinkContainer>
+              <NavigationLink
+                onClick={() => navigate("/create-event")}
+                $active={location.pathname === "/create-event"}
+              >
+                Create events
+              </NavigationLink>
+              <NavigationLink
+                onClick={() => navigate("/login")}
+                $active={location.pathname === "/login"}
+              >
+                Log in
+              </NavigationLink>
+            </LinkContainer>
+          </StyledAppBar>
+          <Routes>
+            <Route
+              path="/"
+              element={<HomepagePresenter model={eventModel} />}
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/events" element={<div>My Events Page</div>} />
+            <Route
+              path="/availability"
+              element={<AvailabilityPresenter model={eventModel} />}
+            />
+            <Route
+              path="/mark-availibility"
+              element={<VoteTimeAndPlace model={eventModel} />}
+            />
+            <Route path="/event-result" element={<div>event result</div>} />
+            <Route
+              path="/create-event"
+              element={<EventPresenter model={eventModel} />}
+            />
+          </Routes>
+        </MuiThemeProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }

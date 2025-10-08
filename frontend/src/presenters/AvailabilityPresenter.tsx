@@ -1,7 +1,13 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { addDays, isSameDay, startOfWeek } from "date-fns";
 import { enGB } from "date-fns/locale";
-import type { EventModelType } from "../models/EventModel";
 import { AvailabilityCalendar } from "../views/AvailabilityCalendar";
 
 type SelectionIndex = { dayIdx: number; hour: number };
@@ -41,8 +47,12 @@ function toggleSlots(prev: TimeSlot[], range: TimeSlot[]): TimeSlot[] {
 }
 
 export function AvailabilityPresenter({
-  model,
-}: Readonly<{ model: EventModelType }>) {
+  //model,
+  setHaveVotedTime,
+}: Readonly<{
+  //model: EventModelType;
+  setHaveVotedTime: (value: boolean) => void;
+}>) {
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<TimeSlot[]>([]);
   const [weekAnchor, setWeekAnchor] = useState<Date>(new Date());
 
@@ -67,6 +77,10 @@ export function AvailabilityPresenter({
     [weekStart],
   );
   const hours = useMemo(() => Array.from({ length: 24 }, (_, h) => h), []);
+
+  useEffect(() => {
+    setHaveVotedTime(selectedTimeSlots.length > 0);
+  }, [selectedTimeSlots, setHaveVotedTime]);
 
   const handleNavigateWeek = useCallback((nextAnchor: Date) => {
     setWeekAnchor(nextAnchor);
@@ -178,7 +192,7 @@ export function AvailabilityPresenter({
 
   // Note: model parameter is available for future use when availability data needs to be saved/loaded
   // We can access model properties like model.userId, model.myEvents, etc. when needed
-  console.debug("AvailabilityPresenter initialized with model:", model);
+  // console.debug("AvailabilityPresenter initialized with model:", model);
 
   return (
     <AvailabilityCalendar
