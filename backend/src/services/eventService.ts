@@ -41,7 +41,7 @@ export async function updateEventAvailability(
   const event = await Event.findById(eventId);
   if (!event) return null;
 
-  const existing = event.availability.find(a => a.userId === userId);
+  const existing = event.availability.find((a) => a.userId === userId);
   if (existing) {
     existing.availableSlots = availableSlots;
   } else {

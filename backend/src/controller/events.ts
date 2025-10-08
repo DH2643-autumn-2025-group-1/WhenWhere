@@ -5,7 +5,7 @@ import {
   deleteEvent,
   getEventsCreatedByUser,
   getEventsUserIsInvitedTo,
-  updateEventAvailability
+  updateEventAvailability,
 } from "../services/eventService";
 
 const router = Router();
