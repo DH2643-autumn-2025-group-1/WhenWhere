@@ -20,7 +20,7 @@ export function ButtonComponent({
       fullWidth
       onClick={onClickFunction}
       disabled={disabled}
-      primary={variant === "primary"}
+      $primary={variant === "primary"}
       style={style}
     >
       {text}
@@ -28,16 +28,16 @@ export function ButtonComponent({
   );
 }
 
-const StyledButton = styled(Button)<{ disabled?: boolean; primary?: boolean }>`
+const StyledButton = styled(Button)<{ disabled?: boolean; $primary?: boolean }>`
   background-color: ${(props) =>
     props.disabled
       ? props.theme.colors.secondary
-      : props.primary
+      : props.$primary
         ? props.theme.colors.primary
         : `white`};
-  color: ${(props) => (props.primary ? `white` : props.theme.colors.primary)};
+  color: ${(props) => (props.$primary ? `white` : props.theme.colors.primary)};
 
   &&:hover {
-    background-color: ${(props) => (props.primary ? `#73a9e8` : `#1976d20a`)};
+    background-color: ${(props) => (props.$primary ? `#73a9e8` : `#1976d20a`)};
   }
 `;
