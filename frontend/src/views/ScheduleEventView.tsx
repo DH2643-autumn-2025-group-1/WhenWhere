@@ -1,6 +1,5 @@
 import {
   TextField,
-  Button,
   Typography,
   IconButton,
   Alert,
@@ -12,6 +11,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import styled from "styled-components";
 import type { ScheduleEventViewProps } from "../presenters/EventPresenter.tsx";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { ButtonComponent } from "../components/Button";
+import { Location } from "./Location.tsx";
 
 const Container = styled.div`
   display: flex;
@@ -45,7 +46,7 @@ const Form = styled.div`
 const PlaceContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.2rem;
 `;
 
 const CalendarWrapper = styled.div`
@@ -54,15 +55,6 @@ const CalendarWrapper = styled.div`
   border-radius: 20px;
   border: 1px solid #ddd;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-`;
-
-const SubmitButton = styled(Button)`
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: white;
-
-  &:hover {
-    background-color: #89cff0;
-  }
 `;
 
 const LargeAlert = styled(Alert)`
@@ -95,9 +87,9 @@ export function ScheduleEventView({
   isSubmitting,
   snackbar,
   onAddPlace,
-  onPlaceChange,
   onRemovePlace,
   onDateClick,
+  onPlaceChange,
   onTitleChange,
   onDescriptionChange,
   onSubmit,
@@ -133,13 +125,14 @@ export function ScheduleEventView({
         </Typography>
         {places.map((place, index) => (
           <PlaceContainer key={index}>
-            <TextField
-              label={`Place ${index + 1}`}
-              variant="outlined"
-              fullWidth
-              margin="normal"
+            <Location
               value={place}
-              onChange={(e) => onPlaceChange(index, e.target.value)}
+              label={`Place ${index + 1}`}
+              onSelectFuntion={(value) =>
+                value
+                  ? onPlaceChange(index, value?.toString())
+                  : console.error("No place selected")
+              }
             />
             <IconButton
               aria-label="remove place"
@@ -149,18 +142,18 @@ export function ScheduleEventView({
             </IconButton>
           </PlaceContainer>
         ))}
-        <Button
+        <ButtonComponent
+          onClickFunction={onAddPlace}
+          text="+ Add Place"
           variant="outlined"
-          color="primary"
-          fullWidth
-          onClick={onAddPlace}
           style={{ marginBottom: "1rem" }}
-        >
-          + Add Place
-        </Button>
-        <SubmitButton fullWidth onClick={onSubmit} disabled={isSubmitting}>
-          {isSubmitting ? "Creating Event..." : "Submit"}
-        </SubmitButton>
+        />
+        <ButtonComponent
+          variant="primary"
+          onClickFunction={onSubmit}
+          disabled={isSubmitting}
+          text={isSubmitting ? "Creating Event..." : "Submit"}
+        />
       </Form>
       <CalendarWrapper>
         <Typography variant="h6" gutterBottom>
