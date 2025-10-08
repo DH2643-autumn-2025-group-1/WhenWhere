@@ -12,6 +12,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import styled from "styled-components";
 import type { ScheduleEventViewProps } from "../presenters/EventPresenter.tsx";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { Location } from "./Location.tsx";
 
 const Container = styled.div`
   display: flex;
@@ -45,7 +46,7 @@ const Form = styled.div`
 const PlaceContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.2rem;
 `;
 
 const CalendarWrapper = styled.div`
@@ -95,9 +96,9 @@ export function ScheduleEventView({
   isSubmitting,
   snackbar,
   onAddPlace,
-  onPlaceChange,
   onRemovePlace,
   onDateClick,
+  onPlaceChange,
   onTitleChange,
   onDescriptionChange,
   onSubmit,
@@ -133,13 +134,14 @@ export function ScheduleEventView({
         </Typography>
         {places.map((place, index) => (
           <PlaceContainer key={index}>
-            <TextField
-              label={`Place ${index + 1}`}
-              variant="outlined"
-              fullWidth
-              margin="normal"
+            <Location
               value={place}
-              onChange={(e) => onPlaceChange(index, e.target.value)}
+              label={`Place ${index + 1}`}
+              onSelectFuntion={(value) =>
+                value
+                  ? onPlaceChange(index, value?.toString())
+                  : console.error("No place selected")
+              }
             />
             <IconButton
               aria-label="remove place"

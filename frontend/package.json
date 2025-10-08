@@ -15,6 +15,8 @@
     "@mui/styled-engine-sc": "^7.3.2",
     "@mui/x-date-pickers": "^7.3.2",
     "@toolpad/core": "^0.16.0",
+    "@types/google.maps": "^3.58.1",
+    "@vis.gl/react-google-maps": "^1.5.5",
     "dayjs": "^1.11.18",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
