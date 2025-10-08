@@ -1,42 +1,60 @@
-import { TextField, Button, Typography, IconButton } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Typography,
+  IconButton,
+  Alert,
+  Snackbar,
+} from "@mui/material";
 import { DateCalendar, PickersDay } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import styled from "styled-components";
-import { useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
-import { Dayjs } from "dayjs";
+import type { ScheduleEventViewProps } from "../presenters/EventPresenter.tsx";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { Location } from "./Location.tsx";
 
 const Container = styled.div`
-  background-color: ${({ theme }) => theme.colors.background};
-  min-height: 100vh;
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding: 4rem;
-  gap: 6rem;
+  flex-direction: column;
+  gap: ${(props) => props.theme.spacing.large};
+  margin: ${(props) => props.theme.spacing.xlarge};
+
+  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+  }
 `;
 
 const Form = styled.div`
   background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: ${(props) => props.theme.spacing.large};
   width: 100%;
-  max-width: 400px;
+
+  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
+    width: 100%;
+    max-width: 400px;
+  }
 `;
 
 const PlaceContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.2rem;
 `;
 
 const CalendarWrapper = styled.div`
   background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: ${(props) => props.theme.spacing.large};
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const SubmitButton = styled(Button)`
@@ -48,36 +66,44 @@ const SubmitButton = styled(Button)`
   }
 `;
 
-export function ScheduleEventView() {
-  const [places, setPlaces] = useState<string[]>([]);
-  const [selectedDates, setSelectedDates] = useState<Dayjs[]>([]);
+const LargeAlert = styled(Alert)`
+  min-width: 450px !important;
+  font-size: 16px;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 
-  const handleAddPlace = () => {
-    setPlaces([...places, ""]);
-  };
+  .MuiAlert-message {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
 
-  const handlePlaceChange = (index: number, value: string) => {
-    const updatedPlaces = [...places];
-    updatedPlaces[index] = value;
-    setPlaces(updatedPlaces);
-  };
+  .MuiAlert-icon {
+    font-size: 24px;
+  }
 
-  const handleRemovePlace = (index: number) => {
-    const updatedPlaces = places.filter((_, i) => i !== index);
-    setPlaces(updatedPlaces);
-  };
+  .MuiAlert-action {
+    padding-left: 16px;
+  }
+`;
 
-  const handleDateClick = (date: Dayjs | null) => {
-    if (!date) return;
-    const isSelected = selectedDates.some((d) => d.isSame(date, "day"));
-
-    if (isSelected) {
-      setSelectedDates(selectedDates.filter((d) => !d.isSame(date, "day")));
-    } else {
-      setSelectedDates([...selectedDates, date]);
-    }
-  };
-
+export function ScheduleEventView({
+  places,
+  selectedDates,
+  title,
+  description,
+  isSubmitting,
+  snackbar,
+  onAddPlace,
+  onRemovePlace,
+  onDateClick,
+  onPlaceChange,
+  onTitleChange,
+  onDescriptionChange,
+  onSubmit,
+  onCloseSnackbar,
+}: ScheduleEventViewProps) {
   return (
     <Container>
       <Form>
@@ -89,6 +115,9 @@ export function ScheduleEventView() {
           variant="outlined"
           fullWidth
           margin="normal"
+          value={title}
+          onChange={(e) => onTitleChange(e.target.value)}
+          required
         />
         <TextField
           label="Event Description (Optional)"
@@ -97,25 +126,28 @@ export function ScheduleEventView() {
           multiline
           rows={4}
           margin="normal"
+          value={description}
+          onChange={(e) => onDescriptionChange(e.target.value)}
         />
         <Typography variant="h6" gutterBottom>
           Places
         </Typography>
         {places.map((place, index) => (
           <PlaceContainer key={index}>
-            <TextField
-              label={`Place ${index + 1}`}
-              variant="outlined"
-              fullWidth
-              margin="normal"
+            <Location
               value={place}
-              onChange={(e) => handlePlaceChange(index, e.target.value)}
+              label={`Place ${index + 1}`}
+              onSelectFuntion={(value) =>
+                value
+                  ? onPlaceChange(index, value?.toString())
+                  : console.error("No place selected")
+              }
             />
             <IconButton
               aria-label="remove place"
-              onClick={() => handleRemovePlace(index)}
+              onClick={() => onRemovePlace(index)}
             >
-              <CloseIcon />
+              <RemoveCircleOutlineIcon />
             </IconButton>
           </PlaceContainer>
         ))}
@@ -123,12 +155,14 @@ export function ScheduleEventView() {
           variant="outlined"
           color="primary"
           fullWidth
-          onClick={handleAddPlace}
+          onClick={onAddPlace}
           style={{ marginBottom: "1rem" }}
         >
           + Add Place
         </Button>
-        <SubmitButton fullWidth>Submit</SubmitButton>
+        <SubmitButton fullWidth onClick={onSubmit} disabled={isSubmitting}>
+          {isSubmitting ? "Creating Event..." : "Submit"}
+        </SubmitButton>
       </Form>
       <CalendarWrapper>
         <Typography variant="h6" gutterBottom>
@@ -136,7 +170,7 @@ export function ScheduleEventView() {
         </Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateCalendar
-            onChange={(date) => handleDateClick(date)}
+            onChange={(date) => onDateClick(date)}
             displayWeekNumber
             slots={{
               day: (props) => {
@@ -163,6 +197,17 @@ export function ScheduleEventView() {
           />
         </LocalizationProvider>
       </CalendarWrapper>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={onCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <LargeAlert onClose={onCloseSnackbar} severity={snackbar.severity}>
+          {snackbar.message}
+        </LargeAlert>
+      </Snackbar>
     </Container>
   );
 }

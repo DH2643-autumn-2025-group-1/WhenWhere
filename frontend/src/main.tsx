@@ -1,7 +1,13 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router";
 import { Root } from "./views/Root.tsx";
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+import {
+  createTheme,
+  ThemeProvider as MuiThemeProvider,
+  THEME_ID,
+} from "@mui/material";
+import { theme } from "./styles/theme.ts";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Failed to find the root element");
@@ -15,12 +21,19 @@ const GlobalStyle = createGlobalStyle<{ appBarHeight?: number }>`
 
   body {
     width: 100%;
+    background-color: ${(props) => props.theme.colors.background};
   }
 `;
 
+const muiTheme = createTheme({});
+
 ReactDOM.createRoot(root).render(
   <BrowserRouter>
-    <GlobalStyle />
-    <Root />
+    <ThemeProvider theme={theme}>
+      <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
+        <GlobalStyle />
+        <Root />
+      </MuiThemeProvider>
+    </ThemeProvider>
   </BrowserRouter>,
 );

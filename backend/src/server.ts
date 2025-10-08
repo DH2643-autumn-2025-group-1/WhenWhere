@@ -1,11 +1,13 @@
 import dotenv from "dotenv";
 dotenv.config();
+import cors from "cors";
 
 import express from "express";
 import { connectDB } from "./database";
-import eventsRouter from "./routes/events";
+import eventsRouter from "./controller/events";
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 connectDB(process.env.MONGO_URI as string);
