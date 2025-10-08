@@ -32,3 +32,22 @@ export async function getEventsUserIsInvitedTo(
 ): Promise<IEvent[]> {
   return Event.find({ "availability.userId": userId });
 }
+
+export async function updateEventAvailability(
+  eventId: string,
+  userId: string,
+  availableSlots: Date[],
+): Promise<IEvent | null> {
+  const event = await Event.findById(eventId);
+  if (!event) return null;
+
+  const existing = event.availability.find(a => a.userId === userId);
+  if (existing) {
+    existing.availableSlots = availableSlots;
+  } else {
+    event.availability.push({ userId, availableSlots });
+  }
+
+  await event.save();
+  return event;
+}
