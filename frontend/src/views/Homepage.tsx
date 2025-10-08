@@ -1,10 +1,11 @@
-import { Button, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import styled from "styled-components";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import AlertDialog from "../components/Dialog";
 import type { Event } from "../models/EventModel";
+import { ButtonComponent } from "../components/Button";
 
 export function HomePage({
   myEvents,
@@ -55,14 +56,12 @@ export function HomePage({
             )}
           </EventList>
         )}
-        <StyledButton
-          variant="outlined"
-          fullWidth
-          onClick={() => navigate("create-event")}
+        <ButtonComponent
+          variant="primary"
           disabled={!myEvents}
-        >
-          Create event
-        </StyledButton>
+          text="Create event"
+          onClickFunction={() => navigate("create-event")}
+        />
       </Card>
       <Card>
         <Title>Friends' Events</Title>
@@ -121,16 +120,6 @@ const Title = styled.h2`
   all: unset;
   font-size: ${(props) => props.theme.fontSizes.xlarge};
   text-decoration: underline;
-`;
-
-const StyledButton = styled(Button)<{ disabled?: boolean }>`
-  background-color: ${(props) =>
-    props.disabled ? props.theme.colors.secondary : props.theme.colors.primary};
-  color: #fff;
-
-  &&:hover {
-    background-color: #73a9e8;
-  }
 `;
 
 const EventList = styled.div`
