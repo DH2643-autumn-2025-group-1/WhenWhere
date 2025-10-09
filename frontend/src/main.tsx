@@ -8,6 +8,7 @@ import {
   THEME_ID,
 } from "@mui/material";
 import { theme } from "./styles/theme.ts";
+import { initAuthListener } from "./firebase/firebaseAuth";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Failed to find the root element");
@@ -26,6 +27,8 @@ const GlobalStyle = createGlobalStyle<{ appBarHeight?: number }>`
 `;
 
 const muiTheme = createTheme({});
+
+initAuthListener();
 
 ReactDOM.createRoot(root).render(
   <BrowserRouter>

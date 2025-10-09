@@ -9,6 +9,7 @@ import {
   GithubAuthProvider,
   signInAnonymously,
   type User,
+  onAuthStateChanged,
 } from "firebase/auth";
 import { eventModel } from "../models/EventModel";
 
@@ -24,7 +25,6 @@ export async function signUp(email: string, password: string): Promise<User> {
   );
   const user = userCredential.user;
   if (!user) throw new Error("No user returned");
-  eventModel.setuserId(user.uid);
   return user;
 }
 
@@ -37,7 +37,6 @@ export async function signIn(email: string, password: string): Promise<User> {
   );
   const user = userCredential.user;
   if (!user) throw new Error("No user returned");
-  eventModel.setuserId(user.uid);
   return user;
 }
 
@@ -45,7 +44,6 @@ export async function signIn(email: string, password: string): Promise<User> {
 export async function signInWithGoogle() {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
-  eventModel.setuserId(result.user.uid);
   return result.user;
 }
 
@@ -53,7 +51,6 @@ export async function signInWithGoogle() {
 export async function signInWithGithub() {
   const provider = new GithubAuthProvider();
   const result = await signInWithPopup(auth, provider);
-  eventModel.setuserId(result.user.uid);
   return result.user;
 }
 
@@ -62,6 +59,16 @@ export async function signInWithAnonymous() {
   const userCredential = await signInAnonymously(auth);
   const user = userCredential.user;
   if (!user) throw new Error("No user returned");
-  eventModel.setuserId(user.uid);
   return user;
+}
+
+let authListenerInitialized = false;
+
+// Initialize a global auth state listener that keeps eventModel.userId in sync.
+export function initAuthListener() {
+  if (authListenerInitialized) return;
+  onAuthStateChanged(auth, (user) => {
+    eventModel.setuserId(user ? user.uid : null);
+  });
+  authListenerInitialized = true;
 }
