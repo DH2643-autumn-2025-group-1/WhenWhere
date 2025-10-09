@@ -5,64 +5,61 @@ import {
   THEME_ID,
 } from "@mui/material";
 import { Route, Routes } from "react-router";
-import App from "./App.tsx";
-import { Login } from "./LogIn.tsx";
-import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
+import { theme } from "../styles/theme.ts";
+import { Login } from "./Login.tsx";
 import { eventModel } from "../models/EventModel.ts";
 import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
 import { EventPresenter } from "../presenters/EventPresenter.tsx";
-import { theme } from "../styles/theme.ts";
+import { StyledEngineProvider } from "@mui/styled-engine-sc";
 import { HeaderPresenter } from "../presenters/Header.tsx";
 import { ProtectedRoute } from "../components/utils/ProtectedRoute.tsx";
+import { VoteTimeAndPlacePresenter } from "../presenters/VoteTimeAndPlacePresenter.tsx";
 
 const muiTheme = createTheme({});
 
 export function Root() {
   return (
-    <ThemeProvider theme={theme}>
-      <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
-        <HeaderPresenter />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <HomepagePresenter model={eventModel} />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/sign-in" element={<Login />} />
-          <Route
-            path="/mark-availibility"
-            element={
-              <ProtectedRoute>
-                <App />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/event-result"
-            element={
-              <ProtectedRoute>
-                <div>event result</div>
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/events" element={<div>My Events Page</div>} />
-          <Route
-            path="/availability"
-            element={<AvailabilityPresenter model={eventModel} />}
-          />
-          <Route
-            path="/create-event"
-            element={
-              <ProtectedRoute>
-                <EventPresenter model={eventModel} />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </MuiThemeProvider>
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
+          <HeaderPresenter />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <HomepagePresenter model={eventModel} />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/sign-in" element={<Login />} />
+            <Route
+              path="/availibility"
+              element={
+                <ProtectedRoute>
+                  <VoteTimeAndPlacePresenter model={eventModel} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/event-result"
+              element={
+                <ProtectedRoute>
+                  <div>event result</div>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/create-event"
+              element={
+                <ProtectedRoute>
+                  <EventPresenter model={eventModel} />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </MuiThemeProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }

@@ -28,14 +28,16 @@ const CalendarContainer = styled(Box)`
   flex-direction: column;
   height: 100%;
   width: 100%;
-  padding: 16px 24px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const NavigationHeader = styled(Box)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px;
+  padding: ${(props) => props.theme.spacing.medium};
   border-bottom: 1px solid transparent;
   background-color: transparent;
   position: sticky;
@@ -69,9 +71,6 @@ const CalendarGrid = styled(Box)`
   margin: 0 auto;
   overflow: auto;
   position: relative;
-  background-color: #fff;
-  border-radius: 24px;
-  box-shadow: inset 0 0 0 1px #eee;
 `;
 
 const CornerCell = styled(Box)`

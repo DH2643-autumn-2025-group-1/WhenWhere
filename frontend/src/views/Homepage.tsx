@@ -166,6 +166,5 @@ const StyledRemoveIcon = styled(RemoveCircleOutlineIcon)`
 
 const NoEventsText = styled.span`
   color: #888;
-  font-style: italic;
   text-align: center;
 `;

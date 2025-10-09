@@ -21,7 +21,6 @@ export default function AlertDialog({
 }) {
   const handleClose = () => {
     setOpen(false);
-    onAgree();
   };
 
   return (
@@ -39,7 +38,7 @@ export default function AlertDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <StyledAgreeButton onClick={handleClose} autoFocus>
+        <StyledAgreeButton onClick={onAgree} autoFocus>
           Agree
         </StyledAgreeButton>
       </DialogActions>
