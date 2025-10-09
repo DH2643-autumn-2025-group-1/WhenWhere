@@ -119,7 +119,7 @@ export const EventPresenter = observer(
     const handleSubmit = async () => {
       setIsSubmitting(true);
 
-      const creatorId = model.userId;
+      const creatorId = model.getUserId();
 
       if (!creatorId) {
         throw new Error("User is not logged in");
