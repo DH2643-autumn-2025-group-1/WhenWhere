@@ -5,6 +5,7 @@ import {
   deleteEvent,
   getEventsCreatedByUser,
   getEventsUserIsInvitedTo,
+  updateEventAvailability,
 } from "../services/eventService";
 
 const router = Router();
@@ -61,6 +62,28 @@ router.get("/invited/:userId", async (req, res) => {
     res
       .status(500)
       .json({ error: "Failed to fetch invited events", details: err });
+  }
+});
+
+// PUT /events/:id/availability
+router.put("/:id/availability", async (req, res) => {
+  const { userId, availableSlots } = req.body;
+  try {
+    const updatedEvent = await updateEventAvailability(
+      req.params.id,
+      userId,
+      availableSlots,
+    );
+
+    if (!updatedEvent) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    res.json(updatedEvent);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Failed to update availability", details: err });
   }
 });
 

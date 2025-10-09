@@ -4,6 +4,7 @@ import {
   fetchCreatedEvents,
   fetchInvitedEvents,
 } from "../services/backendCommunication";
+import { makeAutoObservable } from "mobx";
 
 export interface EventData {
   title: string;
@@ -64,5 +65,7 @@ export const eventModel = {
     this.friendsEvents = events;
   },
 };
+
+makeAutoObservable(eventModel);
 
 export type EventModelType = typeof eventModel;
