@@ -19,7 +19,7 @@ export function ButtonComponent({
       variant="outlined"
       onClick={onClickFunction}
       disabled={disabled}
-      primary={variant === "primary"}
+      $primary={variant === "primary"}
       negative={variant === "negative"}
       style={style}
     >
@@ -30,20 +30,20 @@ export function ButtonComponent({
 
 const StyledButton = styled(Button)<{
   disabled?: boolean;
-  primary?: boolean;
+  $primary?: boolean;
   negative?: boolean;
 }>`
   display: inline-flex;
   background-color: ${(props) =>
     props.disabled
       ? props.theme.colors.secondary
-      : props.primary
+      : props.$primary
         ? props.theme.colors.primary
         : props.negative
           ? `white`
           : `white`};
   color: ${(props) =>
-    props.primary
+    props.$primary
       ? `white`
       : props.negative
         ? `#d32f2f`
@@ -51,7 +51,7 @@ const StyledButton = styled(Button)<{
 
   &&:hover {
     background-color: ${(props) =>
-      props.primary
+      props.$primary
         ? `#73a9e8`
         : props.negative
           ? `#f8d7da`
