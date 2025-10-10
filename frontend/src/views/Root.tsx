@@ -8,26 +8,26 @@ import { Route, Routes } from "react-router";
 import App from "./App.tsx";
 import { Login } from "./LogIn.tsx";
 import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
-import { eventModel } from "../models/EventModel.ts";
 import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
 import { EventPresenter } from "../presenters/EventPresenter.tsx";
 import { theme } from "../styles/theme.ts";
-import { HeaderPresenter } from "../presenters/Header.tsx";
+import { HeaderPresenter } from "../presenters/HeaderPresenter.tsx";
 import { ProtectedRoute } from "../components/utils/ProtectedRoute.tsx";
+import type { EventModelType } from "../models/EventModel";
 
 const muiTheme = createTheme({});
 
-export function Root() {
+export function Root({ model }: { model: EventModelType }) {
   return (
     <ThemeProvider theme={theme}>
       <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
-        <HeaderPresenter />
+        <HeaderPresenter model={model} />
         <Routes>
           <Route
             path="/"
             element={
               <ProtectedRoute>
-                <HomepagePresenter model={eventModel} />
+                <HomepagePresenter model={model} />
               </ProtectedRoute>
             }
           />
@@ -48,16 +48,17 @@ export function Root() {
               </ProtectedRoute>
             }
           />
-          <Route path="/events" element={<div>My Events Page</div>} />
+          <Route path="/events" element={<ProtectedRoute><div>My Events Page</div></ProtectedRoute>} />
           <Route
             path="/availability"
-            element={<AvailabilityPresenter model={eventModel} />}
+            element={
+            <ProtectedRoute><AvailabilityPresenter model={model} /></ProtectedRoute>}
           />
           <Route
             path="/create-event"
             element={
               <ProtectedRoute>
-                <EventPresenter model={eventModel} />
+                <EventPresenter model={model} />
               </ProtectedRoute>
             }
           />

@@ -1,11 +1,10 @@
 import { styled } from "styled-components";
 import { AppBar } from "@mui/material";
 import { ButtonComponent } from "../components/Button";
-import { type User } from "firebase/auth";
 import { useLocation } from "react-router";
 
 interface HeaderViewProps {
-  user: User | null;
+  isAuthenticated: boolean;
   onTitleClick: () => void;
   onAuthButtonClick: () => void;
   onCreateEventClick: () => void;
@@ -58,7 +57,7 @@ const NavigationLink = styled.span<{ $active?: boolean }>`
 */
 
 export function HeaderView({
-  user,
+  isAuthenticated,
   onTitleClick,
   onAuthButtonClick,
   onCreateEventClick,
@@ -69,7 +68,7 @@ export function HeaderView({
     <StyledAppBar position="static" id="appBar">
       <Title onClick={onTitleClick}>WhenWhere</Title>
       <LinkContainer>
-        {user && (
+        {isAuthenticated && (
           <ButtonComponent
             variant="outlined"
             text="Create event"
@@ -78,8 +77,8 @@ export function HeaderView({
         )}
         {!isSignInRoute && (
           <ButtonComponent
-            variant={user ? "negative" : "outlined"}
-            text={user ? "Sign out" : "Sign in"}
+            variant={isAuthenticated ? "negative" : "outlined"}
+            text={isAuthenticated ? "Sign out" : "Sign in"}
             onClickFunction={onAuthButtonClick}
           />
         )}

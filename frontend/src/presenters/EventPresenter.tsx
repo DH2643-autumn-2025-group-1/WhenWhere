@@ -27,6 +27,10 @@ export interface ScheduleEventViewProps {
 
 export const EventPresenter = observer(
   ({ model }: { model: EventModelType }) => {
+    if (!model) {
+      console.error("Model prop is undefined");
+      return null;
+    }
     const [places, setPlaces] = useState<string[]>([]);
     const [selectedDates, setSelectedDates] = useState<Dayjs[]>([]);
     const [title, setTitle] = useState<string>("");
@@ -122,7 +126,13 @@ export const EventPresenter = observer(
       const creatorId = model.userId;
 
       if (!creatorId) {
-        throw new Error("User is not logged in");
+        setSnackbar({
+          open: true,
+          message: "You must be signed in to create an event.",
+          severity: "error",
+        });
+        setIsSubmitting(false);
+        return;
       }
 
       const eventData: EventData = {
@@ -133,8 +143,11 @@ export const EventPresenter = observer(
         creatorId,
       };
 
-      await createEvent(eventData);
-      setIsSubmitting(false);
+      try {
+        await createEvent(eventData);
+      } finally {
+        setIsSubmitting(false);
+      }
     };
 
     const handleCloseSnackbar = () => {

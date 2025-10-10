@@ -1,24 +1,18 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { getAuth, onAuthStateChanged, signOut, type User } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import { HeaderView } from "../views/Header";
+import { observer } from "mobx-react-lite";
 
-export function HeaderPresenter() {
+export const HeaderPresenter = observer(
+  ({ model }: Readonly<{ model: EventModelType }>) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
   const auth = getAuth();
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsubscribe();
-  }, [auth]);
+  const isAuthenticated = !!model.userId;
 
   const handleTitleClick = () => navigate("/");
 
   const handleAuthButtonClick = async () => {
-    if (user) {
+    if (isAuthenticated) {
       await signOut(auth);
     } else {
       navigate("/sign-in");
@@ -29,10 +23,10 @@ export function HeaderPresenter() {
 
   return (
     <HeaderView
-      user={user}
+      isAuthenticated={isAuthenticated}
       onTitleClick={handleTitleClick}
       onAuthButtonClick={handleAuthButtonClick}
       onCreateEventClick={handleCreateEventClick}
     />
   );
-}
+});

@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { theme } from "./styles/theme.ts";
 import { initAuthListener } from "./firebase/firebaseAuth";
+import { eventModel } from "./models/EventModel";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Failed to find the root element");
@@ -28,14 +29,14 @@ const GlobalStyle = createGlobalStyle<{ appBarHeight?: number }>`
 
 const muiTheme = createTheme({});
 
-initAuthListener();
+initAuthListener(eventModel);
 
 ReactDOM.createRoot(root).render(
   <BrowserRouter>
     <ThemeProvider theme={theme}>
       <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
         <GlobalStyle />
-        <Root />
+        <Root model={eventModel} />
       </MuiThemeProvider>
     </ThemeProvider>
   </BrowserRouter>,

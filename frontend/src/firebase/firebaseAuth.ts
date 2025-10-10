@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./firebaseConfig";
 import {
   getAuth,
+  onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
@@ -9,9 +10,7 @@ import {
   GithubAuthProvider,
   signInAnonymously,
   type User,
-  onAuthStateChanged,
 } from "firebase/auth";
-import { eventModel } from "../models/EventModel";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -64,11 +63,14 @@ export async function signInWithAnonymous() {
 
 let authListenerInitialized = false;
 
-// Initialize a global auth state listener that keeps eventModel.userId in sync.
-export function initAuthListener() {
+/**
+ * Pass the model so this module stays decoupled.
+ */
+export function initAuthListener(model: { setuserId: (id: string | null) => void }) {
   if (authListenerInitialized) return;
+  const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
-    eventModel.setuserId(user ? user.uid : null);
+    model.setuserId(user ? user.uid : null);
   });
   authListenerInitialized = true;
 }
