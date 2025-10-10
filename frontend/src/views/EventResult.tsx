@@ -47,19 +47,7 @@ const WinnerCard = styled.div`
   border-radius: 20px;
   padding: ${(props) => props.theme.spacing.medium};
   box-shadow: 0 3px 8px rgba(255, 215, 0, 0.25);
-  animation: fadeIn 0.8s ease;
   gap: ${(props) => props.theme.spacing.small};
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 
   svg {
     color: #ffd700;
