@@ -6,7 +6,6 @@ import {
 } from "@mui/material";
 import { Route, Routes } from "react-router";
 import App from "./App.tsx";
-import { Login } from "./LogIn.tsx";
 import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { eventModel } from "../models/EventModel.ts";
 import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
@@ -14,6 +13,8 @@ import { EventPresenter } from "../presenters/EventPresenter.tsx";
 import { theme } from "../styles/theme.ts";
 import { HeaderPresenter } from "../presenters/Header.tsx";
 import { ProtectedRoute } from "../components/utils/ProtectedRoute.tsx";
+import { EventResultPresenter } from "../presenters/EventResultPresenter.tsx";
+import { Login } from "./Login.tsx";
 
 const muiTheme = createTheme({});
 
@@ -44,7 +45,7 @@ export function Root() {
             path="/event-result"
             element={
               <ProtectedRoute>
-                <div>event result</div>
+                <EventResultPresenter model={eventModel} />
               </ProtectedRoute>
             }
           />
