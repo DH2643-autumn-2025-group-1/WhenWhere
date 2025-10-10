@@ -35,6 +35,10 @@ export const eventModel = {
     this.userId = id;
   },
 
+  getUserId() {
+    return this.userId;
+  },
+
   async createEvent(eventData: EventData): Promise<Event> {
     const response = await createEventOnDB(eventData);
     this.myEvents.push(response);
