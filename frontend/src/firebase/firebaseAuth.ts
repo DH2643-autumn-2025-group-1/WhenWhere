@@ -66,7 +66,9 @@ let authListenerInitialized = false;
 /**
  * Pass the model so this module stays decoupled.
  */
-export function initAuthListener(model: { setuserId: (id: string | null) => void }) {
+export function initAuthListener(model: {
+  setuserId: (id: string | null) => void;
+}) {
   if (authListenerInitialized) return;
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {

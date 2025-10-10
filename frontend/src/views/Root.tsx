@@ -48,11 +48,21 @@ export function Root({ model }: { model: EventModelType }) {
               </ProtectedRoute>
             }
           />
-          <Route path="/events" element={<ProtectedRoute><div>My Events Page</div></ProtectedRoute>} />
+          <Route
+            path="/events"
+            element={
+              <ProtectedRoute>
+                <div>My Events Page</div>
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/availability"
             element={
-            <ProtectedRoute><AvailabilityPresenter model={model} /></ProtectedRoute>}
+              <ProtectedRoute>
+                <AvailabilityPresenter model={model} />
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/create-event"
