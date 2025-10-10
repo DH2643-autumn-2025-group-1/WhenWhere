@@ -32,6 +32,22 @@ export function EventResultPresenter({ model }: { model: EventModelType }) {
       ]}
       winningSlots={winningSlots}
       topLocation={topLocation}
+      places={
+        model.currentEvent?.places || [
+          {
+            place: "stockholm",
+            votes: ["anna", "elin", "dsdgds", "vdslv", "kmsv"],
+          },
+          {
+            place: "göteborg",
+            votes: ["simon", "dvklskgvds", "kmsdvds", "mdskö"],
+          },
+          { place: "malmö", votes: ["dfsgds", "f,dsb", "mvdkls"] },
+          { place: "uppsala", votes: ["dsövvvds", "ndlksv"] },
+          { place: "västerås", votes: ["fdsggs"] },
+          { place: "linköping", votes: [] },
+        ]
+      }
     />
   );
 }

@@ -1,5 +1,7 @@
 import { useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { theme } from "../styles/theme";
+import { darken, lighten } from "polished";
 
 const Container = styled.div`
   display: flex;
@@ -38,30 +40,42 @@ const PlacesList = styled.div`
   gap: ${(props) => props.theme.spacing.medium};
 `;
 
-const PlaceItem = styled.div<{ $active: boolean }>`
+const PlaceItem = styled.div<{
+  $active: boolean;
+  $isvoting: boolean;
+  colorStrength: number;
+}>`
   padding: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 4px;
-  background-color: ${(props) =>
-    props.$active ? props.theme.colors.primary : props.theme.colors.secondary};
-  color: ${(props) => (props.$active ? "white" : "black")};
+  background-color: ${(props) => getBackgroundColor(props)};
   flex-wrap: wrap;
   text-align: center;
 
-  &&:hover {
-    background-color: ${(props) => !props.$active && `#b7d3f3`};
-    cursor: pointer;
+  & > *::first-letter {
+    text-transform: uppercase;
   }
+
+  ${({ $isvoting, $active }) =>
+    $isvoting &&
+    css`
+      &&:hover {
+        background-color: ${!$active ? "#b7d3f3" : undefined};
+        cursor: pointer;
+      }
+    `}
 `;
 
 export function VoteLocation({
   places,
   setHaveVotedLocation,
+  isvoting,
 }: {
-  places?: string[];
+  places?: { place: string; votes: string[] }[];
   setHaveVotedLocation: (voted: boolean) => void;
+  isvoting: boolean;
 }) {
   const [chosenPlace, setChosenPlace] = useState<string | null>(null);
 
@@ -72,7 +86,11 @@ export function VoteLocation({
 
   return (
     <Container>
-      <Title>Vote for location:</Title>
+      <Title>
+        {isvoting
+          ? `Vote for location:`
+          : `Distribution of votes for location:`}
+      </Title>
       {!places || places?.length === 0 ? (
         <NoPlacesText>No places to vote for.</NoPlacesText>
       ) : (
@@ -80,10 +98,14 @@ export function VoteLocation({
           {places?.map((place, index) => (
             <PlaceItem
               key={index}
-              $active={place == chosenPlace}
-              onClick={() => handlePlaceSelection(place)}
+              $active={place.place === chosenPlace}
+              onClick={() => isvoting && handlePlaceSelection(place.place)}
+              $isvoting={isvoting}
+              colorStrength={place.votes.length}
             >
-              {place}
+              {place.place.charAt(0).toUpperCase() + place.place.slice(1)}
+              {!isvoting &&
+                ` ― ${place.votes.length} vote${place.votes.length === 1 ? "" : "s"}`}
             </PlaceItem>
           ))}
         </PlacesList>
@@ -91,3 +113,20 @@ export function VoteLocation({
     </Container>
   );
 }
+
+const getBackgroundColor = ({
+  $active,
+  $isvoting,
+  colorStrength,
+}: {
+  $active: boolean;
+  $isvoting: boolean;
+  colorStrength: number;
+}) => {
+  const baseColor = $active ? theme.colors.primary : theme.colors.secondary;
+
+  if ($isvoting) return baseColor;
+
+  const intensity = (colorStrength / 5) * 3;
+  return darken(intensity * 0.1, lighten(0.05, baseColor));
+};

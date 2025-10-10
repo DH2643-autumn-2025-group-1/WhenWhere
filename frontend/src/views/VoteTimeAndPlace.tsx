@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { VoteLocationPresenter } from "../presenters/VoteLocationPresenter";
+import type { EventPlace } from "../models/EventModel";
 
 const Container = styled.div`
   display: flex;
@@ -26,7 +27,7 @@ const PlaceAndSubmitContainer = styled.div`
   gap: ${(props) => props.theme.spacing.large};
 `;
 
-function VoteTimeAndPlace({ places }: { places: string[] | undefined }) {
+function VoteTimeAndPlace({ places }: { places: EventPlace[] | undefined }) {
   const [haveVotedLocation, setHaveVotedLocation] = useState(false);
   const [haveVotedTime, setHaveVotedTime] = useState(false);
   const navigate = useNavigate();

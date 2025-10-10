@@ -11,7 +11,7 @@ export function Location({
 }: {
   value: string;
   label: string;
-  onSelectFuntion: (value: google.maps.places.PlaceResult | null) => void;
+  onSelectFuntion?: (value: google.maps.places.PlaceResult | null) => void;
 }) {
   return (
     <APIProvider
@@ -31,7 +31,7 @@ export function Location({
 }
 
 interface PlaceAutocompleteProps {
-  onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
+  onPlaceSelect?: (place: google.maps.places.PlaceResult | null) => void;
   label: string;
   defaultValue?: string;
 }
@@ -61,7 +61,7 @@ const PlaceAutocomplete = ({
     if (!placeAutocomplete) return;
 
     placeAutocomplete.addListener("place_changed", () => {
-      onPlaceSelect(placeAutocomplete.getPlace());
+      if (onPlaceSelect) onPlaceSelect(placeAutocomplete.getPlace());
     });
   }, [onPlaceSelect, placeAutocomplete]);
 

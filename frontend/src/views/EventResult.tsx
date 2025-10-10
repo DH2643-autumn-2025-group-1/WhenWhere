@@ -1,12 +1,15 @@
 import styled from "styled-components";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { theme } from "../styles/theme";
+import { VoteLocation } from "./VoteLocation";
+import type { EventPlace } from "../models/EventModel";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: ${(props) => props.theme.spacing.xlarge};
+  gap: 96px;
 `;
 
 const EventResultComponent = styled.div`
@@ -165,10 +168,12 @@ export function EventResult({
   peopleVoted,
   winningSlots,
   topLocation,
+  places,
 }: {
   peopleVoted: string[][];
   winningSlots: string[];
   topLocation: string | null;
+  places: EventPlace[];
 }) {
   const trophyColors = ["#FFD700", "#B0BEC5", "#CD7F32"];
 
@@ -224,6 +229,11 @@ export function EventResult({
           </div>
         </WinningCardsContainer>
       </EventResultComponent>
+      <VoteLocation
+        places={places}
+        setHaveVotedLocation={() => {}}
+        isvoting={false}
+      />
     </Container>
   );
 }
