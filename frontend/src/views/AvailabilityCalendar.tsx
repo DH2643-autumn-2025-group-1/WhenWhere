@@ -8,7 +8,6 @@ const CalendarWrapper = styled(Box)`
   flex-direction: column;
   height: 100%;
   width: 100%;
-  padding: 16px 24px;
   position: relative;
 `;
 

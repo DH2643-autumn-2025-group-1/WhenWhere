@@ -1,9 +1,16 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { addDays, isSameDay, startOfWeek } from "date-fns";
 import { enGB } from "date-fns/locale";
-import type { EventModelType } from "../models/EventModel";
 import { AvailabilityCalendar } from "../views/AvailabilityCalendar";
 import { observer } from "mobx-react-lite";
+import type { EventModelType } from "../models/EventModel";
 
 type SelectionIndex = { dayIdx: number; hour: number };
 
@@ -42,7 +49,13 @@ function toggleSlots(prev: TimeSlot[], range: TimeSlot[]): TimeSlot[] {
 }
 
 export const AvailabilityPresenter = observer(
-  ({ model }: Readonly<{ model: EventModelType }>) => {
+  ({
+    model,
+    setHaveVotedTime,
+  }: Readonly<{
+    model: EventModelType;
+    setHaveVotedTime: (value: boolean) => void;
+  }>) => {
     const [selectedTimeSlots, setSelectedTimeSlots] = useState<TimeSlot[]>([]);
     const [weekAnchor, setWeekAnchor] = useState<Date>(new Date());
 
@@ -67,6 +80,10 @@ export const AvailabilityPresenter = observer(
       [weekStart],
     );
     const hours = useMemo(() => Array.from({ length: 24 }, (_, h) => h), []);
+
+    useEffect(() => {
+      setHaveVotedTime(selectedTimeSlots.length > 0);
+    }, [selectedTimeSlots, setHaveVotedTime]);
 
     const handleNavigateWeek = useCallback((nextAnchor: Date) => {
       setWeekAnchor(nextAnchor);

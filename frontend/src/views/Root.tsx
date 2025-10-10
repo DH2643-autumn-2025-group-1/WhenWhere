@@ -5,13 +5,12 @@ import {
   THEME_ID,
 } from "@mui/material";
 import { Route, Routes } from "react-router";
-import App from "./App.tsx";
-import { Login } from "./LogIn.tsx";
-import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
+import { theme } from "../styles/theme.ts";
+import { Login } from "./Login.tsx";
 import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
 import { EventPresenter } from "../presenters/EventPresenter.tsx";
-import { theme } from "../styles/theme.ts";
-import { HeaderPresenter } from "../presenters/HeaderPresenter.tsx";
+import { StyledEngineProvider } from "@mui/styled-engine-sc";
+import { HeaderPresenter } from "../presenters/Header.tsx";
 import { ProtectedRoute } from "../components/utils/ProtectedRoute.tsx";
 import type { EventModelType } from "../models/EventModel";
 
@@ -19,6 +18,7 @@ const muiTheme = createTheme({});
 
 export function Root({ model }: { model: EventModelType }) {
   return (
+    <StyledEngineProvider injectFirst>
     <ThemeProvider theme={theme}>
       <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
         <HeaderPresenter model={model} />
@@ -33,14 +33,6 @@ export function Root({ model }: { model: EventModelType }) {
           />
           <Route path="/sign-in" element={<Login />} />
           <Route
-            path="/mark-availibility"
-            element={
-              <ProtectedRoute>
-                <App />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/event-result"
             element={
               <ProtectedRoute>
@@ -49,18 +41,10 @@ export function Root({ model }: { model: EventModelType }) {
             }
           />
           <Route
-            path="/events"
-            element={
-              <ProtectedRoute>
-                <div>My Events Page</div>
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/availability"
             element={
               <ProtectedRoute>
-                <AvailabilityPresenter model={model} />
+                <VoteTimeAndPlacePresenter model={model} />
               </ProtectedRoute>
             }
           />
@@ -75,5 +59,6 @@ export function Root({ model }: { model: EventModelType }) {
         </Routes>
       </MuiThemeProvider>
     </ThemeProvider>
+    </StyledEngineProvider>
   );
 }

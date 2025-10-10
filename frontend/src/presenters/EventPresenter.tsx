@@ -123,7 +123,7 @@ export const EventPresenter = observer(
     const handleSubmit = async () => {
       setIsSubmitting(true);
 
-      const creatorId = model.userId;
+      const creatorId = model.getUserId();
 
       if (!creatorId) {
         setSnackbar({

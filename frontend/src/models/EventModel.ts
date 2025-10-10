@@ -29,9 +29,14 @@ export const eventModel = {
   userId: null as string | null,
   myEvents: [] as Event[],
   friendsEvents: [] as Event[],
+  currentEvent: null as Event | null,
 
   setuserId(id: string | null) {
     this.userId = id;
+  },
+
+  getUserId() {
+    return this.userId;
   },
 
   async createEvent(eventData: EventData): Promise<Event> {
