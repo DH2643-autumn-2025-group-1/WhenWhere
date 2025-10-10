@@ -19,46 +19,46 @@ const muiTheme = createTheme({});
 export function Root({ model }: { model: EventModelType }) {
   return (
     <StyledEngineProvider injectFirst>
-    <ThemeProvider theme={theme}>
-      <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
-        <HeaderPresenter model={model} />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <HomepagePresenter model={model} />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/sign-in" element={<Login />} />
-          <Route
-            path="/event-result"
-            element={
-              <ProtectedRoute>
-                <div>event result</div>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/availability"
-            element={
-              <ProtectedRoute>
-                <VoteTimeAndPlacePresenter model={model} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/create-event"
-            element={
-              <ProtectedRoute>
-                <EventPresenter model={model} />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </MuiThemeProvider>
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
+          <HeaderPresenter model={model} />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <HomepagePresenter model={model} />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/sign-in" element={<Login />} />
+            <Route
+              path="/event-result"
+              element={
+                <ProtectedRoute>
+                  <div>event result</div>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/availability"
+              element={
+                <ProtectedRoute>
+                  <VoteTimeAndPlacePresenter model={model} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/create-event"
+              element={
+                <ProtectedRoute>
+                  <EventPresenter model={model} />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </MuiThemeProvider>
+      </ThemeProvider>
     </StyledEngineProvider>
   );
 }
