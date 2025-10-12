@@ -1,9 +1,17 @@
+import { useEffect } from "react";
 import type { EventModelType } from "../models/EventModel";
 import { HomePage } from "../views/Homepage";
 import { observer } from "mobx-react-lite";
 
 export const HomepagePresenter = observer(
   ({ model }: { model: EventModelType }) => {
+    useEffect(() => {
+      if (model.getUserId()) {
+        model.fetchMyEvents();
+        model.fetchFriendsEvents();
+      }
+    }, [model, model.getUserId()]);
+
     function deleteEvent(id: string) {
       model.deleteEvent(id);
     }
