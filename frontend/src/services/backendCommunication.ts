@@ -54,3 +54,20 @@ export const fetchInvitedEvents = async (userId: string) => {
   }
   return response.json();
 };
+
+export const updateEventAvailability = async (
+  eventId: string,
+  availability: { userId: string; availableSlots: Date[] },
+) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/events/${eventId}/availability`,
+    {
+      method: "PUT",
+      body: JSON.stringify(availability),
+    },
+  );
+  if (!response.ok) {
+    throw new Error("Failed to update event availability");
+  }
+  return response.json();
+};
