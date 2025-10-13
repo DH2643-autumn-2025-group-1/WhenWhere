@@ -41,12 +41,7 @@ export function EventResultView({
       <Panel>
         <h2 style={{ margin: 0 }}>Results for: {eventTitle}</h2>
         {shareUrl && (
-          <div style={{ maxWidth: 600 }}>
-            <TextBoxWithActions
-              title="Shareable voting link"
-              value={shareUrl}
-            />
-          </div>
+          <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
         )}
         {/* TODO: Add detailed results UI here */}
       </Panel>

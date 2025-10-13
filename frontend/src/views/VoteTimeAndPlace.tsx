@@ -6,7 +6,6 @@ import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { VoteLocationPresenter } from "../presenters/VoteLocationPresenter";
 import type { EventModelType } from "../models/EventModel";
 import TextBoxWithActions from "../components/TextBoxWithActions";
-import { makeAbsolute, makeAvailabilityPath } from "../utils/shareHash";
 
 const Container = styled.div`
   display: flex;
@@ -37,10 +36,12 @@ function VoteTimeAndPlace({
   model,
   places,
   resultsPath = "/event-result",
+  shareUrl,
 }: {
   model: EventModelType;
   places: string[] | undefined;
   resultsPath?: string;
+  shareUrl?: string;
 }) {
   const [haveVotedLocation, setHaveVotedLocation] = useState(false);
   const [haveVotedTime, setHaveVotedTime] = useState(false);
@@ -63,15 +64,8 @@ function VoteTimeAndPlace({
           setHaveVotedLocation={setHaveVotedLocation}
           places={places || []}
         />
-        {model.currentEvent?.shareHash && (
-          <div style={{ width: "100%" }}>
-            <TextBoxWithActions
-              title="Shareable voting link"
-              value={makeAbsolute(
-                makeAvailabilityPath(model.currentEvent.shareHash),
-              )}
-            />
-          </div>
+        {shareUrl && (
+          <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
         )}
         <ButtonComponent
           onClickFunction={() => navigate(resultsPath)}

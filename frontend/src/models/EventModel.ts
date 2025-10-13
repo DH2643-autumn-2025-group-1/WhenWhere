@@ -77,6 +77,14 @@ export const eventModel = {
     this.currentEvent = ev;
     return ev;
   },
+
+  hasUserVoted(): boolean {
+    if (!this.currentEvent || !this.userId) return false;
+
+    return this.currentEvent.availability?.some(
+      (entry) => entry.userId === this.userId,
+    );
+  },
 };
 
 makeAutoObservable(eventModel);
