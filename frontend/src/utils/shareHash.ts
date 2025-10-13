@@ -1,11 +1,10 @@
-// Simple helpers to work with share-hash based deep links
+// Helpers to work with share-hash links
 
 export function getShareHashFromSearch(
   search: string | undefined | null,
 ): string {
   if (!search) return "";
   const s = search.startsWith("?") ? search.slice(1) : search;
-  // For now we treat the entire query as the shareHash (no key=value pairs)
   return s;
 }
 

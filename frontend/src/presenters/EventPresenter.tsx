@@ -101,7 +101,7 @@ export const EventPresenter = observer(
         };
         const created = await model.createEvent(finalEventData);
 
-        // Navigate user directly to the voting page after successful creation
+        // Navigate user to the voting page after successful creation, this will however omit the snackbar alert which is why we might want a global snackbar in root if possible.
         const votingPath = makeAvailabilityPath(created.shareHash);
         navigate(votingPath);
 

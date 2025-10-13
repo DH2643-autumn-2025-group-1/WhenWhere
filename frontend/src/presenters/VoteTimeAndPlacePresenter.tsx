@@ -23,7 +23,6 @@ export function VoteTimeAndPlacePresenter({
   useEffect(() => {
     if (!shareHash) return;
     if (model.currentEvent?.shareHash === shareHash) {
-      // Check if user has already voted
       if (model.hasUserVoted()) {
         navigate(makeResultPath(shareHash), { replace: true });
       }
@@ -34,7 +33,6 @@ export function VoteTimeAndPlacePresenter({
     model
       .fetchEventByHash(shareHash)
       .then(() => {
-        // After fetching, check if user has already voted
         if (model.hasUserVoted()) {
           navigate(makeResultPath(shareHash), { replace: true });
         }
