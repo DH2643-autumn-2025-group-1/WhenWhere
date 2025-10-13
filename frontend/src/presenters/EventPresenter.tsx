@@ -3,6 +3,8 @@ import { Dayjs } from "dayjs";
 import { type EventData, type EventModelType } from "../models/EventModel";
 import { ScheduleEventView } from "../views/ScheduleEventView";
 import { observer } from "mobx-react-lite";
+import { makeAvailabilityPath } from "../utils/shareHash";
+import { useNavigate } from "react-router";
 
 export interface ScheduleEventViewProps {
   places: string[];
@@ -41,6 +43,7 @@ export const EventPresenter = observer(
       message: string;
       severity: "success" | "error";
     }>({ open: false, message: "", severity: "success" });
+    const navigate = useNavigate();
 
     const handleAddPlace = () => {
       setPlaces([...places, ""]);
@@ -96,8 +99,11 @@ export const EventPresenter = observer(
           description: eventData.description?.trim() || undefined,
           places: validPlaces,
         };
+        const created = await model.createEvent(finalEventData);
 
-        await model.createEvent(finalEventData);
+        // Navigate user directly to the voting page after successful creation
+        const votingPath = makeAvailabilityPath(created.shareHash);
+        navigate(votingPath);
 
         setSnackbar({
           open: true,

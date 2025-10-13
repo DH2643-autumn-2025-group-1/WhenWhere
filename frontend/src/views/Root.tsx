@@ -14,6 +14,7 @@ import { HeaderPresenter } from "../presenters/HeaderPresenter.tsx";
 import { ProtectedRoute } from "../components/utils/ProtectedRoute.tsx";
 import type { EventModelType } from "../models/EventModel";
 import { VoteTimeAndPlacePresenter } from "../presenters/VoteTimeAndPlacePresenter.tsx";
+import { EventResultPresenter } from "../presenters/EventResultPresenter.tsx";
 
 const muiTheme = createTheme({});
 
@@ -37,7 +38,7 @@ export function Root({ model }: { model: EventModelType }) {
               path="/event-result"
               element={
                 <ProtectedRoute>
-                  <div>event result</div>
+                  <EventResultPresenter model={model} />
                 </ProtectedRoute>
               }
             />
