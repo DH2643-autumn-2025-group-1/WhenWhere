@@ -71,6 +71,10 @@ export const saveAvailabilityOnDB = async (
   );
   if (!response.ok) {
     throw new Error("Failed to save availability");
+  }
+  return response.json();
+};
+
 export const fetchEventByHash = async (shareHash: string) => {
   const response = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/events/hash/${shareHash}`,

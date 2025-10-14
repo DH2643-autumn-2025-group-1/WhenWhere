@@ -12,7 +12,6 @@ export function HomePage({
   myEvents,
   friendsEvents,
   deleteEvent,
-  onSelectEvent,
 }: {
   myEvents: Array<Event>;
   friendsEvents: Array<Event>;
