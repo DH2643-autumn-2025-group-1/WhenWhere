@@ -59,15 +59,18 @@ const PlaceItem = styled.div<{ $active: boolean }>`
 export function VoteLocation({
   places,
   setHaveVotedLocation,
+  onLocationChange,
 }: {
   places?: string[];
   setHaveVotedLocation: (voted: boolean) => void;
+  onLocationChange?: (location: string | null) => void;
 }) {
   const [chosenPlace, setChosenPlace] = useState<string | null>(null);
 
   function handlePlaceSelection(place: string) {
     setChosenPlace(place);
     setHaveVotedLocation(true);
+    onLocationChange?.(place);
   }
 
   return (

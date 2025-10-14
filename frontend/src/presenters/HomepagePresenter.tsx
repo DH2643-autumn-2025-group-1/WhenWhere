@@ -1,4 +1,4 @@
-import type { EventModelType } from "../models/EventModel";
+import type { Event, EventModelType } from "../models/EventModel";
 import { HomePage } from "../views/Homepage";
 import { observer } from "mobx-react-lite";
 
@@ -13,6 +13,9 @@ export const HomepagePresenter = observer(
         deleteEvent={deleteEvent}
         friendsEvents={model.friendsEvents}
         myEvents={model.myEvents}
+        onSelectEvent={(event: Event) => {
+          model.currentEvent = event;
+        }}
       />
     );
   },

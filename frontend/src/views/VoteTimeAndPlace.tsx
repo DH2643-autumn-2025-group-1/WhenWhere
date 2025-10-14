@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { ButtonComponent } from "../components/Button";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useEffect } from "react";
 import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { VoteLocationPresenter } from "../presenters/VoteLocationPresenter";
+// View-only: no data fetching/saving here
 
 const Container = styled.div`
   display: flex;
@@ -26,11 +26,27 @@ const PlaceAndSubmitContainer = styled.div`
   gap: ${(props) => props.theme.spacing.large};
 `;
 
-function VoteTimeAndPlace({ places }: { places: string[] | undefined }) {
-  const [haveVotedLocation, setHaveVotedLocation] = useState(false);
-  const [haveVotedTime, setHaveVotedTime] = useState(false);
-  const navigate = useNavigate();
-
+function VoteTimeAndPlace({
+  places,
+  haveVotedLocation,
+  setHaveVotedLocation,
+  haveVotedTime,
+  setHaveVotedTime,
+  onSelectedDatesChange,
+  isSaving,
+  error,
+  onSubmit,
+}: {
+  places: string[] | undefined;
+  haveVotedLocation: boolean;
+  setHaveVotedLocation: (v: boolean) => void;
+  haveVotedTime: boolean;
+  setHaveVotedTime: (v: boolean) => void;
+  onSelectedDatesChange: (dates: Date[]) => void;
+  isSaving: boolean;
+  error: string | null;
+  onSubmit: () => void;
+}) {
   useEffect(() => {
     if (!places || places.length === 0) {
       setHaveVotedLocation(true);
@@ -39,16 +55,22 @@ function VoteTimeAndPlace({ places }: { places: string[] | undefined }) {
 
   return (
     <Container>
-      <AvailabilityPresenter setHaveVotedTime={setHaveVotedTime} />
+      <AvailabilityPresenter
+        setHaveVotedTime={setHaveVotedTime}
+        onSelectedChange={onSelectedDatesChange}
+      />
       <PlaceAndSubmitContainer>
         <VoteLocationPresenter
           setHaveVotedLocation={setHaveVotedLocation}
           places={places || []}
         />
+        {error && (
+          <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>
+        )}
         <ButtonComponent
-          onClickFunction={() => navigate("/event-result")}
-          text="Submit and see results"
-          disabled={!haveVotedLocation || !haveVotedTime}
+          onClickFunction={onSubmit}
+          text={isSaving ? "Saving..." : "Submit and see results"}
+          disabled={!haveVotedLocation || !haveVotedTime || isSaving}
           variant="primary"
         />
       </PlaceAndSubmitContainer>

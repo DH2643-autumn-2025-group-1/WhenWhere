@@ -11,10 +11,12 @@ export function HomePage({
   myEvents,
   friendsEvents,
   deleteEvent,
+  onSelectEvent,
 }: {
   myEvents: Array<Event>;
   friendsEvents: Array<Event>;
   deleteEvent: (id: string) => void;
+  onSelectEvent: (event: Event) => void;
 }) {
   const navigate = useNavigate();
   const [openWarningDialog, setOpenWarningDialog] = useState(false);
@@ -46,7 +48,12 @@ export function HomePage({
                   <StyledRemoveIcon
                     onClick={() => setOpenWarningDialog(true)}
                   />
-                  <Event onClick={() => navigate("/event-result")}>
+                  <Event
+                    onClick={() => {
+                      onSelectEvent(event);
+                      navigate("/availability");
+                    }}
+                  >
                     {event.title}
                   </Event>
                 </EventContainer>
