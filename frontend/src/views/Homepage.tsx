@@ -6,6 +6,7 @@ import { useState } from "react";
 import AlertDialog from "../components/Dialog";
 import type { Event } from "../models/EventModel";
 import { ButtonComponent } from "../components/Button";
+import { makeResultPath } from "../utils/shareHash";
 
 export function HomePage({
   myEvents,
@@ -46,7 +47,9 @@ export function HomePage({
                   <StyledRemoveIcon
                     onClick={() => setOpenWarningDialog(true)}
                   />
-                  <Event onClick={() => navigate("/event-result")}>
+                  <Event
+                    onClick={() => navigate(makeResultPath(event.shareHash))}
+                  >
                     {event.title}
                   </Event>
                 </EventContainer>
@@ -71,7 +74,10 @@ export function HomePage({
           <EventList>
             {friendsEvents.length > 0 ? (
               friendsEvents.map((event, index) => (
-                <Event key={index} onClick={() => navigate("/event-result")}>
+                <Event
+                  key={index}
+                  onClick={() => navigate(makeResultPath(event.shareHash))}
+                >
                   {event.title}
                 </Event>
               ))

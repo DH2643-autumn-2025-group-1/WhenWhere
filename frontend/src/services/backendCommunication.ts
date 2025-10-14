@@ -54,3 +54,13 @@ export const fetchInvitedEvents = async (userId: string) => {
   }
   return response.json();
 };
+
+export const fetchEventByHash = async (shareHash: string) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/events/hash/${shareHash}`,
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch event by hash");
+  }
+  return response.json();
+};
