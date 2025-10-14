@@ -3,50 +3,62 @@ import { useNavigate } from "react-router";
 import type { EventModelType } from "../models/EventModel";
 import VoteTimeAndPlace from "../views/VoteTimeAndPlace";
 import { saveAvailabilityOnDB } from "../services/backendCommunication";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+import {
+  getShareHashFromSearch,
+  makeResultPath,
+  makeAbsolute,
+  makeAvailabilityPath,
+} from "../utils/shareHash";
+import { LoadingView } from "../components/utils/Loading";
 
 export function VoteTimeAndPlacePresenter({
   model,
 }: {
   model: EventModelType;
 }) {
-  const [haveVotedLocation, setHaveVotedLocation] = useState(false);
-  const [haveVotedTime, setHaveVotedTime] = useState(false);
-  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const location = useLocation();
   const navigate = useNavigate();
+  const shareHash = getShareHashFromSearch(location.search);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmitAndSave = useCallback(async () => {
-    const eventId = model.currentEvent?._id;
-    const userId = model.userId;
-    if (!eventId || !userId) {
-      navigate("/event-result");
+  useEffect(() => {
+    if (!shareHash) return;
+    if (model.currentEvent?.shareHash === shareHash) {
+      if (model.hasUserVoted()) {
+        navigate(makeResultPath(shareHash), { replace: true });
+      }
       return;
     }
-    if (selectedDates.length === 0) return;
-    try {
-      setIsSaving(true);
-      setError(null);
-      await saveAvailabilityOnDB(eventId, userId, selectedDates);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save availability");
-    } finally {
-      setIsSaving(false);
-      navigate("/event-result");
-    }
-  }, [model, selectedDates, navigate]);
+
+    setIsLoading(true);
+    model
+      .fetchEventByHash(shareHash)
+      .then(() => {
+        if (model.hasUserVoted()) {
+          navigate(makeResultPath(shareHash), { replace: true });
+        }
+      })
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
+  }, [model, shareHash, navigate]);
+
+  const resultsPath = shareHash ? makeResultPath(shareHash) : "/event-result";
+  const shareUrl = shareHash
+    ? makeAbsolute(makeAvailabilityPath(shareHash))
+    : undefined;
+
+  if (isLoading) {
+    return <LoadingView />;
+  }
 
   return (
     <VoteTimeAndPlace
+      model={model}
       places={model.currentEvent?.places}
-      haveVotedLocation={haveVotedLocation}
-      setHaveVotedLocation={setHaveVotedLocation}
-      haveVotedTime={haveVotedTime}
-      setHaveVotedTime={setHaveVotedTime}
-      onSelectedDatesChange={setSelectedDates}
-      isSaving={isSaving}
-      error={error}
-      onSubmit={handleSubmitAndSave}
+      resultsPath={resultsPath}
+      shareUrl={shareUrl}
     />
   );
 }

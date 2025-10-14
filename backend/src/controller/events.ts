@@ -6,6 +6,7 @@ import {
   getEventsCreatedByUser,
   getEventsUserIsInvitedTo,
   updateEventAvailability,
+  getEventByShareHash,
 } from "../services/eventService";
 
 const router = Router();
@@ -17,6 +18,19 @@ router.get("/", async (_req, res) => {
     res.json(events);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch events", details: err });
+  }
+});
+
+// GET /events/hash/:shareHash → resolve event by share hash
+router.get("/hash/:shareHash", async (req, res) => {
+  try {
+    const event = await getEventByShareHash(req.params.shareHash);
+    if (!event) return res.status(404).json({ error: "Event not found" });
+    res.json(event);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Failed to fetch event by hash", details: err });
   }
 });
 

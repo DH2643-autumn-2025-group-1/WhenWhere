@@ -3,7 +3,8 @@ import { ButtonComponent } from "../components/Button";
 import { useEffect } from "react";
 import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { VoteLocationPresenter } from "../presenters/VoteLocationPresenter";
-// View-only: no data fetching/saving here
+import type { EventModelType } from "../models/EventModel";
+import TextBoxWithActions from "../components/TextBoxWithActions";
 
 const Container = styled.div`
   display: flex;
@@ -22,31 +23,29 @@ const Container = styled.div`
 const PlaceAndSubmitContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: spac;
+  align-items: stretch;
   gap: ${(props) => props.theme.spacing.large};
+
+  > * {
+    width: 100%;
+  }
 `;
 
 function VoteTimeAndPlace({
+  model,
   places,
-  haveVotedLocation,
-  setHaveVotedLocation,
-  haveVotedTime,
-  setHaveVotedTime,
-  onSelectedDatesChange,
-  isSaving,
-  error,
-  onSubmit,
+  resultsPath = "/event-result",
+  shareUrl,
 }: {
+  model: EventModelType;
   places: string[] | undefined;
-  haveVotedLocation: boolean;
-  setHaveVotedLocation: (v: boolean) => void;
-  haveVotedTime: boolean;
-  setHaveVotedTime: (v: boolean) => void;
-  onSelectedDatesChange: (dates: Date[]) => void;
-  isSaving: boolean;
-  error: string | null;
-  onSubmit: () => void;
+  resultsPath?: string;
+  shareUrl?: string;
 }) {
+  const [haveVotedLocation, setHaveVotedLocation] = useState(false);
+  const [haveVotedTime, setHaveVotedTime] = useState(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (!places || places.length === 0) {
       setHaveVotedLocation(true);
@@ -56,21 +55,21 @@ function VoteTimeAndPlace({
   return (
     <Container>
       <AvailabilityPresenter
+        model={model}
         setHaveVotedTime={setHaveVotedTime}
-        onSelectedChange={onSelectedDatesChange}
       />
       <PlaceAndSubmitContainer>
         <VoteLocationPresenter
           setHaveVotedLocation={setHaveVotedLocation}
           places={places || []}
         />
-        {error && (
-          <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>
+        {shareUrl && (
+          <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
         )}
         <ButtonComponent
-          onClickFunction={onSubmit}
-          text={isSaving ? "Saving..." : "Submit and see results"}
-          disabled={!haveVotedLocation || !haveVotedTime || isSaving}
+          onClickFunction={() => navigate(resultsPath)}
+          text="Submit and see results"
+          disabled={!haveVotedLocation || !haveVotedTime}
           variant="primary"
         />
       </PlaceAndSubmitContainer>

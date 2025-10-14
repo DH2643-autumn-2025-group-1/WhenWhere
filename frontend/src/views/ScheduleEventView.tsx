@@ -101,6 +101,7 @@ export function ScheduleEventView({
         <Typography variant="h4" gutterBottom>
           Schedule an Event
         </Typography>
+
         <TextField
           label="Event Title"
           variant="outlined"
