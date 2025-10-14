@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { Dayjs } from "dayjs";
-import { type EventData, type EventModelType } from "../models/EventModel";
+import {
+  type EventData,
+  type EventModelType,
+  type EventPlace,
+} from "../models/EventModel";
 import { ScheduleEventView } from "../views/ScheduleEventView";
 import { observer } from "mobx-react-lite";
 
 export interface ScheduleEventViewProps {
-  places: string[];
+  places: EventPlace[];
   selectedDates: Dayjs[];
   title: string;
   description: string;
@@ -27,7 +31,7 @@ export interface ScheduleEventViewProps {
 
 export const EventPresenter = observer(
   ({ model }: { model: EventModelType }) => {
-    const [places, setPlaces] = useState<string[]>([]);
+    const [places, setPlaces] = useState<EventPlace[]>([]);
     const [selectedDates, setSelectedDates] = useState<Dayjs[]>([]);
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
@@ -39,12 +43,12 @@ export const EventPresenter = observer(
     }>({ open: false, message: "", severity: "success" });
 
     const handleAddPlace = () => {
-      setPlaces([...places, ""]);
+      setPlaces([...places, { place: "", votes: [] }]);
     };
 
     const handlePlaceChange = (index: number, value: string) => {
       const updatedPlaces = [...places];
-      updatedPlaces[index] = value;
+      updatedPlaces[index].place = value;
       setPlaces(updatedPlaces);
     };
 
@@ -83,7 +87,7 @@ export const EventPresenter = observer(
         }
 
         const validPlaces = eventData.places.filter(
-          (place: string) => place.trim() !== "",
+          (place: EventPlace) => place.place.trim() !== "",
         );
 
         const finalEventData: EventData = {

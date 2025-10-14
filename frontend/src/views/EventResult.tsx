@@ -165,13 +165,11 @@ const SubTitleText = styled.h3`
 `;
 
 export function EventResult({
-  peopleVoted,
   winningSlots,
   topLocation,
   places,
 }: {
-  peopleVoted: string[][];
-  winningSlots: string[];
+  winningSlots: { slot: string; people: string[] }[];
   topLocation: string | null;
   places: EventPlace[];
 }) {
@@ -184,7 +182,10 @@ export function EventResult({
         <WinningCardsContainer>
           <div>
             <SubTitleWithLines>Most voted location:</SubTitleWithLines>
-            {topLocation && (
+
+            {!topLocation ? (
+              <NoTimeSlotsText>No winning location yet.</NoTimeSlotsText>
+            ) : (
               <WinnerCard>
                 <EmojiEventsIcon />
                 <WinnerText>{topLocation}</WinnerText>
@@ -199,7 +200,7 @@ export function EventResult({
                   index < 3 ? trophyColors[index] : "rgba(0, 0, 0, 0.3)";
 
                 return (
-                  <TimeSlotContainer key={slot} rank={index}>
+                  <TimeSlotContainer key={index} rank={index}>
                     <EmojiEventsIcon
                       style={{
                         color,
@@ -208,20 +209,23 @@ export function EventResult({
                     />
                     <TimeSlot>
                       <DateText>
-                        {slot.split(" ").slice(0, 3).join(" ")}
+                        {slot.slot.split(" ").slice(0, 3).join(" ")}
                       </DateText>
-                      <TimeText>{slot.split(" ").slice(3).join(" ")}</TimeText>
+                      <TimeText>
+                        {slot.slot.split(" ").slice(3).join(" ")}
+                      </TimeText>
                     </TimeSlot>
                     <People>
-                      <PeopleNumber>({peopleVoted[index].length})</PeopleNumber>
+                      <PeopleNumber>
+                        ({winningSlots[index].people})
+                      </PeopleNumber>
                       {screen.width >
                         Number(theme.breakpoints.mobile.replace("px", "")) &&
-                        peopleVoted[index].join(", ")}
+                        winningSlots[index].people.join(", ")}
                     </People>
                   </TimeSlotContainer>
                 );
               })}
-
               {winningSlots.length === 0 && (
                 <NoTimeSlotsText>No winning time slots yet.</NoTimeSlotsText>
               )}

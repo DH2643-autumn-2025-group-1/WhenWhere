@@ -1,53 +1,57 @@
-import { useEffect, useState } from "react";
 import type { EventModelType } from "../models/EventModel";
 import { EventResult } from "../views/EventResult";
 
 export function EventResultPresenter({ model }: { model: EventModelType }) {
-  console.log(model); // TODO remove
+  function getMostVotedLocation() {
+    if (!model.currentEvent?.places || model.currentEvent.places.length === 0) {
+      return null;
+    }
 
-  const [winningSlots, setWinningSlots] = useState<string[]>([]);
-  const [topLocation, setTopLocation] = useState<string | null>(null);
+    const mostVotedPlace = model.currentEvent.places.reduce(
+      (topPlace, currentPlace) => {
+        return currentPlace.votes.length > topPlace.votes.length
+          ? currentPlace
+          : topPlace;
+      },
+    );
 
-  useEffect(() => {
-    setWinningSlots([
-      "Sunday 23 September 10:00 - 11:00",
-      "Monday 30 October 15:00 - 16:00",
-      "Tuesday 14 November 09:00 - 10:00",
-    ]);
-    setTopLocation("Central Park");
-  }, []);
+    return mostVotedPlace.place;
+  }
+  function getWinningSlots() {
+    const slotVoteCount: { [key: string]: number } = {};
+    const slotPeople: { [key: string]: string[] } = {};
+
+    model.currentEvent?.availability.forEach((availability) => {
+      availability.availableSlots.forEach((slot) => {
+        const slotKey = slot.toString();
+        slotVoteCount[slotKey] = (slotVoteCount[slotKey] || 0) + 1;
+
+        if (!slotPeople[slotKey]) {
+          slotPeople[slotKey] = [];
+        }
+        slotPeople[slotKey].push(availability.userId);
+      });
+    });
+
+    const sortedSlots = Object.entries(slotVoteCount)
+      .sort(([, countA], [, countB]) => countB - countA)
+      .slice(0, 3)
+      .map(([slotKey]) => ({
+        slot: new Date(slotKey).toLocaleString(),
+        people: slotPeople[slotKey],
+      }));
+
+    return sortedSlots;
+  }
+
+  const topLocation = getMostVotedLocation();
+  const winningSlots = getWinningSlots();
 
   return (
     <EventResult
-      peopleVoted={[
-        [
-          "anna luundberg",
-          "simon flisberg",
-          "dgfnadsgkhnaödkfga",
-          "jvgdlksjvdö",
-          "kdsögkövjädsgjdgkldsöglä",
-        ],
-        ["anna luundberg", "simon flisberg"],
-        [],
-      ]}
       winningSlots={winningSlots}
       topLocation={topLocation}
-      places={
-        model.currentEvent?.places || [
-          {
-            place: "stockholm",
-            votes: ["anna", "elin", "dsdgds", "vdslv", "kmsv"],
-          },
-          {
-            place: "göteborg",
-            votes: ["simon", "dvklskgvds", "kmsdvds", "mdskö"],
-          },
-          { place: "malmö", votes: ["dfsgds", "f,dsb", "mvdkls"] },
-          { place: "uppsala", votes: ["dsövvvds", "ndlksv"] },
-          { place: "västerås", votes: ["fdsggs"] },
-          { place: "linköping", votes: [] },
-        ]
-      }
+      places={model.currentEvent?.places || []}
     />
   );
 }

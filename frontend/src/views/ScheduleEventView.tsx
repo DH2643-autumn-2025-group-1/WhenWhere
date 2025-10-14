@@ -128,7 +128,7 @@ export function ScheduleEventView({
             index < 5 && (
               <PlaceContainer key={index}>
                 <Location
-                  value={place}
+                  value={place.place}
                   label={`Place ${index + 1}`}
                   onSelectFuntion={(value) =>
                     value
