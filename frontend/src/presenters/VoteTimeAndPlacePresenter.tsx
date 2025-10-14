@@ -1,7 +1,8 @@
-import type { EventModelType } from "../models/EventModel";
-import VoteTimeAndPlace from "../views/VoteTimeAndPlace";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
+import type { EventModelType } from "../models/EventModel";
+import VoteTimeAndPlace from "../views/VoteTimeAndPlace";
+import { saveAvailabilityOnDB } from "../services/backendCommunication";
 import {
   getShareHashFromSearch,
   makeResultPath,
@@ -19,6 +20,7 @@ export function VoteTimeAndPlacePresenter({
   const navigate = useNavigate();
   const shareHash = getShareHashFromSearch(location.search);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
 
   useEffect(() => {
     if (!shareHash) return;
@@ -50,12 +52,28 @@ export function VoteTimeAndPlacePresenter({
     return <LoadingView />;
   }
 
+  const handleSubmit = async () => {
+    const eventId = model.currentEvent?._id;
+    const userId = model.userId;
+    if (!eventId || !userId) {
+      navigate(resultsPath);
+      return;
+    }
+    try {
+      await saveAvailabilityOnDB(eventId, userId, selectedDates);
+    } finally {
+      navigate(resultsPath);
+    }
+  };
+
   return (
     <VoteTimeAndPlace
       model={model}
       places={model.currentEvent?.places}
       resultsPath={resultsPath}
       shareUrl={shareUrl}
+      onSelectedDatesChange={setSelectedDates}
+      onSubmit={handleSubmit}
     />
   );
 }

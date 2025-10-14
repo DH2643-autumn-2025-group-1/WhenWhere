@@ -16,6 +16,7 @@ export function HomePage({
   myEvents: Array<Event>;
   friendsEvents: Array<Event>;
   deleteEvent: (id: string) => void;
+  onSelectEvent: (event: Event) => void;
 }) {
   const navigate = useNavigate();
   const [openWarningDialog, setOpenWarningDialog] = useState(false);

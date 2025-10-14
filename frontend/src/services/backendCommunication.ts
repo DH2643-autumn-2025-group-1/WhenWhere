@@ -32,7 +32,6 @@ export const deleteEventOnDB = async (eventId: string) => {
   if (!response.ok) {
     throw new Error("Failed to delete event");
   }
-  return;
 };
 
 export const fetchCreatedEvents = async (userId: string) => {
@@ -51,6 +50,27 @@ export const fetchInvitedEvents = async (userId: string) => {
   );
   if (!response.ok) {
     throw new Error("Failed to fetch invited events");
+  }
+  return response.json();
+};
+
+export const saveAvailabilityOnDB = async (
+  eventId: string,
+  userId: string,
+  availableSlots: Date[],
+) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/events/${eventId}/availability`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, availableSlots }),
+    },
+  );
+  if (!response.ok) {
+    throw new Error("Failed to save availability");
   }
   return response.json();
 };

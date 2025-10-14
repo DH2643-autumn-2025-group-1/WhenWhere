@@ -37,11 +37,15 @@ function VoteTimeAndPlace({
   places,
   resultsPath = "/event-result",
   shareUrl,
+  onSelectedDatesChange,
+  onSubmit,
 }: {
   model: EventModelType;
   places: string[] | undefined;
   resultsPath?: string;
   shareUrl?: string;
+  onSelectedDatesChange?: (dates: Date[]) => void;
+  onSubmit?: () => void;
 }) {
   const [haveVotedLocation, setHaveVotedLocation] = useState(false);
   const [haveVotedTime, setHaveVotedTime] = useState(false);
@@ -58,6 +62,7 @@ function VoteTimeAndPlace({
       <AvailabilityPresenter
         model={model}
         setHaveVotedTime={setHaveVotedTime}
+        onSelectedChange={onSelectedDatesChange}
       />
       <PlaceAndSubmitContainer>
         <VoteLocationPresenter
@@ -68,7 +73,7 @@ function VoteTimeAndPlace({
           <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
         )}
         <ButtonComponent
-          onClickFunction={() => navigate(resultsPath)}
+          onClickFunction={onSubmit ? onSubmit : () => navigate(resultsPath)}
           text="Submit and see results"
           disabled={!haveVotedLocation || !haveVotedTime}
           variant="primary"
