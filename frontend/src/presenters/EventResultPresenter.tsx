@@ -51,8 +51,9 @@ export const EventResultPresenter = observer(
         },
       );
 
-      return mostVotedPlace.place;
+      return mostVotedPlace;
     }
+
     function getWinningSlots() {
       const slotVoteCount: { [key: string]: number } = {};
       const slotPeople: { [key: string]: string[] } = {};

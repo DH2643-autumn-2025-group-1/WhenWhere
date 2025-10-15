@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { VoteLocationPresenter } from "../presenters/VoteLocationPresenter";
-import type { EventLocation } from "../models/EventModel";
+import type { Place } from "../models/EventModel";
 
 const Container = styled.div`
   display: flex;
@@ -37,11 +37,13 @@ function VoteTimeAndPlace({
   places,
   resultsPath = "/event-result",
   onSelectedDatesChange,
+  onLocationVote,
   onSubmit,
 }: {
-  places: EventLocation[] | undefined;
+  places?: Place[];
   resultsPath?: string;
   onSelectedDatesChange?: (dates: Date[]) => void;
+  onLocationVote?: (place: Place | null) => void;
   onSubmit?: () => void;
 }) {
   const [haveVotedLocation, setHaveVotedLocation] = useState(false);
@@ -64,6 +66,7 @@ function VoteTimeAndPlace({
         <VoteLocationPresenter
           setHaveVotedLocation={setHaveVotedLocation}
           places={places || []}
+          onLocationChange={onLocationVote}
         />
 
         <ButtonComponent

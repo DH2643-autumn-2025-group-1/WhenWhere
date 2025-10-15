@@ -3,7 +3,7 @@ import styled from "styled-components";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { theme } from "../styles/theme";
 import { VoteLocation } from "./VoteLocation";
-import type { EventLocation } from "../models/EventModel";
+import type { Place } from "../models/EventModel";
 import TextBoxWithActions from "../components/TextBoxWithActions";
 import Calendar from "../components/Calendar";
 
@@ -196,8 +196,8 @@ export function EventResult({
   currentUserId,
 }: {
   winningSlots: { slot: string; people: string[] }[];
-  topLocation: string | null;
-  places: EventLocation[];
+  topLocation: Place | null;
+  places: Place[];
   eventTitle: string;
   shareUrl?: string;
   event?: {
@@ -221,7 +221,7 @@ export function EventResult({
               ) : (
                 <WinnerCard>
                   <EmojiEventsIcon />
-                  <WinnerText>{topLocation}</WinnerText>
+                  <WinnerText>{topLocation.name}</WinnerText>
                 </WinnerCard>
               )}
             </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import type { EventModelType } from "../models/EventModel";
+import type { EventModelType, Place } from "../models/EventModel";
 import VoteTimeAndPlace from "../views/VoteTimeAndPlace";
 import { saveAvailabilityOnDB } from "../services/backendCommunication";
 import { getShareHashFromSearch, makeResultPath } from "../utils/shareHash";
@@ -14,7 +14,7 @@ export const VoteTimeAndPlacePresenter = observer(
     const shareHash = getShareHashFromSearch(location.search);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedDates, setSelectedDates] = useState<Date[]>([]);
-
+    const [votedLocation, setVotedLocation] = useState<Place | null>(null);
     useEffect(() => {
       if (!shareHash) return;
       if (model.currentEvent?.shareHash === shareHash) {
@@ -54,6 +54,7 @@ export const VoteTimeAndPlacePresenter = observer(
           eventId,
           userId,
           selectedDates,
+          votedLocation,
         );
         model.currentEvent = updatedEvent;
       } finally {
@@ -66,6 +67,7 @@ export const VoteTimeAndPlacePresenter = observer(
         places={model.currentEvent?.places}
         resultsPath={resultsPath}
         onSelectedDatesChange={setSelectedDates}
+        onLocationVote={setVotedLocation}
         onSubmit={handleSubmit}
       />
     );

@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled, { css } from "styled-components";
 import { theme } from "../styles/theme";
 import { darken, lighten } from "polished";
+import type { Place } from "../models/EventModel";
 
 const Container = styled.div`
   display: flex;
@@ -74,15 +75,15 @@ export function VoteLocation({
   isvoting,
   onLocationChange,
 }: {
-  places?: { place: string; votes: string[] }[];
+  places?: Place[];
   setHaveVotedLocation: (voted: boolean) => void;
+  onLocationChange?: (location: Place | null) => void;
   isvoting: boolean;
-  onLocationChange?: (location: string | null) => void;
 }) {
   const [chosenPlace, setChosenPlace] = useState<string | null>(null);
 
-  function handlePlaceSelection(place: string) {
-    setChosenPlace(place);
+  function handlePlaceSelection(place: Place) {
+    setChosenPlace(place.name);
     setHaveVotedLocation(true);
     onLocationChange?.(place);
   }
@@ -90,6 +91,8 @@ export function VoteLocation({
   if (!isvoting && (!places || places.length === 0)) {
     return null;
   }
+
+  console.log("Rendering VoteLocation with places:", places);
 
   return (
     <Container>
@@ -105,12 +108,15 @@ export function VoteLocation({
           {places?.map((place, index) => (
             <PlaceItem
               key={index}
-              $active={place.place === chosenPlace}
-              onClick={() => isvoting && handlePlaceSelection(place.place)}
+              $active={place.name === chosenPlace}
+              onClick={() => isvoting && handlePlaceSelection(place)}
               $isvoting={isvoting}
               colorStrength={place.votes.length}
             >
-              {place.place.charAt(0).toUpperCase() + place.place.slice(1)}
+              {place?.name.charAt(0).toUpperCase() +
+                place?.name.slice(1) +
+                ", " +
+                place.formatted_address}
               {!isvoting &&
                 ` ― ${place.votes.length} vote${place.votes.length === 1 ? "" : "s"}`}
             </PlaceItem>

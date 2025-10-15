@@ -124,28 +124,25 @@ export function ScheduleEventView({
         <Typography variant="h6" gutterBottom>
           Places
         </Typography>
-        {places.map(
-          (place, index) =>
-            index < 5 && (
-              <PlaceContainer key={index}>
-                <Location
-                  value={place.place}
-                  label={`Place ${index + 1}`}
-                  onSelectFuntion={(value) =>
-                    value
-                      ? onPlaceChange(index, value?.adr_address || "")
-                      : console.error("No place selected")
-                  }
-                />
-                <IconButton
-                  aria-label="remove place"
-                  onClick={() => onRemovePlace(index)}
-                >
-                  <RemoveCircleOutlineIcon />
-                </IconButton>
-              </PlaceContainer>
-            ),
-        )}
+        {places.map((place, index) => (
+          <PlaceContainer key={index}>
+            <Location
+              value={place}
+              label={`Place ${index + 1}`}
+              onSelectFuntion={(value) =>
+                value
+                  ? onPlaceChange(index, value)
+                  : console.error("No place selected")
+              }
+            />
+            <IconButton
+              aria-label="remove place"
+              onClick={() => onRemovePlace(index)}
+            >
+              <RemoveCircleOutlineIcon />
+            </IconButton>
+          </PlaceContainer>
+        ))}
         <ButtonComponent
           onClickFunction={onAddPlace}
           text="+ Add Place"

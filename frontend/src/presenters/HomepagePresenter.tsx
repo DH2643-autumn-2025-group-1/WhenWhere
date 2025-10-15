@@ -11,7 +11,7 @@ export const HomepagePresenter = observer(
 
     useEffect(() => {
       async function loadEvents() {
-        if (model.getUserId()) {
+        if (userId) {
           try {
             await Promise.all([
               model.fetchMyEvents(),

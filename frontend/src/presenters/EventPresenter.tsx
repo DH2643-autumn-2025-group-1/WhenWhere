@@ -1,17 +1,14 @@
 import { useState } from "react";
 import { Dayjs } from "dayjs";
-import {
-  type EventData,
-  type EventModelType,
-  type EventLocation,
-} from "../models/EventModel";
+import { type EventData, type EventModelType } from "../models/EventModel";
 import { ScheduleEventView } from "../views/ScheduleEventView";
 import { observer } from "mobx-react-lite";
 import { makeAvailabilityPath } from "../utils/shareHash";
 import { useNavigate } from "react-router";
+import type { Place } from "../models/EventModel";
 
 export interface ScheduleEventViewProps {
-  places: EventLocation[];
+  places: Place[];
   selectedDates: Dayjs[];
   title: string;
   description: string;
@@ -22,7 +19,7 @@ export interface ScheduleEventViewProps {
     severity: "success" | "error";
   };
   onAddPlace: () => void;
-  onPlaceChange: (index: number, value: string) => void;
+  onPlaceChange: (index: number, value: Place) => void;
   onRemovePlace: (index: number) => void;
   onDateClick: (date: Dayjs | null) => void;
   onTitleChange: (value: string) => void;
@@ -33,7 +30,11 @@ export interface ScheduleEventViewProps {
 
 export const EventPresenter = observer(
   ({ model }: { model: EventModelType }) => {
-    const [places, setPlaces] = useState<EventLocation[]>([]);
+    if (!model) {
+      console.error("Model prop is undefined");
+      return null;
+    }
+    const [places, setPlaces] = useState<Place[]>([]);
     const [selectedDates, setSelectedDates] = useState<Dayjs[]>([]);
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
@@ -46,12 +47,12 @@ export const EventPresenter = observer(
     const navigate = useNavigate();
 
     const handleAddPlace = () => {
-      setPlaces([...places, { place: "", votes: [] }]);
+      setPlaces([...places, { name: "", votes: [] }]);
     };
 
-    const handlePlaceChange = (index: number, value: string) => {
+    const handlePlaceChange = (index: number, value: Place) => {
       const updatedPlaces = [...places];
-      updatedPlaces[index].place = value;
+      updatedPlaces[index] = value;
       setPlaces(updatedPlaces);
       model.addPlace(value);
     };
@@ -91,7 +92,8 @@ export const EventPresenter = observer(
         }
 
         const validPlaces = eventData.places.filter(
-          (place: EventLocation) => place.place.trim() !== "",
+          (place) =>
+            place && typeof place === "object" && Object.keys(place).length > 0,
         );
 
         const finalEventData: EventData = {
