@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Availability } from "../models/Event";
 import Event from "../models/Event";
 import {
   getAllEvents,
@@ -6,7 +7,6 @@ import {
   deleteEvent,
   getEventsCreatedByUser,
   getEventsUserIsInvitedTo,
-  updateEventAvailability,
   getEventByShareHash,
 } from "../services/eventService";
 
@@ -87,15 +87,11 @@ router.put("/:id/availability", async (req, res) => {
     const event = await Event.findById(req.params.id);
     if (!event) return res.status(404).json({ error: "Event not found" });
 
- 
-
-    
-    let userAvailability = event.availability.find(
-      (a: any) => a.userId === userId
+    const userAvailability: Availability | undefined = event.availability.find(
+      (a) => a.userId === userId,
     );
 
     if (userAvailability) {
-    
       if (Array.isArray(availableSlots)) {
         userAvailability.availableSlots = availableSlots;
       }
@@ -103,7 +99,6 @@ router.put("/:id/availability", async (req, res) => {
         userAvailability.votedLocation = votedLocation;
       }
     } else {
-    
       event.availability.push({
         userId,
         availableSlots: availableSlots || [],
@@ -111,12 +106,9 @@ router.put("/:id/availability", async (req, res) => {
       });
     }
 
-  
-
     await event.save();
     res.json(event);
   } catch (err) {
-  
     res
       .status(500)
       .json({ error: "Failed to update availability", details: err });

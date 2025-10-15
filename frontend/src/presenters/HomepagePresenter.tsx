@@ -8,9 +8,11 @@ export const HomepagePresenter = observer(
   ({ model }: { model: EventModelType }) => {
     const [loading, setLoading] = useState(true);
 
+    const userId = model.getUserId();
+
     useEffect(() => {
       async function loadEvents() {
-        if (model.getUserId()) {
+        if (userId) {
           try {
             await Promise.all([
               model.fetchMyEvents(),
@@ -27,7 +29,7 @@ export const HomepagePresenter = observer(
       }
 
       loadEvents();
-    }, [model, model.getUserId()]);
+    }, [model, userId]);
 
     function deleteEvent(id: string) {
       model.deleteEvent(id);

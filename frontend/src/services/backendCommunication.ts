@@ -1,4 +1,4 @@
-import type { EventData } from "../models/EventModel";
+import type { EventData, Place } from "../models/EventModel";
 
 export const fetchEvents = async () => {
   const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/events`);
@@ -58,9 +58,14 @@ export const saveAvailabilityOnDB = async (
   eventId: string,
   userId: string,
   availableSlots?: Date[],
-  votedLocation?: any
+  votedLocation?: Place | null,
 ) => {
-  const body: any = { userId };
+  const body: {
+    userId: string;
+    availableSlots?: Date[];
+    votedLocation?: Place | null;
+  } = { userId };
+
   if (availableSlots) body.availableSlots = availableSlots;
   if (votedLocation) body.votedLocation = votedLocation;
 
@@ -70,7 +75,7 @@ export const saveAvailabilityOnDB = async (
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
-    }
+    },
   );
 
   if (!response.ok) {

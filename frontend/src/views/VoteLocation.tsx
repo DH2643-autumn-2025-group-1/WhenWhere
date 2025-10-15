@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import type { Place } from "../models/EventModel";
 
 const Container = styled.div`
   display: flex;
@@ -61,13 +62,13 @@ export function VoteLocation({
   setHaveVotedLocation,
   onLocationChange,
 }: {
-  places?: string[];
+  places?: Place[];
   setHaveVotedLocation: (voted: boolean) => void;
-  onLocationChange?: (location: string | null) => void;
+  onLocationChange?: (location: Place | null) => void;
 }) {
-  const [chosenPlace, setChosenPlace] = useState<any | null>(null);
+  const [chosenPlace, setChosenPlace] = useState<Place | null>(null);
 
-  function handlePlaceSelection(place: string) {
+  function handlePlaceSelection(place: Place) {
     setChosenPlace(place);
     setHaveVotedLocation(true);
     onLocationChange?.(place);
@@ -80,7 +81,7 @@ export function VoteLocation({
         <NoPlacesText>No places to vote for.</NoPlacesText>
       ) : (
         <PlacesList>
-          {places?.map((place: any, index) => (
+          {places?.map((place: Place, index) => (
             <PlaceItem
               key={index}
               $active={place?.name === chosenPlace?.name}

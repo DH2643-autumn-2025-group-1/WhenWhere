@@ -12,7 +12,6 @@ export interface Place {
   html_attributions?: string[];
 }
 
-
 export interface Availability {
   userId: string;
   availableSlots: Date[];
@@ -30,7 +29,6 @@ export interface IEvent extends Document {
   suggestions?: { placeName: string; availableDates: Date[]; votes: number }[];
 }
 
-
 const PlaceSchema = new Schema({
   name: { type: String, required: true },
   formatted_address: { type: String },
@@ -46,7 +44,7 @@ const PlaceSchema = new Schema({
 const AvailabilitySchema = new Schema({
   userId: { type: String },
   availableSlots: [Date],
-  votedLocation: PlaceSchema, 
+  votedLocation: PlaceSchema,
 });
 
 const SuggestionSchema = new Schema({
@@ -54,7 +52,6 @@ const SuggestionSchema = new Schema({
   availableDates: [Date],
   votes: { type: Number, default: 0 },
 });
-
 
 const EventSchema = new Schema({
   title: { type: String, required: true },
