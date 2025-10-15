@@ -92,7 +92,7 @@ const TimeContainer = styled.div`
   width: 100%;
 `;
 
-const TimeSlotContainer = styled.div<{ rank?: number }>`
+const TimeSlotContainer = styled.div<{ $rank?: number }>`
   padding: ${(props) => props.theme.spacing.medium};
   border-bottom: 1px solid #eee;
   display: grid;
@@ -102,30 +102,30 @@ const TimeSlotContainer = styled.div<{ rank?: number }>`
   border-radius: 16px;
   margin: 4px 0;
 
-  background: ${({ rank }) =>
-    rank === 0
+  background: ${({ $rank }) =>
+    $rank === 0
       ? "linear-gradient(135deg, #fff9db, #fffbe6)"
-      : rank === 1
+      : $rank === 1
         ? "linear-gradient(135deg, #f3f4f6, #e9ebef)"
-        : rank === 2
+        : $rank === 2
           ? "linear-gradient(135deg, #fff2e0, #fff8e6)"
           : "white"};
 
-  border: ${({ rank }) =>
-    rank === 0
+  border: ${({ $rank }) =>
+    $rank === 0
       ? "2px solid #FFD700"
-      : rank === 1
+      : $rank === 1
         ? "2px solid #B0BEC5"
-        : rank === 2
+        : $rank === 2
           ? "2px solid #CD7F32"
           : "2px solid #ddd"};
 
-  box-shadow: ${({ rank }) =>
-    rank === 0
+  box-shadow: ${({ $rank }) =>
+    $rank === 0
       ? "0 2px 8px rgba(255, 215, 0, 0.25)"
-      : rank === 1
+      : $rank === 1
         ? "0 2px 8px rgba(176, 190, 197, 0.25)"
-        : rank === 2
+        : $rank === 2
           ? "0 2px 8px rgba(205, 127, 50, 0.25)"
           : "0 2px 8px #ddd"};
 `;
@@ -234,7 +234,7 @@ export function EventResult({
                   index < 3 ? trophyColors[index] : "rgba(0, 0, 0, 0.3)";
 
                 return (
-                  <TimeSlotContainer key={index} rank={index}>
+                  <TimeSlotContainer key={index} $rank={index}>
                     <EmojiEventsIcon
                       style={{
                         color,
@@ -263,11 +263,7 @@ export function EventResult({
           </div>
         </WinningCardsContainer>
       </EventResultComponent>
-      <VoteLocation
-        places={places}
-        setHaveVotedLocation={() => {}}
-        isvoting={false}
-      />
+      <VoteLocation places={places} isvoting={false} />
       <Panel>
         <h2 style={{ margin: 0 }}>Calendar results for: {eventTitle}</h2>
         <CalendarWrapper>

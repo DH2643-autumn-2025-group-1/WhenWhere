@@ -4,7 +4,7 @@ import { theme } from "../styles/theme";
 import { darken, lighten } from "polished";
 import type { Place } from "../models/EventModel";
 
-const Container = styled.div`
+const Container = styled.div<{ $isvoting?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -15,13 +15,17 @@ const Container = styled.div`
   padding: ${(props) => props.theme.spacing.large};
   width: 100%;
 
-  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
-    width: 300px;
-  }
+  ${(props) =>
+    props.$isvoting &&
+    css`
+      @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
+        width: 300px;
+      }
 
-  @media (min-width: ${(props) => props.theme.breakpoints.desktop}) {
-    width: 400px;
-  }
+      @media (min-width: ${(props) => props.theme.breakpoints.desktop}) {
+        width: 400px;
+      }
+    `}
 `;
 
 const Title = styled.h2`
@@ -44,7 +48,7 @@ const PlacesList = styled.div`
 const PlaceItem = styled.div<{
   $active: boolean;
   $isvoting: boolean;
-  colorStrength: number;
+  colorstrength: number;
 }>`
   padding: 12px;
   display: flex;
@@ -76,7 +80,7 @@ export function VoteLocation({
   onLocationChange,
 }: {
   places?: Place[];
-  setHaveVotedLocation: (voted: boolean) => void;
+  setHaveVotedLocation?: (voted: boolean) => void;
   onLocationChange?: (location: Place | null) => void;
   isvoting: boolean;
 }) {
@@ -84,7 +88,7 @@ export function VoteLocation({
 
   function handlePlaceSelection(place: Place) {
     setChosenPlace(place.name);
-    setHaveVotedLocation(true);
+    setHaveVotedLocation?.(true);
     onLocationChange?.(place);
   }
 
@@ -92,9 +96,8 @@ export function VoteLocation({
     return null;
   }
 
-
   return (
-    <Container>
+    <Container $isvoting={isvoting}>
       <Title>
         {isvoting
           ? `Vote for location:`
@@ -108,9 +111,11 @@ export function VoteLocation({
             <PlaceItem
               key={index}
               $active={place.name === chosenPlace}
-              onClick={() => isvoting && handlePlaceSelection(place)}
+              onClick={() => {
+                if (isvoting) handlePlaceSelection(place);
+              }}
               $isvoting={isvoting}
-              colorStrength={place.votes.length}
+              colorstrength={place.votes.length}
             >
               {place?.name.charAt(0).toUpperCase() +
                 place?.name.slice(1) +
@@ -129,16 +134,16 @@ export function VoteLocation({
 const getBackgroundColor = ({
   $active,
   $isvoting,
-  colorStrength,
+  colorstrength,
 }: {
   $active: boolean;
   $isvoting: boolean;
-  colorStrength: number;
+  colorstrength: number;
 }) => {
   const baseColor = $active ? theme.colors.primary : theme.colors.secondary;
 
   if ($isvoting) return baseColor;
 
-  const intensity = (colorStrength / 5) * 3;
+  const intensity = (colorstrength / 5) * 3;
   return darken(intensity * 0.1, lighten(0.05, baseColor));
 };

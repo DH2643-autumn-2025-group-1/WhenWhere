@@ -15,6 +15,7 @@ export const VoteTimeAndPlacePresenter = observer(
     const [isLoading, setIsLoading] = useState(false);
     const [selectedDates, setSelectedDates] = useState<Date[]>([]);
     const [votedLocation, setVotedLocation] = useState<Place | null>(null);
+
     useEffect(() => {
       if (!shareHash) return;
       if (model.currentEvent?.shareHash === shareHash) {

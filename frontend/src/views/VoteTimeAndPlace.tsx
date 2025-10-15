@@ -13,12 +13,13 @@ const Container = styled.div`
   gap: ${(props) => props.theme.spacing.large};
   padding: ${(props) => props.theme.spacing.large};
   width: 100%;
+`;
 
-  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
-  }
+const Title = styled.h1`
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  color: #222;
 `;
 
 const PlaceAndSubmitContainer = styled.div`
@@ -58,6 +59,7 @@ function VoteTimeAndPlace({
 
   return (
     <Container>
+      <Title>Vote for your preferred times and location</Title>
       <AvailabilityPresenter
         setHaveVotedTime={setHaveVotedTime}
         onSelectedChange={onSelectedDatesChange}
