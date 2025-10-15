@@ -270,20 +270,15 @@ export function EventResult({
       />
       <Panel>
         <h2 style={{ margin: 0 }}>Calendar results for: {eventTitle}</h2>
-        {shareUrl && (
-          <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
-        )}
-        <div>
-          <CalendarWrapper>
-            <Calendar
-              key={`${JSON.stringify(event?.availability || [])}-${weekAnchor.getTime()}`}
-              weekAnchor={weekAnchor}
-              onNavigateWeek={(next) => setWeekAnchor(next)}
-              heatmapData={event?.availability}
-              currentUserId={currentUserId}
-            />
-          </CalendarWrapper>
-        </div>
+        <CalendarWrapper>
+          <Calendar
+            key={`${JSON.stringify(event?.availability || [])}-${weekAnchor.getTime()}`}
+            weekAnchor={weekAnchor}
+            onNavigateWeek={(next) => setWeekAnchor(next)}
+            heatmapData={event?.availability}
+            currentUserId={currentUserId}
+          />
+        </CalendarWrapper>
       </Panel>
       {shareUrl && (
         <TextBoxWithActions title="Shareable voting link" value={shareUrl} />

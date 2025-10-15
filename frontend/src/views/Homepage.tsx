@@ -19,7 +19,9 @@ export function HomePage({
   onSelectEvent: (event: Event) => void;
 }) {
   const navigate = useNavigate();
-  const [openWarningDialog, setOpenWarningDialog] = useState(false);
+  const [indexOpenWarningDialog, setIndexOpenWarningDialog] = useState<
+    string | null
+  >(null);
 
   return (
     <Container>
@@ -32,10 +34,12 @@ export function HomePage({
             {myEvents.length > 0 ? (
               myEvents.map((event, index) => (
                 <EventContainer key={index}>
-                  {openWarningDialog && (
+                  {indexOpenWarningDialog && (
                     <AlertDialog
-                      open={openWarningDialog}
-                      setOpen={setOpenWarningDialog}
+                      open={indexOpenWarningDialog === event._id}
+                      setOpen={(open) =>
+                        setIndexOpenWarningDialog(open ? event._id : null)
+                      }
                       onAgree={() => deleteEvent(event._id)}
                       title={"Remove event?"}
                       description={
@@ -46,7 +50,7 @@ export function HomePage({
                     />
                   )}
                   <StyledRemoveIcon
-                    onClick={() => setOpenWarningDialog(true)}
+                    onClick={() => setIndexOpenWarningDialog(event._id)}
                   />
                   <Event
                     onClick={() => navigate(makeResultPath(event.shareHash))}
