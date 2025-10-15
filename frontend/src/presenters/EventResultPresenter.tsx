@@ -29,14 +29,14 @@ export function EventResultPresenter({ model }: { model: EventModelType }) {
     ? makeAbsolute(makeAvailabilityPath(shareHash))
     : undefined;
 
-  if (isLoading) {
-    return <LoadingView />;
-  }
-
-  return (
+  return isLoading ? (
+    <LoadingView />
+  ) : (
     <EventResultView
       eventTitle={model.currentEvent?.title ?? ""}
       shareUrl={shareUrl}
+      currentUserId={model.userId}
+      event={model.currentEvent}
     />
   );
 }

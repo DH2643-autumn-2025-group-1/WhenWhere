@@ -1,12 +1,13 @@
 import React, { useMemo, useState, useCallback } from "react";
 import styled from "styled-components";
 
-import { Box, Typography, IconButton } from "@mui/material";
+import { Box, Typography, IconButton, Tooltip } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 import { addDays, format, isSameDay, startOfDay, startOfWeek } from "date-fns";
 import { enGB } from "date-fns/locale";
+import { userService } from "../services/userService";
 
 interface CalendarEvent {
   id: string;
@@ -21,6 +22,8 @@ type CalendarProps = {
   weekAnchor?: Date;
   events?: CalendarEvent[];
   onNavigateWeek?: (nextAnchor: Date) => void;
+  heatmapData?: { userId: string; availableSlots: Date[] | string[] }[];
+  currentUserId?: string | null;
 };
 
 const CalendarContainer = styled(Box)`
@@ -136,6 +139,24 @@ const DayCell = styled(Box)<{ $rowIndex: number; $dayIndex: number }>`
   border-right: 1px solid #efefef;
   border-bottom: 1px solid #efefef;
   background-color: #fff;
+  position: relative;
+`;
+
+const HeatCell = styled(Box)<{
+  $intensity: number; // 0..1
+}>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: ${(props) => {
+    if (props.$intensity <= 0) return "transparent";
+    const alpha = 0.15 + props.$intensity * 0.55;
+    return `rgba(25, 118, 210, ${alpha})`;
+  }};
+  transition: background-color 0.15s ease;
+  pointer-events: auto;
 `;
 
 const EventOverlay = styled(Box)<{ $dayIndex: number }>`
@@ -243,6 +264,8 @@ const Calendar: React.FC<CalendarProps> = ({
   events = [],
   weekAnchor: externalAnchor,
   onNavigateWeek,
+  heatmapData,
+  currentUserId,
 }) => {
   const [internalAnchor, setInternalAnchor] = useState<Date>(
     externalAnchor ?? new Date(),
@@ -260,6 +283,74 @@ const Calendar: React.FC<CalendarProps> = ({
   );
 
   const hours = useMemo(() => Array.from({ length: 24 }, (_, h) => h), []);
+
+  const { heatmapCounts, heatmapUsers, maxCount } = useMemo(() => {
+    if (!heatmapData)
+      return { heatmapCounts: [], heatmapUsers: [], maxCount: 0 };
+
+    const counts: number[][] = Array.from({ length: 7 }, () =>
+      Array.from({ length: 24 }, () => 0),
+    );
+    const usersAt: Array<Array<Array<string>>> = Array.from({ length: 7 }, () =>
+      Array.from({ length: 24 }, () => [] as string[]),
+    );
+
+    for (const entry of heatmapData) {
+      for (const raw of entry.availableSlots || []) {
+        const d =
+          raw instanceof Date ? raw : new Date(raw as unknown as string);
+        const dayIndex = weekDays.findIndex((day) => isSameDay(day, d));
+        if (dayIndex === -1) continue;
+        const hour = d.getHours();
+        counts[dayIndex][hour] += 1;
+        const list = usersAt[dayIndex][hour];
+        if (!list.includes(entry.userId)) list.push(entry.userId);
+      }
+    }
+
+    let max = 0;
+    counts.forEach((col) => col.forEach((c) => (max = Math.max(max, c))));
+    return { heatmapCounts: counts, heatmapUsers: usersAt, maxCount: max };
+  }, [heatmapData, weekDays]);
+
+  const [userNameMap, setUserNameMap] = React.useState<Record<string, string>>(
+    {},
+  );
+  React.useEffect(() => {
+    if (!heatmapData) return;
+
+    let cancelled = false;
+    async function loadNames() {
+      const ids = new Set<string>();
+      heatmapUsers.forEach((perDay) =>
+        perDay.forEach((perHour) => perHour.forEach((id) => ids.add(id))),
+      );
+
+      try {
+        const names = await userService.getUserDisplayNames(
+          Array.from(ids),
+          currentUserId,
+        );
+
+        if (!cancelled) {
+          setUserNameMap(names);
+        }
+      } catch (error) {
+        console.error("Failed to load user names:", error);
+        if (!cancelled) {
+          // Fallback to user IDs if service fails
+          const fallbackNames = Object.fromEntries(
+            Array.from(ids).map((id) => [id, `User ${id.slice(0, 8)}`]),
+          );
+          setUserNameMap(fallbackNames);
+        }
+      }
+    }
+    loadNames();
+    return () => {
+      cancelled = true;
+    };
+  }, [heatmapUsers, currentUserId, heatmapData]);
 
   const navigateWeek = useCallback(
     (direction: "prev" | "next") => {
@@ -307,12 +398,30 @@ const Calendar: React.FC<CalendarProps> = ({
               </HourLabel>
 
               {weekDays.map((day, dayIndex) => {
+                const count = heatmapCounts[dayIndex]?.[hour] || 0;
+                const users = heatmapUsers[dayIndex]?.[hour] || [];
+                const intensity = maxCount > 0 ? count / maxCount : 0;
+                const title = (() => {
+                  if (count === 0) return "No votes";
+                  const voteText = count > 1 ? "votes" : "vote";
+                  const userList = users
+                    .map((u) => `• ${userNameMap[u] || u}`)
+                    .join("\n");
+                  return `${count} ${voteText}:\n${userList}`;
+                })();
+
                 return (
                   <DayCell
                     key={`${day.toISOString()}-${hour}`}
                     $rowIndex={rowIndex}
                     $dayIndex={dayIndex}
-                  />
+                  >
+                    {count > 0 && (
+                      <Tooltip title={title} arrow>
+                        <HeatCell $intensity={intensity} />
+                      </Tooltip>
+                    )}
+                  </DayCell>
                 );
               })}
             </React.Fragment>

@@ -1,5 +1,7 @@
+import { useState } from "react";
 import styled from "styled-components";
 import TextBoxWithActions from "../components/TextBoxWithActions";
+import Calendar from "../components/Calendar";
 
 const Container = styled.div`
   display: flex;
@@ -27,15 +29,29 @@ const Panel = styled.div`
   gap: ${(props) => props.theme.spacing.medium};
 `;
 
+const CalendarWrapper = styled.div`
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+`;
+
 export interface EventResultViewProps {
-  eventTitle: string;
-  shareUrl?: string;
+  readonly eventTitle: string;
+  readonly shareUrl?: string;
+  readonly event?: {
+    availability?: { userId: string; availableSlots: Date[] | string[] }[];
+  } | null;
+  readonly currentUserId?: string | null;
 }
 
 export function EventResultView({
   eventTitle,
   shareUrl,
+  event,
+  currentUserId,
 }: EventResultViewProps) {
+  const [weekAnchor, setWeekAnchor] = useState(() => new Date());
+
   return (
     <Container>
       <Panel>
@@ -43,7 +59,17 @@ export function EventResultView({
         {shareUrl && (
           <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
         )}
-        {/* TODO: Add detailed results UI here */}
+        <div>
+          <CalendarWrapper>
+            <Calendar
+              key={`${JSON.stringify(event?.availability || [])}-${weekAnchor.getTime()}`}
+              weekAnchor={weekAnchor}
+              onNavigateWeek={(next) => setWeekAnchor(next)}
+              heatmapData={event?.availability}
+              currentUserId={currentUserId}
+            />
+          </CalendarWrapper>
+        </div>
       </Panel>
     </Container>
   );
