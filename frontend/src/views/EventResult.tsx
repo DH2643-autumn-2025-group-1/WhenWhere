@@ -1,9 +1,11 @@
+import { useState } from "react";
 import styled from "styled-components";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { theme } from "../styles/theme";
 import { VoteLocation } from "./VoteLocation";
 import type { EventLocation } from "../models/EventModel";
 import TextBoxWithActions from "../components/TextBoxWithActions";
+import Calendar from "../components/Calendar";
 
 const Container = styled.div`
   display: flex;
@@ -38,6 +40,12 @@ const EventResultComponent = styled.div`
   @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
     width: 700px;
   }
+`;
+
+const CalendarWrapper = styled.div`
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
 `;
 
 const WinningCardsContainer = styled.div`
@@ -184,15 +192,21 @@ export function EventResult({
   places,
   eventTitle,
   shareUrl,
+  event,
+  currentUserId,
 }: {
   winningSlots: { slot: string; people: string[] }[];
   topLocation: string | null;
   places: EventLocation[];
   eventTitle: string;
   shareUrl?: string;
+  event?: {
+    availability?: { userId: string; availableSlots: Date[] | string[] }[];
+  } | null;
+  currentUserId?: string | null;
 }) {
+  const [weekAnchor, setWeekAnchor] = useState(() => new Date());
   const trophyColors = ["#FFD700", "#B0BEC5", "#CD7F32"];
-
   return (
     <Container>
       <EventResultComponent>
@@ -256,6 +270,20 @@ export function EventResult({
       />
       <Panel>
         <h2 style={{ margin: 0 }}>Calendar results for: {eventTitle}</h2>
+        {shareUrl && (
+          <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
+        )}
+        <div>
+          <CalendarWrapper>
+            <Calendar
+              key={`${JSON.stringify(event?.availability || [])}-${weekAnchor.getTime()}`}
+              weekAnchor={weekAnchor}
+              onNavigateWeek={(next) => setWeekAnchor(next)}
+              heatmapData={event?.availability}
+              currentUserId={currentUserId}
+            />
+          </CalendarWrapper>
+        </div>
       </Panel>
       {shareUrl && (
         <TextBoxWithActions title="Shareable voting link" value={shareUrl} />

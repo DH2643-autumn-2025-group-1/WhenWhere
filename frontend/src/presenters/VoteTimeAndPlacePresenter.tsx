@@ -50,7 +50,12 @@ export const VoteTimeAndPlacePresenter = observer(
         return;
       }
       try {
-        await saveAvailabilityOnDB(eventId, userId, selectedDates);
+        const updatedEvent = await saveAvailabilityOnDB(
+          eventId,
+          userId,
+          selectedDates,
+        );
+        model.currentEvent = updatedEvent;
       } finally {
         navigate(resultsPath);
       }

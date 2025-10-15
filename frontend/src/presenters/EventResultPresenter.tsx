@@ -90,6 +90,8 @@ export const EventResultPresenter = observer(
         winningSlots={winningSlots}
         topLocation={topLocation}
         places={model.currentEvent?.places || []}
+        currentUserId={model.userId}
+        event={model.currentEvent}
       />
     );
   },
