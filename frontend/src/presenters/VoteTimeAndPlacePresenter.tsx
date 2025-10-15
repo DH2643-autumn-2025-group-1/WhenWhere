@@ -3,12 +3,7 @@ import { useLocation, useNavigate } from "react-router";
 import type { EventModelType } from "../models/EventModel";
 import VoteTimeAndPlace from "../views/VoteTimeAndPlace";
 import { saveAvailabilityOnDB } from "../services/backendCommunication";
-import {
-  getShareHashFromSearch,
-  makeResultPath,
-  makeAbsolute,
-  makeAvailabilityPath,
-} from "../utils/shareHash";
+import { getShareHashFromSearch, makeResultPath } from "../utils/shareHash";
 import { LoadingView } from "../components/utils/Loading";
 import { observer } from "mobx-react-lite";
 
@@ -42,9 +37,6 @@ export const VoteTimeAndPlacePresenter = observer(
     }, [model, shareHash, navigate]);
 
     const resultsPath = shareHash ? makeResultPath(shareHash) : "/event-result";
-    const shareUrl = shareHash
-      ? makeAbsolute(makeAvailabilityPath(shareHash))
-      : undefined;
 
     if (isLoading) {
       return <LoadingView />;
@@ -68,7 +60,6 @@ export const VoteTimeAndPlacePresenter = observer(
       <VoteTimeAndPlace
         places={model.currentEvent?.places}
         resultsPath={resultsPath}
-        shareUrl={shareUrl}
         onSelectedDatesChange={setSelectedDates}
         onSubmit={handleSubmit}
       />

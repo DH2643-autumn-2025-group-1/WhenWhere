@@ -3,17 +3,25 @@ import { Box, IconButton, Stack, Tooltip } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 /* import RestartAltIcon from "@mui/icons-material/RestartAlt"; */
 import {
-  StyledContainer,
   StyledPaper,
   StyledTitle,
   StyledTextField,
 } from "../styles/TextBoxWithActions";
+import styled from "styled-components";
 
 type TextBoxWithActionsProps = {
   value?: string;
   /* onResetACB?: () => string | void; */
   title?: string;
 };
+
+const StyledBox = styled(Box)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1;
+  width: 100%;
+`;
 
 export default function TextBoxWithActions(props: TextBoxWithActionsProps) {
   const text = props.value ?? "";
@@ -40,45 +48,43 @@ export default function TextBoxWithActions(props: TextBoxWithActionsProps) {
   }; */
 
   return (
-    <StyledContainer spacing={1}>
-      <StyledPaper elevation={3}>
-        {props.title && (
-          <StyledTitle variant="subtitle2">{props.title}</StyledTitle>
-        )}
+    <StyledPaper elevation={3}>
+      {props.title && (
+        <StyledTitle variant="subtitle2">{props.title}</StyledTitle>
+      )}
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <StyledTextField
-            variant="outlined"
-            value={text}
-            size="small"
-            disabled
-            sx={{
-              "& .MuiInputBase-input": {
-                width: `${text.length}ch`,
-              },
-            }}
-          />
+      <StyledBox>
+        <StyledTextField
+          variant="outlined"
+          value={text}
+          size="small"
+          disabled
+          sx={{
+            "& .MuiInputBase-input": {
+              width: `${text.length}ch`,
+            },
+          }}
+        />
 
-          <Stack direction="row" spacing={0.5}>
-            <Tooltip title={copied ? "Copied!" : "Copy to clipboard"}>
-              <IconButton
-                color={copied ? "success" : "primary"}
-                onClick={handleCopy}
-                size="small"
-              >
-                <ContentCopyIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            {/**
+        <Stack direction="row" spacing={0.5}>
+          <Tooltip title={copied ? "Copied!" : "Copy to clipboard"}>
+            <IconButton
+              color={copied ? "success" : "primary"}
+              onClick={handleCopy}
+              size="small"
+            >
+              <ContentCopyIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          {/**
             <Tooltip title="Reset">
               <IconButton color="secondary" onClick={handleReset} size="small">
                 <RestartAltIcon fontSize="small" />
               </IconButton>
             </Tooltip>
             */}
-          </Stack>
-        </Box>
-      </StyledPaper>
-    </StyledContainer>
+        </Stack>
+      </StyledBox>
+    </StyledPaper>
   );
 }

@@ -10,19 +10,18 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   margin: ${(props) => props.theme.spacing.xlarge};
-  gap: 96px;
+  gap: ${(props) => props.theme.spacing.xlarge};
 `;
 
 const Panel = styled.div`
   background-color: white;
-  border: 1px solid #ddd;
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  align-items: center;
   padding: ${(props) => props.theme.spacing.large};
   width: 100%;
-  max-width: 600px;
   gap: ${(props) => props.theme.spacing.medium};
 `;
 
@@ -154,6 +153,7 @@ const People = styled.span`
   color: #777;
   display: flex;
   gap: ${(props) => props.theme.spacing.small};
+  align-items: center;
 `;
 
 const PeopleNumber = styled.span`
@@ -198,18 +198,20 @@ export function EventResult({
       <EventResultComponent>
         <Title>Event Result:</Title>
         <WinningCardsContainer>
-          <div>
-            <SubTitleWithLines>Most voted location:</SubTitleWithLines>
+          {topLocation && (
+            <div>
+              <SubTitleWithLines>Most voted location:</SubTitleWithLines>
 
-            {!topLocation ? (
-              <NoTimeSlotsText>No winning location yet.</NoTimeSlotsText>
-            ) : (
-              <WinnerCard>
-                <EmojiEventsIcon />
-                <WinnerText>{topLocation}</WinnerText>
-              </WinnerCard>
-            )}
-          </div>
+              {!topLocation ? (
+                <NoTimeSlotsText>No winning location yet.</NoTimeSlotsText>
+              ) : (
+                <WinnerCard>
+                  <EmojiEventsIcon />
+                  <WinnerText>{topLocation}</WinnerText>
+                </WinnerCard>
+              )}
+            </div>
+          )}
           <div>
             <SubTitleWithLines>Most voted times:</SubTitleWithLines>
             <TimeContainer>
@@ -226,16 +228,12 @@ export function EventResult({
                       }}
                     />
                     <TimeSlot>
-                      <DateText>
-                        {slot.slot.split(" ").slice(0, 3).join(" ")}
-                      </DateText>
-                      <TimeText>
-                        {slot.slot.split(" ").slice(3).join(" ")}
-                      </TimeText>
+                      <DateText>{slot.slot.split(",")[0]}</DateText>
+                      <TimeText>{slot.slot.split(",")[1]}</TimeText>
                     </TimeSlot>
                     <People>
                       <PeopleNumber>
-                        ({winningSlots[index].people})
+                        ({winningSlots[index].people.length})
                       </PeopleNumber>
                       {screen.width >
                         Number(theme.breakpoints.mobile.replace("px", "")) &&
@@ -257,11 +255,11 @@ export function EventResult({
         isvoting={false}
       />
       <Panel>
-        <h2 style={{ margin: 0 }}>Results for: {eventTitle}</h2>
-        {shareUrl && (
-          <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
-        )}
+        <h2 style={{ margin: 0 }}>Calendar results for: {eventTitle}</h2>
       </Panel>
+      {shareUrl && (
+        <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
+      )}
     </Container>
   );
 }

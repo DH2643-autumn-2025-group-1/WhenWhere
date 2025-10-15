@@ -87,6 +87,10 @@ export function VoteLocation({
     onLocationChange?.(place);
   }
 
+  if (!isvoting && (!places || places.length === 0)) {
+    return null;
+  }
+
   return (
     <Container>
       <Title>

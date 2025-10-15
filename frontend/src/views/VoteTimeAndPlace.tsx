@@ -5,14 +5,14 @@ import { useNavigate } from "react-router";
 import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { VoteLocationPresenter } from "../presenters/VoteLocationPresenter";
 import type { EventPlace } from "../models/EventModel";
-import TextBoxWithActions from "../components/TextBoxWithActions";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: ${(props) => props.theme.spacing.large};
-  margin: ${(props) => props.theme.spacing.large};
+  padding: ${(props) => props.theme.spacing.large};
+  width: 100%;
 
   @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
     flex-direction: row;
@@ -26,6 +26,7 @@ const PlaceAndSubmitContainer = styled.div`
   flex-direction: column;
   align-items: stretch;
   gap: ${(props) => props.theme.spacing.large};
+  width: 100%;
 
   > * {
     width: 100%;
@@ -35,13 +36,11 @@ const PlaceAndSubmitContainer = styled.div`
 function VoteTimeAndPlace({
   places,
   resultsPath = "/event-result",
-  shareUrl,
   onSelectedDatesChange,
   onSubmit,
 }: {
   places: EventPlace[] | undefined;
   resultsPath?: string;
-  shareUrl?: string;
   onSelectedDatesChange?: (dates: Date[]) => void;
   onSubmit?: () => void;
 }) {
@@ -66,9 +65,7 @@ function VoteTimeAndPlace({
           setHaveVotedLocation={setHaveVotedLocation}
           places={places || []}
         />
-        {shareUrl && (
-          <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
-        )}
+
         <ButtonComponent
           onClickFunction={onSubmit ? onSubmit : () => navigate(resultsPath)}
           text="Submit and see results"
