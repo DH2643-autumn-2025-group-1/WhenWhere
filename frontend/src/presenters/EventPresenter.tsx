@@ -91,6 +91,17 @@ export const EventPresenter = observer(
           throw new Error("At least one date must be selected");
         }
 
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        for (const date of eventData.dateOptions) {
+          const d = new Date(date);
+          d.setHours(0, 0, 0, 0);
+          if (d < today) {
+            throw new Error("Selected dates cannot be in the past");
+          }
+        }
+
         const validPlaces = eventData.places.filter(
           (place) =>
             place && typeof place === "object" && Object.keys(place).length > 0,
