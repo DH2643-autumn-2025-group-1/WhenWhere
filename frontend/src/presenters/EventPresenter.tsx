@@ -5,9 +5,10 @@ import { ScheduleEventView } from "../views/ScheduleEventView";
 import { observer } from "mobx-react-lite";
 import { makeAvailabilityPath } from "../utils/shareHash";
 import { useNavigate } from "react-router";
+import type { Place } from "../models/EventModel";
 
 export interface ScheduleEventViewProps {
-  places: string[];
+  places: Place[];
   selectedDates: Dayjs[];
   title: string;
   description: string;
@@ -18,7 +19,7 @@ export interface ScheduleEventViewProps {
     severity: "success" | "error";
   };
   onAddPlace: () => void;
-  onPlaceChange: (index: number, value: string) => void;
+  onPlaceChange: (index: number, value: Place) => void;
   onRemovePlace: (index: number) => void;
   onDateClick: (date: Dayjs | null) => void;
   onTitleChange: (value: string) => void;
@@ -33,7 +34,7 @@ export const EventPresenter = observer(
       console.error("Model prop is undefined");
       return null;
     }
-    const [places, setPlaces] = useState<string[]>([]);
+    const [places, setPlaces] = useState<Place[]>([]);
     const [selectedDates, setSelectedDates] = useState<Dayjs[]>([]);
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
@@ -46,10 +47,10 @@ export const EventPresenter = observer(
     const navigate = useNavigate();
 
     const handleAddPlace = () => {
-      setPlaces([...places, ""]);
+      setPlaces([...places, { name: "" }]);
     };
 
-    const handlePlaceChange = (index: number, value: string) => {
+    const handlePlaceChange = (index: number, value: Place) => {
       const updatedPlaces = [...places];
       updatedPlaces[index] = value;
       setPlaces(updatedPlaces);
@@ -90,7 +91,8 @@ export const EventPresenter = observer(
         }
 
         const validPlaces = eventData.places.filter(
-          (place: string) => place.trim() !== "",
+          (place) =>
+            place && typeof place === "object" && Object.keys(place).length > 0,
         );
 
         const finalEventData: EventData = {

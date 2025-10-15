@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { APIProvider, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { TextField } from "@mui/material";
+import type { Place } from "../models/EventModel";
 
 const API_KEY = import.meta.env.VITE_REACT_GOOGLE_PLACES_API_KEY;
 
@@ -9,9 +10,9 @@ export function Location({
   label,
   onSelectFuntion,
 }: {
-  value: string;
+  value: Place;
   label: string;
-  onSelectFuntion: (value: google.maps.places.PlaceResult | null) => void;
+  onSelectFuntion: (value: Place | null) => void;
 }) {
   return (
     <APIProvider
@@ -23,7 +24,7 @@ export function Location({
         <PlaceAutocomplete
           onPlaceSelect={onSelectFuntion}
           label={label}
-          defaultValue={value}
+          defaultValue={value?.name ?? ""}
         />
       </div>
     </APIProvider>
@@ -31,7 +32,7 @@ export function Location({
 }
 
 interface PlaceAutocompleteProps {
-  onPlaceSelect: (place: google.maps.places.PlaceResult | null) => void;
+  onPlaceSelect: (place: Place | null) => void;
   label: string;
   defaultValue?: string;
 }
@@ -61,7 +62,28 @@ const PlaceAutocomplete = ({
     if (!placeAutocomplete) return;
 
     placeAutocomplete.addListener("place_changed", () => {
-      onPlaceSelect(placeAutocomplete.getPlace());
+      const gPlace = placeAutocomplete.getPlace();
+
+      if (!gPlace || !gPlace.name) {
+        onPlaceSelect(null);
+        return;
+      }
+
+      const mappedPlace: Place = {
+        name: gPlace.name,
+        formatted_address: gPlace.formatted_address,
+        geometry: gPlace.geometry
+          ? {
+              location: {
+                lat: gPlace.geometry.location?.lat(),
+                lng: gPlace.geometry.location?.lng(),
+              },
+            }
+          : undefined,
+        html_attributions: [],
+      };
+
+      onPlaceSelect(mappedPlace);
     });
   }, [onPlaceSelect, placeAutocomplete]);
 

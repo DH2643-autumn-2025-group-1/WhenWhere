@@ -1,11 +1,12 @@
 import { Router } from "express";
+import type { Availability } from "../models/Event";
+import Event from "../models/Event";
 import {
   getAllEvents,
   createEvent,
   deleteEvent,
   getEventsCreatedByUser,
   getEventsUserIsInvitedTo,
-  updateEventAvailability,
   getEventByShareHash,
 } from "../services/eventService";
 
@@ -79,21 +80,34 @@ router.get("/invited/:userId", async (req, res) => {
   }
 });
 
-// PUT /events/:id/availability
 router.put("/:id/availability", async (req, res) => {
-  const { userId, availableSlots } = req.body;
+  const { userId, availableSlots, votedLocation } = req.body;
+
   try {
-    const updatedEvent = await updateEventAvailability(
-      req.params.id,
-      userId,
-      availableSlots,
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ error: "Event not found" });
+
+    const userAvailability: Availability | undefined = event.availability.find(
+      (a) => a.userId === userId,
     );
 
-    if (!updatedEvent) {
-      return res.status(404).json({ error: "Event not found" });
+    if (userAvailability) {
+      if (Array.isArray(availableSlots)) {
+        userAvailability.availableSlots = availableSlots;
+      }
+      if (votedLocation) {
+        userAvailability.votedLocation = votedLocation;
+      }
+    } else {
+      event.availability.push({
+        userId,
+        availableSlots: availableSlots || [],
+        votedLocation: votedLocation || null,
+      });
     }
 
-    res.json(updatedEvent);
+    await event.save();
+    res.json(event);
   } catch (err) {
     res
       .status(500)

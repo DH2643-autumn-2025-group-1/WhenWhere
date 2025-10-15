@@ -10,7 +10,7 @@ import { makeAutoObservable } from "mobx";
 export interface EventData {
   title: string;
   description?: string;
-  places: string[];
+  places: Place[];
   dateOptions: Date[];
   creatorId: string;
 }
@@ -21,10 +21,22 @@ export interface Event {
   description?: string;
   creatorId: string;
   dateOptions: Date[];
-  places: string[];
+  places: Place[];
   availability: { userId: string; availableSlots: Date[] }[];
   suggestions: { placeName: string; availableDates: Date[]; votes: number }[];
   shareHash: string;
+}
+
+export interface Place {
+  name: string;
+  formatted_address?: string;
+  geometry?: {
+    location?: {
+      lat?: number;
+      lng?: number;
+    };
+  };
+  html_attributions?: string[];
 }
 
 export const eventModel = {
