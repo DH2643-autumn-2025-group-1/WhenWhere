@@ -7,10 +7,6 @@ import {
 } from "../services/backendCommunication";
 import { makeAutoObservable } from "mobx";
 
-export interface EventLocation {
-  place: string;
-  votes: string[];
-}
 export interface EventData {
   title: string;
   description?: string;
