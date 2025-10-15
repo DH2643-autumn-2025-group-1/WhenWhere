@@ -92,7 +92,6 @@ export function VoteLocation({
     return null;
   }
 
-  console.log("Rendering VoteLocation with places:", places);
 
   return (
     <Container>
