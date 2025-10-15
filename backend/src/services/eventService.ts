@@ -44,16 +44,28 @@ export async function getEventsUserIsInvitedTo(
 export async function updateEventAvailability(
   eventId: string,
   userId: string,
-  availableSlots: Date[],
+  availableSlots: (Date | string)[],
 ): Promise<IEvent | null> {
   const event = await Event.findById(eventId);
   if (!event) return null;
 
+  const now = new Date();
+  const sanitizedSlots = (availableSlots || [])
+    .map((d) => new Date(d))
+    .filter((d) => !isNaN(d.getTime()) && d.getTime() >= now.getTime());
+
+  const allowedDays = new Set(
+    (event.dateOptions || []).map((d) => new Date(d).toDateString()),
+  );
+  const finalSlots = sanitizedSlots.filter((d) =>
+    allowedDays.has(d.toDateString()),
+  );
+
   const existing = event.availability.find((a) => a.userId === userId);
   if (existing) {
-    existing.availableSlots = availableSlots;
+    existing.availableSlots = finalSlots;
   } else {
-    event.availability.push({ userId, availableSlots });
+    event.availability.push({ userId, availableSlots: finalSlots });
   }
 
   await event.save();

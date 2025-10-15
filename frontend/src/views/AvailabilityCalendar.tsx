@@ -72,10 +72,13 @@ interface AvailabilityCalendarProps {
   weekAnchor: Date;
   weekDays: Date[];
   hours: number[];
+  minWeekStart?: Date;
+  maxWeekStart?: Date;
   isSelecting: boolean;
   selectStart: SelectionIndex | null;
   selectEnd: SelectionIndex | null;
   isTimeSlotSelected: (day: Date, hour: number) => boolean;
+  isDayAllowed: (day: Date) => boolean;
   handleNavigateWeek: (nextAnchor: Date) => void;
   handleOverlayMouseDown: (e: React.MouseEvent) => void;
   handleOverlayMouseMove: (e: React.MouseEvent) => void;
@@ -92,10 +95,13 @@ export function AvailabilityCalendar({
   weekAnchor,
   weekDays,
   hours,
+  minWeekStart,
+  maxWeekStart,
   isSelecting,
   selectStart,
   selectEnd,
   isTimeSlotSelected,
+  isDayAllowed,
   handleNavigateWeek,
   handleOverlayMouseDown,
   handleOverlayMouseMove,
@@ -103,7 +109,12 @@ export function AvailabilityCalendar({
 }: Readonly<AvailabilityCalendarProps>) {
   return (
     <CalendarWrapper ref={calendarHostRef}>
-      <Calendar weekAnchor={weekAnchor} onNavigateWeek={handleNavigateWeek} />
+      <Calendar
+        weekAnchor={weekAnchor}
+        onNavigateWeek={handleNavigateWeek}
+        minWeekStart={minWeekStart}
+        maxWeekStart={maxWeekStart}
+      />
       <TimeSelectionOverlay
         $topPx={overlayTopPx}
         $leftPx={overlayLeftPx}
@@ -118,6 +129,24 @@ export function AvailabilityCalendar({
           cursor: isSelecting ? "crosshair" : "default",
         }}
       >
+        {weekDays.map((day, dayIndex) => {
+          const allowed = isDayAllowed(day);
+          if (allowed) return null;
+          return (
+            <Box
+              key={`disabled-${day.toISOString()}`}
+              sx={{
+                gridRow: `1 / 25`,
+                gridColumn: `${dayIndex + 2} / ${dayIndex + 3}`,
+                background:
+                  "repeating-linear-gradient(45deg, rgba(0,0,0,0.06), rgba(0,0,0,0.06) 8px, rgba(0,0,0,0.08) 8px, rgba(0,0,0,0.08) 16px)",
+                borderRadius: "12px",
+                pointerEvents: "none",
+                position: "relative",
+              }}
+            />
+          );
+        })}
         {hours.map((hour) => (
           <React.Fragment key={hour}>
             <Box style={{ pointerEvents: "none" }} />
