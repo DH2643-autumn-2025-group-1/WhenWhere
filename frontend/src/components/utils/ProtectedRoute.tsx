@@ -19,7 +19,9 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!user) {
-    const redirectTo = `/sign-in?callbackUrl=${encodeURIComponent(location.pathname)}`;
+    const fullPath =
+      location.pathname + (location.search || "") + (location.hash || "");
+    const redirectTo = `/sign-in?callbackUrl=${encodeURIComponent(fullPath)}`;
     return <Navigate to={redirectTo} replace />;
   }
 

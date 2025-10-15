@@ -72,16 +72,19 @@ export function VoteLocation({
   places,
   setHaveVotedLocation,
   isvoting,
+  onLocationChange,
 }: {
   places?: { place: string; votes: string[] }[];
   setHaveVotedLocation: (voted: boolean) => void;
   isvoting: boolean;
+  onLocationChange?: (location: string | null) => void;
 }) {
   const [chosenPlace, setChosenPlace] = useState<string | null>(null);
 
   function handlePlaceSelection(place: string) {
     setChosenPlace(place);
     setHaveVotedLocation(true);
+    onLocationChange?.(place);
   }
 
   return (

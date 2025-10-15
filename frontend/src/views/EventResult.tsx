@@ -3,6 +3,7 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { theme } from "../styles/theme";
 import { VoteLocation } from "./VoteLocation";
 import type { EventPlace } from "../models/EventModel";
+import TextBoxWithActions from "../components/TextBoxWithActions";
 
 const Container = styled.div`
   display: flex;
@@ -10,6 +11,19 @@ const Container = styled.div`
   align-items: center;
   margin: ${(props) => props.theme.spacing.xlarge};
   gap: 96px;
+`;
+
+const Panel = styled.div`
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: ${(props) => props.theme.spacing.large};
+  width: 100%;
+  max-width: 600px;
+  gap: ${(props) => props.theme.spacing.medium};
 `;
 
 const EventResultComponent = styled.div`
@@ -168,10 +182,14 @@ export function EventResult({
   winningSlots,
   topLocation,
   places,
+  eventTitle,
+  shareUrl,
 }: {
   winningSlots: { slot: string; people: string[] }[];
   topLocation: string | null;
   places: EventPlace[];
+  eventTitle: string;
+  shareUrl?: string;
 }) {
   const trophyColors = ["#FFD700", "#B0BEC5", "#CD7F32"];
 
@@ -238,6 +256,12 @@ export function EventResult({
         setHaveVotedLocation={() => {}}
         isvoting={false}
       />
+      <Panel>
+        <h2 style={{ margin: 0 }}>Results for: {eventTitle}</h2>
+        {shareUrl && (
+          <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
+        )}
+      </Panel>
     </Container>
   );
 }

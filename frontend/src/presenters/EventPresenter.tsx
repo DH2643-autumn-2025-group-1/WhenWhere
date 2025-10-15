@@ -7,6 +7,8 @@ import {
 } from "../models/EventModel";
 import { ScheduleEventView } from "../views/ScheduleEventView";
 import { observer } from "mobx-react-lite";
+import { makeAvailabilityPath } from "../utils/shareHash";
+import { useNavigate } from "react-router";
 
 export interface ScheduleEventViewProps {
   places: EventPlace[];
@@ -41,6 +43,7 @@ export const EventPresenter = observer(
       message: string;
       severity: "success" | "error";
     }>({ open: false, message: "", severity: "success" });
+    const navigate = useNavigate();
 
     const handleAddPlace = () => {
       setPlaces([...places, { place: "", votes: [] }]);
@@ -50,6 +53,7 @@ export const EventPresenter = observer(
       const updatedPlaces = [...places];
       updatedPlaces[index].place = value;
       setPlaces(updatedPlaces);
+      model.addPlace(value);
     };
 
     const handleRemovePlace = (index: number) => {
@@ -96,8 +100,11 @@ export const EventPresenter = observer(
           description: eventData.description?.trim() || undefined,
           places: validPlaces,
         };
+        const created = await model.createEvent(finalEventData);
 
-        await model.createEvent(finalEventData);
+        // Navigate user to the voting page after successful creation, this will however omit the snackbar alert which is why we might want a global snackbar in root if possible.
+        const votingPath = makeAvailabilityPath(created.shareHash);
+        navigate(votingPath);
 
         setSnackbar({
           open: true,
@@ -126,7 +133,13 @@ export const EventPresenter = observer(
       const creatorId = model.getUserId();
 
       if (!creatorId) {
-        throw new Error("User is not logged in");
+        setSnackbar({
+          open: true,
+          message: "You must be signed in to create an event.",
+          severity: "error",
+        });
+        setIsSubmitting(false);
+        return;
       }
 
       const eventData: EventData = {
@@ -137,8 +150,11 @@ export const EventPresenter = observer(
         creatorId,
       };
 
-      await createEvent(eventData);
-      setIsSubmitting(false);
+      try {
+        await createEvent(eventData);
+      } finally {
+        setIsSubmitting(false);
+      }
     };
 
     const handleCloseSnackbar = () => {

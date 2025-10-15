@@ -7,46 +7,46 @@ import {
 import { Route, Routes } from "react-router";
 import { theme } from "../styles/theme.ts";
 import { Login } from "./Login.tsx";
-import { eventModel } from "../models/EventModel.ts";
 import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
 import { EventPresenter } from "../presenters/EventPresenter.tsx";
 import { StyledEngineProvider } from "@mui/styled-engine-sc";
-import { HeaderPresenter } from "../presenters/Header.tsx";
+import { HeaderPresenter } from "../presenters/HeaderPresenter.tsx";
 import { ProtectedRoute } from "../components/utils/ProtectedRoute.tsx";
 import { EventResultPresenter } from "../presenters/EventResultPresenter.tsx";
+import type { EventModelType } from "../models/EventModel";
 import { VoteTimeAndPlacePresenter } from "../presenters/VoteTimeAndPlacePresenter.tsx";
 
 const muiTheme = createTheme({});
 
-export function Root() {
+export function Root({ model }: { model: EventModelType }) {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
-          <HeaderPresenter />
+          <HeaderPresenter model={model} />
           <Routes>
             <Route
               path="/"
               element={
                 <ProtectedRoute>
-                  <HomepagePresenter model={eventModel} />
+                  <HomepagePresenter model={model} />
                 </ProtectedRoute>
               }
             />
             <Route path="/sign-in" element={<Login />} />
             <Route
-              path="/availibility"
+              path="/event-result"
               element={
                 <ProtectedRoute>
-                  <VoteTimeAndPlacePresenter model={eventModel} />
+                  <EventResultPresenter model={model} />
                 </ProtectedRoute>
               }
             />
             <Route
-              path="/event-result"
+              path="/availability"
               element={
                 <ProtectedRoute>
-                  <EventResultPresenter model={eventModel} />
+                  <VoteTimeAndPlacePresenter model={model} />
                 </ProtectedRoute>
               }
             />
@@ -54,7 +54,7 @@ export function Root() {
               path="/create-event"
               element={
                 <ProtectedRoute>
-                  <EventPresenter model={eventModel} />
+                  <EventPresenter model={model} />
                 </ProtectedRoute>
               }
             />

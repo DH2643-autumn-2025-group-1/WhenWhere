@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Typography, Link, LinearProgress } from "@mui/material";
+import { Typography, Link } from "@mui/material";
 import { SignInPage } from "@toolpad/core/SignInPage";
 import { useNavigate, useSearchParams } from "react-router";
 import {
@@ -76,7 +76,7 @@ const ToggleSignInLink = ({
 export default function AuthPage() {
   const navigate = useNavigate();
   const [mode, setMode] = React.useState<AuthMode>("signin");
-  const [loading, setLoading] = React.useState(false);
+  const [, /* loading */ setLoading] = React.useState(false);
   const [searchParams] = useSearchParams();
   const callbackUrlParam = searchParams.get("callbackUrl") || "/";
 
@@ -147,7 +147,6 @@ export default function AuthPage() {
 
   return (
     <div style={{ position: "relative" }}>
-      {loading && <LinearProgress />}
       <SignInPage
         sx={{ minHeight: 0 }}
         providers={providers}

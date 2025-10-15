@@ -101,6 +101,7 @@ export function ScheduleEventView({
         <Typography variant="h4" gutterBottom>
           Schedule an Event
         </Typography>
+
         <TextField
           label="Event Title"
           variant="outlined"
@@ -132,7 +133,7 @@ export function ScheduleEventView({
                   label={`Place ${index + 1}`}
                   onSelectFuntion={(value) =>
                     value
-                      ? onPlaceChange(index, value?.toString())
+                      ? onPlaceChange(index, value?.adr_address || "")
                       : console.error("No place selected")
                   }
                 />

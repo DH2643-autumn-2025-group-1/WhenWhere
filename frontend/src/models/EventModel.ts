@@ -3,6 +3,7 @@ import {
   deleteEventOnDB,
   fetchCreatedEvents,
   fetchInvitedEvents,
+  fetchEventByHash,
 } from "../services/backendCommunication";
 import { makeAutoObservable } from "mobx";
 
@@ -27,6 +28,7 @@ export interface Event {
   places: EventPlace[];
   availability: { userId: string; availableSlots: Date[] }[];
   suggestions: { placeName: string; availableDates: Date[]; votes: number }[];
+  shareHash: string;
 }
 
 export const eventModel = {
@@ -46,6 +48,7 @@ export const eventModel = {
   async createEvent(eventData: EventData): Promise<Event> {
     const response = await createEventOnDB(eventData);
     this.myEvents.push(response);
+    this.currentEvent = response;
     return response;
   },
 
@@ -71,6 +74,26 @@ export const eventModel = {
     }
     const events = await fetchInvitedEvents(this.userId);
     this.friendsEvents = events;
+  },
+
+  async fetchEventByHash(shareHash: string) {
+    const ev = await fetchEventByHash(shareHash);
+    this.currentEvent = ev;
+    return ev;
+  },
+
+  addPlace(place: string) {
+    if (this.currentEvent) {
+      this.currentEvent.places.push({ place, votes: [] });
+    }
+  },
+
+  hasUserVoted(): boolean {
+    if (!this.currentEvent || !this.userId) return false;
+
+    return this.currentEvent.availability?.some(
+      (entry) => entry.userId === this.userId,
+    );
   },
 };
 

@@ -50,8 +50,10 @@ function toggleSlots(prev: TimeSlot[], range: TimeSlot[]): TimeSlot[] {
 export const AvailabilityPresenter = observer(
   ({
     setHaveVotedTime,
+    onSelectedChange,
   }: Readonly<{
     setHaveVotedTime: (value: boolean) => void;
+    onSelectedChange?: (dates: Date[]) => void;
   }>) => {
     const [selectedTimeSlots, setSelectedTimeSlots] = useState<TimeSlot[]>([]);
     const [weekAnchor, setWeekAnchor] = useState<Date>(new Date());
@@ -81,6 +83,17 @@ export const AvailabilityPresenter = observer(
     useEffect(() => {
       setHaveVotedTime(selectedTimeSlots.length > 0);
     }, [selectedTimeSlots, setHaveVotedTime]);
+
+    useEffect(() => {
+      if (onSelectedChange) {
+        const dates = selectedTimeSlots.map((slot) => {
+          const d = new Date(slot.day);
+          d.setHours(slot.hour, slot.minute ?? 0, 0, 0);
+          return d;
+        });
+        onSelectedChange(dates);
+      }
+    }, [selectedTimeSlots, onSelectedChange]);
 
     const handleNavigateWeek = useCallback((nextAnchor: Date) => {
       setWeekAnchor(nextAnchor);
