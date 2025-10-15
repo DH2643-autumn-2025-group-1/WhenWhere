@@ -7,14 +7,14 @@ import {
 } from "../services/backendCommunication";
 import { makeAutoObservable } from "mobx";
 
-export interface EventPlace {
+export interface EventLocation {
   place: string;
   votes: string[];
 }
 export interface EventData {
   title: string;
   description?: string;
-  places: EventPlace[];
+  places: EventLocation[];
   dateOptions: Date[];
   creatorId: string;
 }
@@ -25,7 +25,7 @@ export interface Event {
   description?: string;
   creatorId: string;
   dateOptions: Date[];
-  places: EventPlace[];
+  places: EventLocation[];
   availability: { userId: string; availableSlots: Date[] }[];
   suggestions: { placeName: string; availableDates: Date[]; votes: number }[];
   shareHash: string;

@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import type { EventPlace } from "../models/EventModel";
+import type { EventLocation } from "../models/EventModel";
 import { VoteLocation } from "../views/VoteLocation";
 
 export const VoteLocationPresenter = observer(
@@ -8,7 +8,7 @@ export const VoteLocationPresenter = observer(
     setHaveVotedLocation,
     onLocationChange,
   }: {
-    places?: EventPlace[];
+    places?: EventLocation[];
     setHaveVotedLocation: (voted: boolean) => void;
     onLocationChange?: (location: string | null) => void;
   }) => {

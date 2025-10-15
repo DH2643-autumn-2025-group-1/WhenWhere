@@ -3,7 +3,7 @@ import { Dayjs } from "dayjs";
 import {
   type EventData,
   type EventModelType,
-  type EventPlace,
+  type EventLocation,
 } from "../models/EventModel";
 import { ScheduleEventView } from "../views/ScheduleEventView";
 import { observer } from "mobx-react-lite";
@@ -11,7 +11,7 @@ import { makeAvailabilityPath } from "../utils/shareHash";
 import { useNavigate } from "react-router";
 
 export interface ScheduleEventViewProps {
-  places: EventPlace[];
+  places: EventLocation[];
   selectedDates: Dayjs[];
   title: string;
   description: string;
@@ -33,7 +33,7 @@ export interface ScheduleEventViewProps {
 
 export const EventPresenter = observer(
   ({ model }: { model: EventModelType }) => {
-    const [places, setPlaces] = useState<EventPlace[]>([]);
+    const [places, setPlaces] = useState<EventLocation[]>([]);
     const [selectedDates, setSelectedDates] = useState<Dayjs[]>([]);
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
@@ -91,7 +91,7 @@ export const EventPresenter = observer(
         }
 
         const validPlaces = eventData.places.filter(
-          (place: EventPlace) => place.place.trim() !== "",
+          (place: EventLocation) => place.place.trim() !== "",
         );
 
         const finalEventData: EventData = {

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { theme } from "../styles/theme";
 import { VoteLocation } from "./VoteLocation";
-import type { EventPlace } from "../models/EventModel";
+import type { EventLocation } from "../models/EventModel";
 import TextBoxWithActions from "../components/TextBoxWithActions";
 
 const Container = styled.div`
@@ -187,7 +187,7 @@ export function EventResult({
 }: {
   winningSlots: { slot: string; people: string[] }[];
   topLocation: string | null;
-  places: EventPlace[];
+  places: EventLocation[];
   eventTitle: string;
   shareUrl?: string;
 }) {

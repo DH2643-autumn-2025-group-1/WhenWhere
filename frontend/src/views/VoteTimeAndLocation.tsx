@@ -65,7 +65,6 @@ function VoteTimeAndPlace({
           setHaveVotedLocation={setHaveVotedLocation}
           places={places || []}
         />
-
         <ButtonComponent
           onClickFunction={onSubmit ? onSubmit : () => navigate(resultsPath)}
           text="Submit and see results"
