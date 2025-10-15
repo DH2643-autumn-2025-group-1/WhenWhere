@@ -22,6 +22,7 @@ export function ButtonComponent({
       $primary={variant === "primary"}
       $negative={variant === "negative"}
       style={style}
+      fullWidth
     >
       {text}
     </StyledButton>

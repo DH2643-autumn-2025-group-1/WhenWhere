@@ -10,6 +10,7 @@ export interface Place {
     };
   };
   html_attributions?: string[];
+  votes: string[];
 }
 
 export interface Availability {
@@ -39,6 +40,7 @@ const PlaceSchema = new Schema({
     },
   },
   html_attributions: [String],
+  votes: [String],
 });
 
 const AvailabilitySchema = new Schema({

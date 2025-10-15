@@ -1,10 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { Paper, Stack, Typography, TextField } from "@mui/material";
-
-export const StyledContainer = styled(Stack)(() => ({
-  width: "fit-content",
-  alignItems: "flex-start",
-}));
+import { Paper, Typography, TextField } from "@mui/material";
 
 export const StyledTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 500,
@@ -17,9 +12,13 @@ export const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   display: "flex",
   flexDirection: "column",
+  justifyContent: "center",
   alignItems: "flex-start",
   gap: theme.spacing(1),
-  width: "fit-content",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  borderRadius: "20px",
+  backgroundColor: "white",
+  width: "100%",
 }));
 
 export const StyledTextField = styled(TextField)(() => ({
