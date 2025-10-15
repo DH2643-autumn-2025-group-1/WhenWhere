@@ -22,7 +22,6 @@ export const HomepagePresenter = observer(
             setLoading(false);
           }
         } else {
-          
           setLoading(false);
         }
       }
@@ -35,7 +34,6 @@ export const HomepagePresenter = observer(
     }
 
     if (loading) {
-      
       return <LoadingView />;
     }
 
