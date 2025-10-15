@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { VoteLocationPresenter } from "../presenters/VoteLocationPresenter";
+import type { EventModelType } from "../models/EventModel";
+import TextBoxWithActions from "../components/TextBoxWithActions";
 
 const Container = styled.div`
   display: flex;
@@ -22,11 +24,29 @@ const Container = styled.div`
 const PlaceAndSubmitContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: spac;
+  align-items: stretch;
   gap: ${(props) => props.theme.spacing.large};
+
+  > * {
+    width: 100%;
+  }
 `;
 
-function VoteTimeAndPlace({ places }: { places: string[] | undefined }) {
+function VoteTimeAndPlace({
+  model,
+  places,
+  resultsPath = "/event-result",
+  shareUrl,
+  onSelectedDatesChange,
+  onSubmit,
+}: {
+  model: EventModelType;
+  places: string[] | undefined;
+  resultsPath?: string;
+  shareUrl?: string;
+  onSelectedDatesChange?: (dates: Date[]) => void;
+  onSubmit?: () => void;
+}) {
   const [haveVotedLocation, setHaveVotedLocation] = useState(false);
   const [haveVotedTime, setHaveVotedTime] = useState(false);
   const navigate = useNavigate();
@@ -39,14 +59,21 @@ function VoteTimeAndPlace({ places }: { places: string[] | undefined }) {
 
   return (
     <Container>
-      <AvailabilityPresenter setHaveVotedTime={setHaveVotedTime} />
+      <AvailabilityPresenter
+        model={model}
+        setHaveVotedTime={setHaveVotedTime}
+        onSelectedChange={onSelectedDatesChange}
+      />
       <PlaceAndSubmitContainer>
         <VoteLocationPresenter
           setHaveVotedLocation={setHaveVotedLocation}
           places={places || []}
         />
+        {shareUrl && (
+          <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
+        )}
         <ButtonComponent
-          onClickFunction={() => navigate("/event-result")}
+          onClickFunction={onSubmit ? onSubmit : () => navigate(resultsPath)}
           text="Submit and see results"
           disabled={!haveVotedLocation || !haveVotedTime}
           variant="primary"

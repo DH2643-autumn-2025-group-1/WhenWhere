@@ -21,6 +21,9 @@ export const HomepagePresenter = observer(
         deleteEvent={deleteEvent}
         friendsEvents={model.friendsEvents}
         myEvents={model.myEvents}
+        onSelectEvent={(event: Event) => {
+          model.currentEvent = event;
+        }}
       />
     );
   },

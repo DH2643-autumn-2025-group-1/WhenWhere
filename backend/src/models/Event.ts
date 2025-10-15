@@ -8,6 +8,7 @@ export interface IEvent extends Document {
   places: string[];
   availability: { userId: string; availableSlots: Date[] }[];
   suggestions: { placeName: string; availableDates: Date[]; votes: number }[];
+  shareHash: string;
 }
 
 const EventSchema: Schema = new Schema({
@@ -29,6 +30,7 @@ const EventSchema: Schema = new Schema({
       votes: { type: Number, default: 0 },
     },
   ],
+  shareHash: { type: String, required: true, unique: true, index: true },
 });
 
 export default mongoose.model<IEvent>("Event", EventSchema);
