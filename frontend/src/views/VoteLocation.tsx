@@ -65,7 +65,7 @@ export function VoteLocation({
   setHaveVotedLocation: (voted: boolean) => void;
   onLocationChange?: (location: string | null) => void;
 }) {
-  const [chosenPlace, setChosenPlace] = useState<string | null>(null);
+  const [chosenPlace, setChosenPlace] = useState<any | null>(null);
 
   function handlePlaceSelection(place: string) {
     setChosenPlace(place);
@@ -80,13 +80,13 @@ export function VoteLocation({
         <NoPlacesText>No places to vote for.</NoPlacesText>
       ) : (
         <PlacesList>
-          {places?.map((place, index) => (
+          {places?.map((place: any, index) => (
             <PlaceItem
               key={index}
-              $active={place == chosenPlace}
+              $active={place?.name === chosenPlace?.name}
               onClick={() => handlePlaceSelection(place)}
             >
-              {place}
+              {place?.name}
             </PlaceItem>
           ))}
         </PlacesList>

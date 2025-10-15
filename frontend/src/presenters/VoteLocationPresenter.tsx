@@ -1,19 +1,19 @@
 import { VoteLocation } from "../views/VoteLocation";
 
 export function VoteLocationPresenter({
-  places,
   setHaveVotedLocation,
+  places,
   onLocationChange,
 }: {
-  places?: string[];
   setHaveVotedLocation: (voted: boolean) => void;
-  onLocationChange?: (location: string | null) => void;
+  places: any[];
+  onLocationChange?: (place: any) => void; 
 }) {
   return (
     <VoteLocation
-      setHaveVotedLocation={setHaveVotedLocation}
       places={places}
-      onLocationChange={onLocationChange}
+      setHaveVotedLocation={setHaveVotedLocation}
+      onLocationChange={onLocationChange}  
     />
   );
 }

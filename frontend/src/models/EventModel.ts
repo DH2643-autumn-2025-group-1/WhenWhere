@@ -42,6 +42,7 @@ export const eventModel = {
   },
 
   async createEvent(eventData: EventData): Promise<Event> {
+    console.log("Sending event data to backend:", eventData);
     const response = await createEventOnDB(eventData);
     this.myEvents.push(response);
     this.currentEvent = response;

@@ -21,7 +21,7 @@ export function VoteTimeAndPlacePresenter({
   const shareHash = getShareHashFromSearch(location.search);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
-
+  const [votedLocation, setVotedLocation] = useState<any | null>(null); 
   useEffect(() => {
     if (!shareHash) return;
     if (model.currentEvent?.shareHash === shareHash) {
@@ -63,7 +63,8 @@ export function VoteTimeAndPlacePresenter({
       const updatedEvent = await saveAvailabilityOnDB(
         eventId,
         userId,
-        selectedDates,
+        selectedDates,   
+        votedLocation,  
       );
       model.currentEvent = updatedEvent;
     } finally {
@@ -78,6 +79,7 @@ export function VoteTimeAndPlacePresenter({
       resultsPath={resultsPath}
       shareUrl={shareUrl}
       onSelectedDatesChange={setSelectedDates}
+      onLocationVote={setVotedLocation}  
       onSubmit={handleSubmit}
     />
   );

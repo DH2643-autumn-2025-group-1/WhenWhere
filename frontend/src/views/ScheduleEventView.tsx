@@ -131,7 +131,7 @@ export function ScheduleEventView({
               label={`Place ${index + 1}`}
               onSelectFuntion={(value) =>
                 value
-                  ? onPlaceChange(index, value?.toString())
+                  ? onPlaceChange(index, value)
                   : console.error("No place selected")
               }
             />
