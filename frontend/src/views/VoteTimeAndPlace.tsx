@@ -1,10 +1,7 @@
 import styled from "styled-components";
 import { ButtonComponent } from "../components/Button";
-import { useEffect, useState } from "react";
+import { type ReactNode } from "react";
 import { useNavigate } from "react-router";
-import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
-import { VoteLocationPresenter } from "../presenters/VoteLocationPresenter";
-import type { Place } from "../models/EventModel";
 import TextBoxWithActions from "../components/TextBoxWithActions";
 
 const Container = styled.div`
@@ -24,6 +21,16 @@ const ContentContainer = styled.div`
 
   @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
     flex-direction: row;
+  }
+`;
+
+const LinkAndLocationContainer = styled.div`
+  display: flex;
+  gap: ${(props) => props.theme.spacing.large};
+  flex-direction: column-reverse;
+
+  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
+    flex-direction: column;
   }
 `;
 
@@ -47,54 +54,41 @@ const PlaceAndSubmitContainer = styled.div`
 `;
 
 function VoteTimeAndPlace({
-  places,
   resultsPath = "/event-result",
-  onSelectedDatesChange,
-  onLocationVote,
   onSubmit,
   shareUrl,
+  availabilitySlot,
+  locationSlot,
+  submitDisabled,
 }: {
-  places?: Place[];
   resultsPath?: string;
-  onSelectedDatesChange?: (dates: Date[]) => void;
-  onLocationVote?: (place: Place | null) => void;
   onSubmit?: () => void;
-  shareUrl: string;
+  shareUrl?: string;
+  availabilitySlot: ReactNode;
+  locationSlot: ReactNode;
+  submitDisabled?: boolean;
 }) {
-  const [haveVotedLocation, setHaveVotedLocation] = useState(false);
-  const [haveVotedTime, setHaveVotedTime] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!places || places.length === 0) {
-      setHaveVotedLocation(true);
-    }
-  }, [setHaveVotedLocation, places]);
 
   return (
     <Container>
       <Title>Vote for your preferred times and location</Title>
       <ContentContainer>
-        <AvailabilityPresenter
-          setHaveVotedTime={setHaveVotedTime}
-          onSelectedChange={onSelectedDatesChange}
-        />
+        {availabilitySlot}
         <PlaceAndSubmitContainer>
-          <VoteLocationPresenter
-            setHaveVotedLocation={setHaveVotedLocation}
-            places={places || []}
-            onLocationChange={onLocationVote}
-          />
-          {shareUrl && (
-            <TextBoxWithActions
-              title="Shareable voting link"
-              value={shareUrl}
-            />
-          )}
+          <LinkAndLocationContainer>
+            {shareUrl && (
+              <TextBoxWithActions
+                title="Shareable voting link"
+                value={shareUrl}
+              />
+            )}
+            {locationSlot}
+          </LinkAndLocationContainer>
           <ButtonComponent
             onClickFunction={onSubmit ? onSubmit : () => navigate(resultsPath)}
             text="Submit and see results"
-            disabled={!haveVotedLocation || !haveVotedTime}
+            disabled={submitDisabled}
             variant="primary"
           />
         </PlaceAndSubmitContainer>

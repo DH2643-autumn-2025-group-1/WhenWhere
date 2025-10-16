@@ -6,6 +6,8 @@ import { saveAvailabilityOnDB } from "../services/backendCommunication";
 import { getShareHashFromSearch, makeResultPath } from "../utils/shareHash";
 import { LoadingView } from "../components/utils/Loading";
 import { observer } from "mobx-react-lite";
+import { AvailabilityPresenter } from "./AvailabilityPresenter";
+import { VoteLocationPresenter } from "./VoteLocationPresenter";
 
 export const VoteTimeAndPlacePresenter = observer(
   ({ model }: { model: EventModelType }) => {
@@ -15,6 +17,10 @@ export const VoteTimeAndPlacePresenter = observer(
     const [isLoading, setIsLoading] = useState(false);
     const [selectedDates, setSelectedDates] = useState<Date[]>([]);
     const [votedLocation, setVotedLocation] = useState<Place | null>(null);
+    const [haveVotedTime, setHaveVotedTime] = useState(false);
+    const [haveVotedLocation, setHaveVotedLocation] = useState(false);
+    const resultsPath = shareHash ? makeResultPath(shareHash) : "/event-result";
+    const places = model.currentEvent?.places || [];
 
     useEffect(() => {
       if (!shareHash) return;
@@ -37,7 +43,11 @@ export const VoteTimeAndPlacePresenter = observer(
         .finally(() => setIsLoading(false));
     }, [model, shareHash, navigate]);
 
-    const resultsPath = shareHash ? makeResultPath(shareHash) : "/event-result";
+    useEffect(() => {
+      if (!places || places.length === 0) {
+        setHaveVotedLocation(true);
+      }
+    }, [setHaveVotedLocation, places]);
 
     if (isLoading) {
       return <LoadingView />;
@@ -65,12 +75,23 @@ export const VoteTimeAndPlacePresenter = observer(
 
     return (
       <VoteTimeAndPlace
-        places={model.currentEvent?.places}
-        resultsPath={resultsPath}
-        onSelectedDatesChange={setSelectedDates}
-        onLocationVote={setVotedLocation}
+        availabilitySlot={
+          <AvailabilityPresenter
+            setHaveVotedTime={setHaveVotedTime}
+            onSelectedChange={setSelectedDates}
+          />
+        }
+        locationSlot={
+          <VoteLocationPresenter
+            setHaveVotedLocation={setHaveVotedLocation}
+            places={places}
+            onLocationChange={setVotedLocation}
+          />
+        }
         onSubmit={handleSubmit}
-        shareUrl={shareHash ? window.location.href : ""}
+        submitDisabled={!haveVotedTime || !haveVotedLocation}
+        resultsPath={resultsPath}
+        shareUrl={shareHash ? window.location.href : undefined}
       />
     );
   },
