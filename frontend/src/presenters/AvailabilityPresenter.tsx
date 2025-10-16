@@ -16,7 +16,6 @@ import {
 import { enGB } from "date-fns/locale";
 import { AvailabilityCalendar } from "../views/AvailabilityCalendar";
 import { observer } from "mobx-react-lite";
-import type { EventModelType } from "../models/EventModel";
 
 type SelectionIndex = { dayIdx: number; hour: number };
 
@@ -56,11 +55,9 @@ function toggleSlots(prev: TimeSlot[], range: TimeSlot[]): TimeSlot[] {
 
 export const AvailabilityPresenter = observer(
   ({
-    model,
     setHaveVotedTime,
     onSelectedChange,
   }: Readonly<{
-    model?: EventModelType;
     setHaveVotedTime: (value: boolean) => void;
     onSelectedChange?: (dates: Date[]) => void;
   }>) => {
@@ -284,7 +281,9 @@ export const AvailabilityPresenter = observer(
       setSelectEnd(null);
     }, [isSelecting, selectStart, selectEnd, weekDays, isDayAllowed]);
 
-    console.debug("AvailabilityPresenter initialized with model:", model);
+    // Note: model parameter is available for future use when availability data needs to be saved/loaded
+    // We can access model properties like model.userId, model.myEvents, etc. when needed
+    // console.debug("AvailabilityPresenter initialized with model:", model);
 
     return (
       <AvailabilityCalendar

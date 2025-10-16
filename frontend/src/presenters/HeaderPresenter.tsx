@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 import { getAuth, signOut } from "firebase/auth";
 import { HeaderView } from "../views/Header";
 import { observer } from "mobx-react-lite";
+import type { EventModelType } from "../models/EventModel";
 
 export const HeaderPresenter = observer(
   ({ model }: Readonly<{ model: EventModelType }>) => {

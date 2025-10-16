@@ -47,13 +47,14 @@ export const EventPresenter = observer(
     const navigate = useNavigate();
 
     const handleAddPlace = () => {
-      setPlaces([...places, { name: "" }]);
+      setPlaces([...places, { name: "", votes: [] }]);
     };
 
     const handlePlaceChange = (index: number, value: Place) => {
       const updatedPlaces = [...places];
       updatedPlaces[index] = value;
       setPlaces(updatedPlaces);
+      model.addPlace(value);
     };
 
     const handleRemovePlace = (index: number) => {
