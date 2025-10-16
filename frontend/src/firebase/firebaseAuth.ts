@@ -61,6 +61,13 @@ export async function signInWithAnonymous() {
   return user;
 }
 
+// Auth header
+export async function authHeader(): Promise<Record<string, string>> {
+  const user = getAuth().currentUser;
+  const token = user ? await user.getIdToken() : null;
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 let authListenerInitialized = false;
 
 /**
