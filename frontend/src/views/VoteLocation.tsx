@@ -14,18 +14,6 @@ const Container = styled.div<{ $isvoting?: boolean }>`
   border-radius: 20px;
   padding: ${(props) => props.theme.spacing.large};
   width: 100%;
-
-  ${(props) =>
-    props.$isvoting &&
-    css`
-      @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
-        width: 300px;
-      }
-
-      @media (min-width: ${(props) => props.theme.breakpoints.desktop}) {
-        width: 400px;
-      }
-    `}
 `;
 
 const Title = styled.h2`
