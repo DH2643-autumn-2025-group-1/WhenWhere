@@ -3,7 +3,7 @@ import { DateCalendar, PickersDay } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import styled from "styled-components";
-import type { ScheduleEventProps } from "../presenters/EventPresenter.tsx";
+import type { ScheduleEventProps } from "../presenters/ScheduleEventPresenter.tsx";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { ButtonComponent } from "../components/Button.tsx";
 import { Location } from "./Location.tsx";
