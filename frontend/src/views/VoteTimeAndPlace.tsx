@@ -1,18 +1,37 @@
 import styled from "styled-components";
 import { ButtonComponent } from "../components/Button";
-import { useEffect, useState } from "react";
+import { type ReactNode } from "react";
 import { useNavigate } from "react-router";
-import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
-import { VoteLocationPresenter } from "../presenters/VoteLocationPresenter";
-import type { EventModelType, Place } from "../models/EventModel";
+import TextBoxWithActions from "../components/TextBoxWithActions";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: ${(props) => props.theme.spacing.large};
+  justify-content: center;
   padding: ${(props) => props.theme.spacing.large};
+  gap: ${(props) => props.theme.spacing.large};
   width: 100%;
+`;
+
+const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${(props) => props.theme.spacing.large};
+  width: 100%;
+
+  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
+    flex-direction: row;
+  }
+`;
+
+const LinkAndLocationContainer = styled.div`
+  display: flex;
+  gap: ${(props) => props.theme.spacing.large};
+  flex-direction: column-reverse;
+
+  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
+    flex-direction: column;
+  }
 `;
 
 const Title = styled.h1`
@@ -29,58 +48,51 @@ const PlaceAndSubmitContainer = styled.div`
   gap: ${(props) => props.theme.spacing.large};
   width: 100%;
 
-  > * {
-    width: 100%;
+  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
+    width: 40%;
   }
 `;
 
 function VoteTimeAndPlace({
-  model,
-  places,
   resultsPath = "/event-result",
-  onSelectedDatesChange,
-  onLocationVote,
   onSubmit,
+  shareUrl,
+  availabilitySlot,
+  locationSlot,
+  submitDisabled,
 }: {
-  model: EventModelType;
-  places?: Place[];
   resultsPath?: string;
-  onSelectedDatesChange?: (dates: Date[]) => void;
-  onLocationVote?: (place: Place | null) => void;
   onSubmit?: () => void;
+  shareUrl?: string;
+  availabilitySlot: ReactNode;
+  locationSlot: ReactNode;
+  submitDisabled?: boolean;
 }) {
-  const [haveVotedLocation, setHaveVotedLocation] = useState(false);
-  const [haveVotedTime, setHaveVotedTime] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!places || places.length === 0) {
-      setHaveVotedLocation(true);
-    }
-  }, [setHaveVotedLocation, places]);
 
   return (
     <Container>
       <Title>Vote for your preferred times and location</Title>
-      <AvailabilityPresenter
-        model={model}
-        setHaveVotedTime={setHaveVotedTime}
-        onSelectedChange={onSelectedDatesChange}
-      />
-      <PlaceAndSubmitContainer>
-        <VoteLocationPresenter
-          setHaveVotedLocation={setHaveVotedLocation}
-          places={places || []}
-          onLocationChange={onLocationVote}
-        />
-
-        <ButtonComponent
-          onClickFunction={onSubmit ? onSubmit : () => navigate(resultsPath)}
-          text="Submit and see results"
-          disabled={!haveVotedLocation || !haveVotedTime}
-          variant="primary"
-        />
-      </PlaceAndSubmitContainer>
+      <ContentContainer>
+        {availabilitySlot}
+        <PlaceAndSubmitContainer>
+          <LinkAndLocationContainer>
+            {shareUrl && (
+              <TextBoxWithActions
+                title="Shareable voting link"
+                value={shareUrl}
+              />
+            )}
+            {locationSlot}
+          </LinkAndLocationContainer>
+          <ButtonComponent
+            onClickFunction={onSubmit ? onSubmit : () => navigate(resultsPath)}
+            text="Submit and see results"
+            disabled={submitDisabled}
+            variant="primary"
+          />
+        </PlaceAndSubmitContainer>
+      </ContentContainer>
     </Container>
   );
 }

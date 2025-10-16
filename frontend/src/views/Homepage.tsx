@@ -69,6 +69,7 @@ export function HomePage({
           disabled={!myEvents}
           text="Create event"
           onClickFunction={() => navigate("create-event")}
+          fullwidth={true}
         />
       </Card>
       <Card>
