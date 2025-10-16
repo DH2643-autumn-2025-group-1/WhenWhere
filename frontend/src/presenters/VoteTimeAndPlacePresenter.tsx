@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import type { EventModelType, Place } from "../models/EventModel";
 import VoteTimeAndPlace from "../views/VoteTimeAndPlace";
@@ -20,7 +20,10 @@ export const VoteTimeAndPlacePresenter = observer(
     const [haveVotedTime, setHaveVotedTime] = useState(false);
     const [haveVotedLocation, setHaveVotedLocation] = useState(false);
     const resultsPath = shareHash ? makeResultPath(shareHash) : "/event-result";
-    const places = model.currentEvent?.places || [];
+    const places = useMemo(
+      () => model.currentEvent?.places || [],
+      [model.currentEvent?.places],
+    );
 
     useEffect(() => {
       if (!shareHash) return;
