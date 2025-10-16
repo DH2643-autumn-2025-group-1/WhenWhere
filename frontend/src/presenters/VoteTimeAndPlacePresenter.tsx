@@ -82,6 +82,7 @@ export const VoteTimeAndPlacePresenter = observer(
           <AvailabilityPresenter
             setHaveVotedTime={setHaveVotedTime}
             onSelectedChange={setSelectedDates}
+            model={model}
           />
         }
         locationSlot={
@@ -91,9 +92,9 @@ export const VoteTimeAndPlacePresenter = observer(
             onLocationChange={setVotedLocation}
           />
         }
+        resultsPath={resultsPath}
         onSubmit={handleSubmit}
         submitDisabled={!haveVotedTime || !haveVotedLocation}
-        resultsPath={resultsPath}
         shareUrl={shareHash ? window.location.href : undefined}
       />
     );
