@@ -22,7 +22,7 @@ export interface Event {
   creatorId: string;
   dateOptions: Date[];
   places: Place[];
-  availability: { userId: string; availableSlots: Date[] }[];
+  availability: { userId: string; username?: string; availableSlots: Date[] }[];
   suggestions: { placeName: string; availableDates: Date[]; votes: number }[];
   shareHash: string;
 }
@@ -41,9 +41,14 @@ export interface Place {
 
 export const eventModel = {
   userId: null as string | null,
+  username: null as string | null,
   myEvents: [] as Event[],
   friendsEvents: [] as Event[],
   currentEvent: null as Event | null,
+
+  setUsername(name: string | null) {
+    this.username = name;
+  },
 
   setuserId(id: string | null) {
     this.userId = id;

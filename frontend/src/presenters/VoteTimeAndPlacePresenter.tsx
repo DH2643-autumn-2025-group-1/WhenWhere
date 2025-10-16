@@ -55,6 +55,7 @@ export function VoteTimeAndPlacePresenter({
   const handleSubmit = async () => {
     const eventId = model.currentEvent?._id;
     const userId = model.userId;
+    const username = model.username ?? undefined;
     if (!eventId || !userId) {
       navigate(resultsPath);
       return;
@@ -63,6 +64,7 @@ export function VoteTimeAndPlacePresenter({
       const updatedEvent = await saveAvailabilityOnDB(
         eventId,
         userId,
+        username,
         selectedDates,
         votedLocation,
       );

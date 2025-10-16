@@ -68,11 +68,36 @@ let authListenerInitialized = false;
  */
 export function initAuthListener(model: {
   setuserId: (id: string | null) => void;
+  setUsername?: (name: string | null) => void;
 }) {
   if (authListenerInitialized) return;
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
-    model.setuserId(user ? user.uid : null);
+    if (user) {
+      model.setuserId(user.uid);
+
+      // ✅ New: clean up and prettify fallback username
+      let fallbackName: string | undefined = user.displayName || undefined;
+
+      if (!fallbackName && user.email) {
+        // Extract part before "@"
+        const emailName = user.email.split("@")[0];
+        // Replace "." or "_" with spaces and capitalize each part
+        fallbackName = emailName
+          .replace(/[._]+/g, " ")
+          .split(" ")
+          .map(
+            (word) =>
+              word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+          )
+          .join(" ");
+      }
+
+      if (model.setUsername) model.setUsername(fallbackName || "Anonymous");
+    } else {
+      model.setuserId(null);
+      if (model.setUsername) model.setUsername(null);
+    }
   });
   authListenerInitialized = true;
 }
