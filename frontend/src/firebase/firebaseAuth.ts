@@ -76,11 +76,9 @@ export function initAuthListener(model: {
     if (user) {
       model.setuserId(user.uid);
 
-
       let fallbackName: string | undefined = user.displayName || undefined;
 
       if (!fallbackName && user.email) {
-
         const emailName = user.email.split("@")[0];
 
         fallbackName = emailName
