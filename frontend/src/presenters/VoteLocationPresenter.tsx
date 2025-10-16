@@ -12,12 +12,16 @@ export const VoteLocationPresenter = observer(
     setHaveVotedLocation: (voted: boolean) => void;
     onLocationChange?: (location: Place | null) => void;
   }) => {
+    function setSelectedPlace(place: Place) {
+      setHaveVotedLocation?.(true);
+      onLocationChange?.(place);
+    }
+
     return (
       <VoteLocation
-        setHaveVotedLocation={setHaveVotedLocation}
         places={places}
         isvoting={true}
-        onLocationChange={onLocationChange}
+        onLocationChange={setSelectedPlace}
       />
     );
   },

@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { theme } from "./styles/theme.ts";
 import { initAuthListener } from "./firebase/firebaseAuth";
-import { eventModel } from "./models/EventModel";
+import { eventModel } from "./models/EventModel.ts";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Failed to find the root element");

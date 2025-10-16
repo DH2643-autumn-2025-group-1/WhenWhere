@@ -58,7 +58,7 @@ export interface EventResultViewProps {
       availableSlots: Date[] | string[];
     }[];
   } | null;
-  readonly currentUserId?: string | null;
+  readonly userId?: string | null;
 }
 const WinningCardsContainer = styled.div`
   display: flex;
@@ -228,7 +228,7 @@ export function EventResult({
   eventTitle,
   shareUrl,
   event,
-  currentUserId,
+  userId,
 }: {
   winningSlots: { slot: string; people: string[] }[];
   topLocation: Place | null;
@@ -238,7 +238,7 @@ export function EventResult({
   event?: {
     availability?: { userId: string; availableSlots: Date[] | string[] }[];
   } | null;
-  currentUserId?: string | null;
+  userId?: string | null;
 }) {
   const [weekAnchor, setWeekAnchor] = useState(() => new Date());
   const trophyColors = ["#FFD700", "#B0BEC5", "#CD7F32"];
@@ -314,7 +314,7 @@ export function EventResult({
               weekAnchor={weekAnchor}
               onNavigateWeek={(next) => setWeekAnchor(next)}
               heatmapData={event?.availability}
-              currentUserId={currentUserId}
+              currentUserId={userId}
             />
           </CalendarWrapper>
         </Panel>
