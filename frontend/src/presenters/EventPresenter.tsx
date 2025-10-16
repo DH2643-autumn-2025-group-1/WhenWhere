@@ -1,23 +1,19 @@
 import { useState } from "react";
 import { Dayjs } from "dayjs";
 import { type EventData, type EventModelType } from "../models/EventModel";
-import { ScheduleEventView } from "../views/ScheduleEventView";
+import { ScheduleEvent } from "../views/ScheduleEvent";
 import { observer } from "mobx-react-lite";
 import { makeAvailabilityPath } from "../utils/shareHash";
 import { useNavigate } from "react-router";
 import type { Place } from "../models/EventModel";
+import { useSnackbar } from "../contexts/useSnackbar";
 
-export interface ScheduleEventViewProps {
+export interface ScheduleEventProps {
   places: Place[];
   selectedDates: Dayjs[];
   title: string;
   description: string;
   isSubmitting: boolean;
-  snackbar: {
-    open: boolean;
-    message: string;
-    severity: "success" | "error";
-  };
   onAddPlace: () => void;
   onPlaceChange: (index: number, value: Place) => void;
   onRemovePlace: (index: number) => void;
@@ -25,7 +21,6 @@ export interface ScheduleEventViewProps {
   onTitleChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onSubmit: () => void;
-  onCloseSnackbar: () => void;
 }
 
 export const EventPresenter = observer(
@@ -39,12 +34,8 @@ export const EventPresenter = observer(
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-    const [snackbar, setSnackbar] = useState<{
-      open: boolean;
-      message: string;
-      severity: "success" | "error";
-    }>({ open: false, message: "", severity: "success" });
     const navigate = useNavigate();
+    const { showSnackbar } = useSnackbar();
 
     const handleAddPlace = () => {
       setPlaces([...places, { name: "", votes: [] }]);
@@ -115,28 +106,25 @@ export const EventPresenter = observer(
         };
         const created = await model.createEvent(finalEventData);
 
-        // Navigate user to the voting page after successful creation, this will however omit the snackbar alert which is why we might want a global snackbar in root if possible.
-        const votingPath = makeAvailabilityPath(created.shareHash);
-        navigate(votingPath);
-
-        setSnackbar({
-          open: true,
-          message: "Event created successfully!",
-          severity: "success",
-        });
-
         // Reset form
         setTitle("");
         setDescription("");
         setPlaces([]);
         setSelectedDates([]);
+
+        // navigate to voting view
+        const votingPath = makeAvailabilityPath(created.shareHash);
+        navigate(votingPath);
+
+        // use global snackbar
+        showSnackbar("Event created successfully!", "success");
       } catch (error) {
         const errorMessage =
           error instanceof Error
             ? error.message
             : "An unexpected error occurred";
 
-        setSnackbar({ open: true, message: errorMessage, severity: "error" });
+        showSnackbar(errorMessage, "error");
       }
     };
 
@@ -146,11 +134,7 @@ export const EventPresenter = observer(
       const creatorId = model.getUserId();
 
       if (!creatorId) {
-        setSnackbar({
-          open: true,
-          message: "You must be signed in to create an event.",
-          severity: "error",
-        });
+        showSnackbar("You must be signed in to create an event.", "error");
         setIsSubmitting(false);
         return;
       }
@@ -170,17 +154,12 @@ export const EventPresenter = observer(
       }
     };
 
-    const handleCloseSnackbar = () => {
-      setSnackbar({ ...snackbar, open: false });
-    };
-
-    const viewProps: ScheduleEventViewProps = {
+    const viewProps: ScheduleEventProps = {
       places,
       selectedDates,
       title,
       description,
       isSubmitting,
-      snackbar,
       onAddPlace: handleAddPlace,
       onPlaceChange: handlePlaceChange,
       onRemovePlace: handleRemovePlace,
@@ -188,9 +167,8 @@ export const EventPresenter = observer(
       onTitleChange: handleTitleChange,
       onDescriptionChange: handleDescriptionChange,
       onSubmit: handleSubmit,
-      onCloseSnackbar: handleCloseSnackbar,
     };
 
-    return <ScheduleEventView {...viewProps} />;
+    return <ScheduleEvent {...viewProps} />;
   },
 );
