@@ -81,7 +81,7 @@ router.get("/invited/:userId", async (req, res) => {
 });
 
 router.put("/:id/availability", async (req, res) => {
-  const { userId, availableSlots, votedLocation } = req.body;
+  const { userId, username, availableSlots, votedLocation } = req.body;
 
   try {
     const event = await Event.findById(req.params.id);
@@ -98,9 +98,13 @@ router.put("/:id/availability", async (req, res) => {
       if (votedLocation) {
         userAvailability.votedLocation = votedLocation;
       }
+      if (username) {
+        userAvailability.username = username;
+      }
     } else {
       event.availability.push({
         userId,
+        username,
         availableSlots: availableSlots || [],
         votedLocation: votedLocation || null,
       });

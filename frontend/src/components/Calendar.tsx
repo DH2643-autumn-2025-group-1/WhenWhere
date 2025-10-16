@@ -7,7 +7,6 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 import { addDays, format, isSameDay, startOfDay, startOfWeek } from "date-fns";
 import { enGB } from "date-fns/locale";
-import { userService } from "../services/userService";
 
 interface CalendarEvent {
   id: string;
@@ -22,7 +21,11 @@ type CalendarProps = {
   weekAnchor?: Date;
   events?: CalendarEvent[];
   onNavigateWeek?: (nextAnchor: Date) => void;
-  heatmapData?: { userId: string; availableSlots: Date[] | string[] }[];
+  heatmapData?: {
+    userId: string;
+    username?: string;
+    availableSlots: Date[] | string[];
+  }[];
   currentUserId?: string | null;
   minWeekStart?: Date;
   maxWeekStart?: Date;
@@ -267,7 +270,6 @@ const Calendar: React.FC<CalendarProps> = ({
   weekAnchor: externalAnchor,
   onNavigateWeek,
   heatmapData,
-  currentUserId,
   minWeekStart,
   maxWeekStart,
 }) => {
@@ -317,44 +319,14 @@ const Calendar: React.FC<CalendarProps> = ({
     return { heatmapCounts: counts, heatmapUsers: usersAt, maxCount: max };
   }, [heatmapData, weekDays]);
 
-  const [userNameMap, setUserNameMap] = React.useState<Record<string, string>>(
-    {},
-  );
-  React.useEffect(() => {
-    if (!heatmapData) return;
-
-    let cancelled = false;
-    async function loadNames() {
-      const ids = new Set<string>();
-      heatmapUsers.forEach((perDay) =>
-        perDay.forEach((perHour) => perHour.forEach((id) => ids.add(id))),
-      );
-
-      try {
-        const names = await userService.getUserDisplayNames(
-          Array.from(ids),
-          currentUserId,
-        );
-
-        if (!cancelled) {
-          setUserNameMap(names);
-        }
-      } catch (error) {
-        console.error("Failed to load user names:", error);
-        if (!cancelled) {
-          // Fallback to user IDs if service fails
-          const fallbackNames = Object.fromEntries(
-            Array.from(ids).map((id) => [id, `User ${id.slice(0, 8)}`]),
-          );
-          setUserNameMap(fallbackNames);
-        }
-      }
+  const userNameMap = useMemo(() => {
+    if (!heatmapData) return {};
+    const map: Record<string, string> = {};
+    for (const entry of heatmapData) {
+      map[entry.userId] = entry.username || "Anonymous";
     }
-    loadNames();
-    return () => {
-      cancelled = true;
-    };
-  }, [heatmapUsers, currentUserId, heatmapData]);
+    return map;
+  }, [heatmapData]);
 
   const navigateWeek = useCallback(
     (direction: "prev" | "next") => {

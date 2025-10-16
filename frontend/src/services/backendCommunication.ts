@@ -60,15 +60,18 @@ export const fetchInvitedEvents = async (userId: string) => {
 export const saveAvailabilityOnDB = async (
   eventId: string,
   userId: string,
+  username?: string,
   availableSlots?: Date[],
   votedLocation?: Place | null,
 ) => {
   const body: {
     userId: string;
+    username?: string;
     availableSlots?: Date[];
     votedLocation?: Place | null;
   } = { userId };
 
+  if (username) body.username = username;
   if (availableSlots) body.availableSlots = availableSlots;
   if (votedLocation) body.votedLocation = votedLocation;
 

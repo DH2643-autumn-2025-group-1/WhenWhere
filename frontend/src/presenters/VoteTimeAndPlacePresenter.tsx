@@ -39,13 +39,10 @@ export const VoteTimeAndPlacePresenter = observer(
 
     const resultsPath = shareHash ? makeResultPath(shareHash) : "/event-result";
 
-    if (isLoading) {
-      return <LoadingView />;
-    }
-
     const handleSubmit = async () => {
       const eventId = model.currentEvent?._id;
       const userId = model.userId;
+      const username = model.username ?? undefined;
       if (!eventId || !userId) {
         navigate(resultsPath);
         return;
@@ -54,6 +51,7 @@ export const VoteTimeAndPlacePresenter = observer(
         const updatedEvent = await saveAvailabilityOnDB(
           eventId,
           userId,
+          username,
           selectedDates,
           votedLocation,
         );
@@ -62,6 +60,9 @@ export const VoteTimeAndPlacePresenter = observer(
         navigate(resultsPath);
       }
     };
+    if (isLoading) {
+      return <LoadingView />;
+    }
 
     return (
       <VoteTimeAndPlace
