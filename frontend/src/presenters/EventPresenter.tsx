@@ -26,6 +26,7 @@ export interface ScheduleEventViewProps {
   onDescriptionChange: (value: string) => void;
   onSubmit: () => void;
   onCloseSnackbar: () => void;
+  setShouldIncludeDigital: (value: boolean) => void;
 }
 
 export const EventPresenter = observer(
@@ -44,6 +45,7 @@ export const EventPresenter = observer(
       message: string;
       severity: "success" | "error";
     }>({ open: false, message: "", severity: "success" });
+    const [shouldIncludeDigital, setShouldIncludeDigital] = useState(false);
     const navigate = useNavigate();
 
     const handleAddPlace = () => {
@@ -144,6 +146,8 @@ export const EventPresenter = observer(
         return;
       }
 
+      if (shouldIncludeDigital) places.push({ name: "digital", votes: [] });
+
       const eventData: EventData = {
         title,
         description,
@@ -178,6 +182,7 @@ export const EventPresenter = observer(
       onDescriptionChange: handleDescriptionChange,
       onSubmit: handleSubmit,
       onCloseSnackbar: handleCloseSnackbar,
+      setShouldIncludeDigital: setShouldIncludeDigital,
     };
 
     return <ScheduleEventView {...viewProps} />;

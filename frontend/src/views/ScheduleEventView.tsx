@@ -4,6 +4,7 @@ import {
   IconButton,
   Alert,
   Snackbar,
+  Switch,
 } from "@mui/material";
 import { DateCalendar, PickersDay } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -79,6 +80,12 @@ const LargeAlert = styled(Alert)`
   }
 `;
 
+const SwitchContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 export function ScheduleEventView({
   places,
   selectedDates,
@@ -94,6 +101,7 @@ export function ScheduleEventView({
   onDescriptionChange,
   onSubmit,
   onCloseSnackbar,
+  setShouldIncludeDigital,
 }: ScheduleEventViewProps) {
   return (
     <Container>
@@ -124,6 +132,18 @@ export function ScheduleEventView({
         <Typography variant="h6" gutterBottom>
           Places
         </Typography>
+        <SwitchContainer>
+          <span>Include digital as location:</span>
+          <Switch
+            onChange={(_, checked) => {
+              if (checked) {
+                setShouldIncludeDigital(true);
+              } else {
+                setShouldIncludeDigital(false);
+              }
+            }}
+          />
+        </SwitchContainer>
         {places.map((place, index) => (
           <PlaceContainer key={index}>
             <Location

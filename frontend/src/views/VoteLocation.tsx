@@ -108,10 +108,8 @@ export function VoteLocation({
               $isvoting={isvoting}
               $colorstrength={place.votes.length}
             >
-              {place?.name.charAt(0).toUpperCase() +
-                place?.name.slice(1) +
-                ", " +
-                place.formatted_address}
+              {place?.name.charAt(0).toUpperCase() + place?.name.slice(1)}
+              {place.formatted_address && ", " + place.formatted_address}
               {!isvoting &&
                 ` ― ${place.votes.length} vote${place.votes.length === 1 ? "" : "s"}`}
             </PlaceItem>
