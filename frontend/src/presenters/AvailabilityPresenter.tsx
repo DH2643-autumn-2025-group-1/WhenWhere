@@ -6,10 +6,17 @@ import {
   useRef,
   useState,
 } from "react";
-import { addDays, isSameDay, startOfWeek } from "date-fns";
+import {
+  addDays,
+  isBefore,
+  isSameDay,
+  startOfDay,
+  startOfWeek,
+} from "date-fns";
 import { enGB } from "date-fns/locale";
 import { AvailabilityCalendar } from "../views/AvailabilityCalendar";
 import { observer } from "mobx-react-lite";
+import type { EventModelType } from "../models/EventModel";
 
 type SelectionIndex = { dayIdx: number; hour: number };
 
@@ -49,9 +56,11 @@ function toggleSlots(prev: TimeSlot[], range: TimeSlot[]): TimeSlot[] {
 
 export const AvailabilityPresenter = observer(
   ({
+    model,
     setHaveVotedTime,
     onSelectedChange,
   }: Readonly<{
+    model?: EventModelType;
     setHaveVotedTime: (value: boolean) => void;
     onSelectedChange?: (dates: Date[]) => void;
   }>) => {
@@ -79,6 +88,52 @@ export const AvailabilityPresenter = observer(
       [weekStart],
     );
     const hours = useMemo(() => Array.from({ length: 24 }, (_, h) => h), []);
+
+    const allowedDays = useMemo(() => {
+      const options = model?.currentEvent?.dateOptions || [];
+      return options.map((d) => startOfDay(new Date(d)));
+    }, [model?.currentEvent?.dateOptions]);
+
+    const isDayAllowed = useCallback(
+      (day: Date) => allowedDays.some((d) => isSameDay(d, day)),
+      [allowedDays],
+    );
+
+    const minWeekStart = useMemo(() => {
+      if (allowedDays.length === 0) return undefined;
+      const min = allowedDays.reduce(
+        (acc, cur) => (acc < cur ? acc : cur),
+        allowedDays[0],
+      );
+      return startOfWeek(min, { weekStartsOn: 1, locale: enGB });
+    }, [allowedDays]);
+
+    const maxWeekStart = useMemo(() => {
+      if (allowedDays.length === 0) return undefined;
+      const max = allowedDays.reduce(
+        (acc, cur) => (acc > cur ? acc : cur),
+        allowedDays[0],
+      );
+      return startOfWeek(max, { weekStartsOn: 1, locale: enGB });
+    }, [allowedDays]);
+
+    const desiredWeekStart = useMemo(() => {
+      if (allowedDays.length === 0) return undefined;
+      const now = new Date();
+      const todayStart = startOfDay(now);
+      const sorted = [...allowedDays].sort((a, b) => a.getTime() - b.getTime());
+      const firstFutureOrToday = sorted.find((d) => d >= todayStart);
+      const target = firstFutureOrToday ?? sorted[0];
+      return startOfWeek(target, { weekStartsOn: 1, locale: enGB });
+    }, [allowedDays]);
+
+    const hasAutoAnchoredRef = useRef(false);
+    useEffect(() => {
+      if (!desiredWeekStart) return;
+      if (hasAutoAnchoredRef.current) return;
+      setWeekAnchor(desiredWeekStart);
+      hasAutoAnchoredRef.current = true;
+    }, [desiredWeekStart]);
 
     useEffect(() => {
       setHaveVotedTime(selectedTimeSlots.length > 0);
@@ -164,11 +219,24 @@ export const AvailabilityPresenter = observer(
         e.preventDefault();
         const idx = getIndicesFromEvent(e);
         if (!idx) return;
+        const now = new Date();
+        const todayStart = startOfDay(now);
+        const selectedDay = weekDays[idx.dayIdx];
+
+        if (!isDayAllowed(selectedDay)) {
+          return;
+        }
+        const isPastDay = isBefore(selectedDay, todayStart);
+        const isTodayPastHour =
+          isSameDay(selectedDay, now) && idx.hour < now.getHours();
+        if (isPastDay || isTodayPastHour) {
+          return;
+        }
         setIsSelecting(true);
         setSelectStart(idx);
         setSelectEnd(idx);
       },
-      [getIndicesFromEvent],
+      [getIndicesFromEvent, weekDays, isDayAllowed],
     );
 
     const handleOverlayMouseMove = useCallback(
@@ -197,11 +265,24 @@ export const AvailabilityPresenter = observer(
         startHour,
         endHour,
       );
-      setSelectedTimeSlots((prev) => toggleSlots(prev, rangeSlots));
+
+      const now = new Date();
+      const todayStart = startOfDay(now);
+      const safeRangeSlots = rangeSlots.filter((slot) => {
+        const slotDate = new Date(slot.day);
+        slotDate.setHours(slot.hour, slot.minute ?? 0, 0, 0);
+        if (isBefore(slotDate, now)) return false;
+        if (isBefore(startOfDay(slotDate), todayStart)) return false;
+        if (!isDayAllowed(slot.day)) return false;
+        return true;
+      });
+      if (safeRangeSlots.length > 0) {
+        setSelectedTimeSlots((prev) => toggleSlots(prev, safeRangeSlots));
+      }
       setIsSelecting(false);
       setSelectStart(null);
       setSelectEnd(null);
-    }, [isSelecting, selectStart, selectEnd, weekDays]);
+    }, [isSelecting, selectStart, selectEnd, weekDays, isDayAllowed]);
 
     // Note: model parameter is available for future use when availability data needs to be saved/loaded
     // We can access model properties like model.userId, model.myEvents, etc. when needed
@@ -218,10 +299,13 @@ export const AvailabilityPresenter = observer(
         weekAnchor={weekAnchor}
         weekDays={weekDays}
         hours={hours}
+        minWeekStart={minWeekStart}
+        maxWeekStart={maxWeekStart}
         isSelecting={isSelecting}
         selectStart={selectStart}
         selectEnd={selectEnd}
         isTimeSlotSelected={isTimeSlotSelected}
+        isDayAllowed={isDayAllowed}
         handleNavigateWeek={handleNavigateWeek}
         handleOverlayMouseDown={handleOverlayMouseDown}
         handleOverlayMouseMove={handleOverlayMouseMove}

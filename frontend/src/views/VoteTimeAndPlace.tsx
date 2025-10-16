@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { VoteLocationPresenter } from "../presenters/VoteLocationPresenter";
-import type { Place } from "../models/EventModel";
+import type { EventModelType, Place } from "../models/EventModel";
 
 const Container = styled.div`
   display: flex;
@@ -35,12 +35,14 @@ const PlaceAndSubmitContainer = styled.div`
 `;
 
 function VoteTimeAndPlace({
+  model,
   places,
   resultsPath = "/event-result",
   onSelectedDatesChange,
   onLocationVote,
   onSubmit,
 }: {
+  model: EventModelType;
   places?: Place[];
   resultsPath?: string;
   onSelectedDatesChange?: (dates: Date[]) => void;
@@ -61,6 +63,7 @@ function VoteTimeAndPlace({
     <Container>
       <Title>Vote for your preferred times and location</Title>
       <AvailabilityPresenter
+        model={model}
         setHaveVotedTime={setHaveVotedTime}
         onSelectedChange={onSelectedDatesChange}
       />
