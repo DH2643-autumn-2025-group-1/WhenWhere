@@ -186,6 +186,29 @@ const SubTitleText = styled.h3`
   font-weight: 600;
 `;
 
+const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${(props) => props.theme.spacing.large};
+  width: 100%;
+
+  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
+    flex-direction: row;
+  }
+`;
+
+const PlaceAndLinkContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: ${(props) => props.theme.spacing.large};
+  width: 100%;
+
+  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
+    width: 40%;
+  }
+`;
+
 export function EventResult({
   winningSlots,
   topLocation,
@@ -207,6 +230,9 @@ export function EventResult({
 }) {
   const [weekAnchor, setWeekAnchor] = useState(() => new Date());
   const trophyColors = ["#FFD700", "#B0BEC5", "#CD7F32"];
+  const onMobile =
+    window.innerWidth < Number(theme.breakpoints.tablet.replace("px", ""));
+
   return (
     <Container>
       <EventResultComponent>
@@ -263,22 +289,33 @@ export function EventResult({
           </div>
         </WinningCardsContainer>
       </EventResultComponent>
-      {shareUrl && (
-        <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
-      )}
-      <VoteLocation places={places} isvoting={false} />
-      <Panel>
-        <h2 style={{ margin: 0 }}>Calendar results for: {eventTitle}</h2>
-        <CalendarWrapper>
-          <Calendar
-            key={`${JSON.stringify(event?.availability || [])}-${weekAnchor.getTime()}`}
-            weekAnchor={weekAnchor}
-            onNavigateWeek={(next) => setWeekAnchor(next)}
-            heatmapData={event?.availability}
-            currentUserId={currentUserId}
-          />
-        </CalendarWrapper>
-      </Panel>
+      <ContentContainer>
+        {shareUrl && onMobile && (
+          <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
+        )}
+        {onMobile && <VoteLocation places={places} isvoting={false} />}
+        <Panel>
+          <h2 style={{ margin: 0 }}>Calendar results for: {eventTitle}</h2>
+          <CalendarWrapper>
+            <Calendar
+              key={`${JSON.stringify(event?.availability || [])}-${weekAnchor.getTime()}`}
+              weekAnchor={weekAnchor}
+              onNavigateWeek={(next) => setWeekAnchor(next)}
+              heatmapData={event?.availability}
+              currentUserId={currentUserId}
+            />
+          </CalendarWrapper>
+        </Panel>
+        <PlaceAndLinkContainer>
+          {shareUrl && !onMobile && (
+            <TextBoxWithActions
+              title="Shareable voting link"
+              value={shareUrl}
+            />
+          )}
+          {!onMobile && <VoteLocation places={places} isvoting={false} />}
+        </PlaceAndLinkContainer>
+      </ContentContainer>
     </Container>
   );
 }

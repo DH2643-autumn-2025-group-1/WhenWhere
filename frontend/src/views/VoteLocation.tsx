@@ -16,10 +16,15 @@ const Container = styled.div<{ $isvoting?: boolean }>`
   width: 100%;
 `;
 
-const Title = styled.h2`
+const Title = styled.h2<{ $isvoting?: boolean }>`
   all: unset;
   font-size: ${(props) => props.theme.fontSizes.large};
   text-align: center;
+  ${(props) =>
+    !props.$isvoting &&
+    css`
+      font-weight: 600;
+    `}
 `;
 
 const NoPlacesText = styled.p`
@@ -36,7 +41,7 @@ const PlacesList = styled.div`
 const PlaceItem = styled.div<{
   $active: boolean;
   $isvoting: boolean;
-  colorstrength: number;
+  $colorstrength: number;
 }>`
   padding: 12px;
   display: flex;
@@ -86,7 +91,7 @@ export function VoteLocation({
 
   return (
     <Container $isvoting={isvoting}>
-      <Title>
+      <Title $isvoting={isvoting}>
         {isvoting
           ? `Vote for location:`
           : `Distribution of votes for location:`}
@@ -103,7 +108,7 @@ export function VoteLocation({
                 if (isvoting) handlePlaceSelection(place);
               }}
               $isvoting={isvoting}
-              colorstrength={place.votes.length}
+              $colorstrength={place.votes.length}
             >
               {place?.name.charAt(0).toUpperCase() +
                 place?.name.slice(1) +
@@ -122,16 +127,16 @@ export function VoteLocation({
 const getBackgroundColor = ({
   $active,
   $isvoting,
-  colorstrength,
+  $colorstrength,
 }: {
   $active: boolean;
   $isvoting: boolean;
-  colorstrength: number;
+  $colorstrength: number;
 }) => {
   const baseColor = $active ? theme.colors.primary : theme.colors.secondary;
 
   if ($isvoting) return baseColor;
 
-  const intensity = (colorstrength / 5) * 3;
+  const intensity = ($colorstrength / 5) * 3;
   return darken(intensity * 0.1, lighten(0.05, baseColor));
 };
