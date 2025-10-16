@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { VoteLocationPresenter } from "../presenters/VoteLocationPresenter";
-import type { EventModelType, Place } from "../models/EventModel";
+import type { EventLocation } from "../models/EventModel";
 
 const Container = styled.div`
   display: flex;
@@ -13,13 +13,12 @@ const Container = styled.div`
   gap: ${(props) => props.theme.spacing.large};
   padding: ${(props) => props.theme.spacing.large};
   width: 100%;
-`;
 
-const Title = styled.h1`
-  font-size: 28px;
-  font-weight: 700;
-  text-align: center;
-  color: #222;
+  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+  }
 `;
 
 const PlaceAndSubmitContainer = styled.div`
@@ -35,18 +34,14 @@ const PlaceAndSubmitContainer = styled.div`
 `;
 
 function VoteTimeAndPlace({
-  model,
   places,
   resultsPath = "/event-result",
   onSelectedDatesChange,
-  onLocationVote,
   onSubmit,
 }: {
-  model: EventModelType;
-  places?: Place[];
+  places: EventLocation[] | undefined;
   resultsPath?: string;
   onSelectedDatesChange?: (dates: Date[]) => void;
-  onLocationVote?: (place: Place | null) => void;
   onSubmit?: () => void;
 }) {
   const [haveVotedLocation, setHaveVotedLocation] = useState(false);
@@ -61,9 +56,7 @@ function VoteTimeAndPlace({
 
   return (
     <Container>
-      <Title>Vote for your preferred times and location</Title>
       <AvailabilityPresenter
-        model={model}
         setHaveVotedTime={setHaveVotedTime}
         onSelectedChange={onSelectedDatesChange}
       />
@@ -71,9 +64,7 @@ function VoteTimeAndPlace({
         <VoteLocationPresenter
           setHaveVotedLocation={setHaveVotedLocation}
           places={places || []}
-          onLocationChange={onLocationVote}
         />
-
         <ButtonComponent
           onClickFunction={onSubmit ? onSubmit : () => navigate(resultsPath)}
           text="Submit and see results"

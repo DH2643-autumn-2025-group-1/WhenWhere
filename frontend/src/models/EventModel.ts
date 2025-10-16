@@ -37,6 +37,7 @@ export interface Place {
     };
   };
   html_attributions?: string[];
+  votes: string[];
 }
 
 export const eventModel = {
@@ -93,6 +94,12 @@ export const eventModel = {
     const ev = await fetchEventByHash(shareHash);
     this.currentEvent = ev;
     return ev;
+  },
+
+  addPlace(place: Place) {
+    if (this.currentEvent) {
+      this.currentEvent.places.push({ ...place, votes: [] });
+    }
   },
 
   hasUserVoted(): boolean {

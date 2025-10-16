@@ -27,6 +27,8 @@ type CalendarProps = {
     availableSlots: Date[] | string[];
   }[];
   currentUserId?: string | null;
+  minWeekStart?: Date;
+  maxWeekStart?: Date;
 };
 
 const CalendarContainer = styled(Box)`
@@ -268,6 +270,8 @@ const Calendar: React.FC<CalendarProps> = ({
   weekAnchor: externalAnchor,
   onNavigateWeek,
   heatmapData,
+  minWeekStart,
+  maxWeekStart,
 }) => {
   const [internalAnchor, setInternalAnchor] = useState<Date>(
     externalAnchor ?? new Date(),
@@ -327,20 +331,49 @@ const Calendar: React.FC<CalendarProps> = ({
   const navigateWeek = useCallback(
     (direction: "prev" | "next") => {
       const next = addDays(weekAnchor, direction === "prev" ? -7 : 7);
-      setInternalAnchor(next);
-      onNavigateWeek?.(next);
+      const nextWeekStart = startOfWeek(next, {
+        weekStartsOn: 1,
+        locale: enGB,
+      });
+      // Guard against navigating outside allowed range using week starts
+      if (minWeekStart && direction === "prev" && nextWeekStart < minWeekStart)
+        return;
+      if (maxWeekStart && direction === "next" && nextWeekStart > maxWeekStart)
+        return;
+      setInternalAnchor(nextWeekStart);
+      onNavigateWeek?.(nextWeekStart);
     },
-    [weekAnchor, onNavigateWeek],
+    [weekAnchor, onNavigateWeek, minWeekStart, maxWeekStart],
   );
 
   return (
     <CalendarContainer>
       <NavigationHeader>
         <NavigationControls>
-          <IconButton onClick={() => navigateWeek("prev")} size="small">
+          <IconButton
+            onClick={() => navigateWeek("prev")}
+            size="small"
+            disabled={Boolean(
+              minWeekStart &&
+                startOfWeek(addDays(weekStart, -7), {
+                  weekStartsOn: 1,
+                  locale: enGB,
+                }) < minWeekStart,
+            )}
+          >
             <ArrowBackIosNewIcon fontSize="inherit" />
           </IconButton>
-          <IconButton onClick={() => navigateWeek("next")} size="small">
+          <IconButton
+            onClick={() => navigateWeek("next")}
+            size="small"
+            disabled={Boolean(
+              maxWeekStart &&
+                startOfWeek(addDays(weekStart, 7), {
+                  weekStartsOn: 1,
+                  locale: enGB,
+                }) > maxWeekStart,
+            )}
+          >
             <ArrowForwardIosIcon fontSize="inherit" />
           </IconButton>
         </NavigationControls>

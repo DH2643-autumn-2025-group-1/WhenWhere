@@ -12,9 +12,9 @@ import { EventPresenter } from "../presenters/EventPresenter.tsx";
 import { StyledEngineProvider } from "@mui/styled-engine-sc";
 import { HeaderPresenter } from "../presenters/HeaderPresenter.tsx";
 import { ProtectedRoute } from "../components/utils/ProtectedRoute.tsx";
+import { EventResultPresenter } from "../presenters/EventResultPresenter.tsx";
 import type { EventModelType } from "../models/EventModel";
 import { VoteTimeAndPlacePresenter } from "../presenters/VoteTimeAndPlacePresenter.tsx";
-import { EventResultPresenter } from "../presenters/EventResultPresenter.tsx";
 
 const muiTheme = createTheme({});
 

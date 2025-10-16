@@ -3,86 +3,76 @@ import { useLocation, useNavigate } from "react-router";
 import type { EventModelType, Place } from "../models/EventModel";
 import VoteTimeAndPlace from "../views/VoteTimeAndPlace";
 import { saveAvailabilityOnDB } from "../services/backendCommunication";
-import {
-  getShareHashFromSearch,
-  makeResultPath,
-  makeAbsolute,
-  makeAvailabilityPath,
-} from "../utils/shareHash";
+import { getShareHashFromSearch, makeResultPath } from "../utils/shareHash";
 import { LoadingView } from "../components/utils/Loading";
+import { observer } from "mobx-react-lite";
 
-export function VoteTimeAndPlacePresenter({
-  model,
-}: {
-  model: EventModelType;
-}) {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const shareHash = getShareHashFromSearch(location.search);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
-  const [votedLocation, setVotedLocation] = useState<Place | null>(null);
-  useEffect(() => {
-    if (!shareHash) return;
-    if (model.currentEvent?.shareHash === shareHash) {
-      if (model.hasUserVoted()) {
-        navigate(makeResultPath(shareHash), { replace: true });
-      }
-      return;
-    }
+export const VoteTimeAndPlacePresenter = observer(
+  ({ model }: { model: EventModelType }) => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const shareHash = getShareHashFromSearch(location.search);
+    const [isLoading, setIsLoading] = useState(false);
+    const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+    const [votedLocation, setVotedLocation] = useState<Place | null>(null);
 
-    setIsLoading(true);
-    model
-      .fetchEventByHash(shareHash)
-      .then(() => {
+    useEffect(() => {
+      if (!shareHash) return;
+      if (model.currentEvent?.shareHash === shareHash) {
         if (model.hasUserVoted()) {
           navigate(makeResultPath(shareHash), { replace: true });
         }
-      })
-      .catch(console.error)
-      .finally(() => setIsLoading(false));
-  }, [model, shareHash, navigate]);
+        return;
+      }
 
-  const resultsPath = shareHash ? makeResultPath(shareHash) : "/event-result";
-  const shareUrl = shareHash
-    ? makeAbsolute(makeAvailabilityPath(shareHash))
-    : undefined;
+      setIsLoading(true);
+      model
+        .fetchEventByHash(shareHash)
+        .then(() => {
+          if (model.hasUserVoted()) {
+            navigate(makeResultPath(shareHash), { replace: true });
+          }
+        })
+        .catch(console.error)
+        .finally(() => setIsLoading(false));
+    }, [model, shareHash, navigate]);
 
-  if (isLoading) {
-    return <LoadingView />;
-  }
+    const resultsPath = shareHash ? makeResultPath(shareHash) : "/event-result";
 
-  const handleSubmit = async () => {
-    const eventId = model.currentEvent?._id;
-    const userId = model.userId;
-    const username = model.username ?? undefined;
-    if (!eventId || !userId) {
-      navigate(resultsPath);
-      return;
+    const handleSubmit = async () => {
+      const eventId = model.currentEvent?._id;
+      const userId = model.userId;
+      const username = model.username ?? undefined;
+      if (!eventId || !userId) {
+        navigate(resultsPath);
+        return;
+      }
+      try {
+        const updatedEvent = await saveAvailabilityOnDB(
+          eventId,
+          userId,
+          username,
+          selectedDates,
+          votedLocation,
+        );
+        model.currentEvent = updatedEvent;
+      } finally {
+        navigate(resultsPath);
+      }
+    };
+    if (isLoading) {
+      return <LoadingView />;
     }
-    try {
-      const updatedEvent = await saveAvailabilityOnDB(
-        eventId,
-        userId,
-        username,
-        selectedDates,
-        votedLocation,
-      );
-      model.currentEvent = updatedEvent;
-    } finally {
-      navigate(resultsPath);
-    }
-  };
 
-  return (
-    <VoteTimeAndPlace
-      model={model}
-      places={model.currentEvent?.places}
-      resultsPath={resultsPath}
-      shareUrl={shareUrl}
-      onSelectedDatesChange={setSelectedDates}
-      onLocationVote={setVotedLocation}
-      onSubmit={handleSubmit}
-    />
-  );
-}
+    return (
+      <VoteTimeAndPlace
+        model={model}
+        places={model.currentEvent?.places}
+        resultsPath={resultsPath}
+        onSelectedDatesChange={setSelectedDates}
+        onLocationVote={setVotedLocation}
+        onSubmit={handleSubmit}
+      />
+    );
+  },
+);

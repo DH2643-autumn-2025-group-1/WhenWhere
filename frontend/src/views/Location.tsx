@@ -62,28 +62,31 @@ const PlaceAutocomplete = ({
     if (!placeAutocomplete) return;
 
     placeAutocomplete.addListener("place_changed", () => {
-      const gPlace = placeAutocomplete.getPlace();
+      if (onPlaceSelect) {
+        const gPlace = placeAutocomplete.getPlace();
 
-      if (!gPlace || !gPlace.name) {
-        onPlaceSelect(null);
-        return;
+        if (!gPlace || !gPlace.name) {
+          onPlaceSelect(null);
+          return;
+        }
+
+        const mappedPlace: Place = {
+          name: gPlace.name,
+          formatted_address: gPlace.formatted_address,
+          geometry: gPlace.geometry
+            ? {
+                location: {
+                  lat: gPlace.geometry.location?.lat(),
+                  lng: gPlace.geometry.location?.lng(),
+                },
+              }
+            : undefined,
+          html_attributions: [],
+          votes: [],
+        };
+
+        onPlaceSelect(mappedPlace);
       }
-
-      const mappedPlace: Place = {
-        name: gPlace.name,
-        formatted_address: gPlace.formatted_address,
-        geometry: gPlace.geometry
-          ? {
-              location: {
-                lat: gPlace.geometry.location?.lat(),
-                lng: gPlace.geometry.location?.lng(),
-              },
-            }
-          : undefined,
-        html_attributions: [],
-      };
-
-      onPlaceSelect(mappedPlace);
     });
   }, [onPlaceSelect, placeAutocomplete]);
 

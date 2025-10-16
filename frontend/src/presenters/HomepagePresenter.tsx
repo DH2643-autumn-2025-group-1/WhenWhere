@@ -7,7 +7,6 @@ import { LoadingView } from "../components/utils/Loading";
 export const HomepagePresenter = observer(
   ({ model }: { model: EventModelType }) => {
     const [loading, setLoading] = useState(true);
-
     const userId = model.getUserId();
 
     useEffect(() => {

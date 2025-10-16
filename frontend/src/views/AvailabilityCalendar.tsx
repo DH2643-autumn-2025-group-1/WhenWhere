@@ -60,6 +60,36 @@ const TimeSlot = styled(Box)<{
   }
 `;
 
+const DisabledDayOverlay = styled(Box)<{ $dayIndex: number }>`
+  grid-row: 1 / 25;
+  grid-column: ${(p) => `${p.$dayIndex + 2} / ${p.$dayIndex + 3}`};
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.06),
+    rgba(0, 0, 0, 0.06) 8px,
+    rgba(0, 0, 0, 0.08) 8px,
+    rgba(0, 0, 0, 0.08) 16px
+  );
+  border-radius: 12px;
+  pointer-events: none;
+  position: relative;
+`;
+
+const SelectionRect = styled(Box)<{
+  $rowStart: number;
+  $rowEnd: number;
+  $colStart: number;
+  $colEnd: number;
+}>`
+  grid-row: ${(p) => `${p.$rowStart} / ${p.$rowEnd}`};
+  grid-column: ${(p) => `${p.$colStart} / ${p.$colEnd}`};
+  background-color: rgba(25, 118, 210, 0.12);
+  border: 2px solid #1976d2;
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 20;
+`;
+
 type SelectionIndex = { dayIdx: number; hour: number };
 
 interface AvailabilityCalendarProps {
@@ -72,10 +102,13 @@ interface AvailabilityCalendarProps {
   weekAnchor: Date;
   weekDays: Date[];
   hours: number[];
+  minWeekStart?: Date;
+  maxWeekStart?: Date;
   isSelecting: boolean;
   selectStart: SelectionIndex | null;
   selectEnd: SelectionIndex | null;
   isTimeSlotSelected: (day: Date, hour: number) => boolean;
+  isDayAllowed: (day: Date) => boolean;
   handleNavigateWeek: (nextAnchor: Date) => void;
   handleOverlayMouseDown: (e: React.MouseEvent) => void;
   handleOverlayMouseMove: (e: React.MouseEvent) => void;
@@ -92,10 +125,13 @@ export function AvailabilityCalendar({
   weekAnchor,
   weekDays,
   hours,
+  minWeekStart,
+  maxWeekStart,
   isSelecting,
   selectStart,
   selectEnd,
   isTimeSlotSelected,
+  isDayAllowed,
   handleNavigateWeek,
   handleOverlayMouseDown,
   handleOverlayMouseMove,
@@ -103,7 +139,12 @@ export function AvailabilityCalendar({
 }: Readonly<AvailabilityCalendarProps>) {
   return (
     <CalendarWrapper ref={calendarHostRef}>
-      <Calendar weekAnchor={weekAnchor} onNavigateWeek={handleNavigateWeek} />
+      <Calendar
+        weekAnchor={weekAnchor}
+        onNavigateWeek={handleNavigateWeek}
+        minWeekStart={minWeekStart}
+        maxWeekStart={maxWeekStart}
+      />
       <TimeSelectionOverlay
         $topPx={overlayTopPx}
         $leftPx={overlayLeftPx}
@@ -118,6 +159,16 @@ export function AvailabilityCalendar({
           cursor: isSelecting ? "crosshair" : "default",
         }}
       >
+        {weekDays.map((day, dayIndex) => {
+          const allowed = isDayAllowed(day);
+          if (allowed) return null;
+          return (
+            <DisabledDayOverlay
+              key={`disabled-${day.toISOString()}`}
+              $dayIndex={dayIndex}
+            />
+          );
+        })}
         {hours.map((hour) => (
           <React.Fragment key={hour}>
             <Box style={{ pointerEvents: "none" }} />
@@ -144,20 +195,11 @@ export function AvailabilityCalendar({
           </React.Fragment>
         ))}
         {isSelecting && selectStart && selectEnd && (
-          <Box
-            sx={{
-              gridRow: `${Math.min(selectStart.hour, selectEnd.hour) + 1} / ${
-                Math.max(selectStart.hour, selectEnd.hour) + 2
-              }`,
-              gridColumn: `${Math.min(selectStart.dayIdx, selectEnd.dayIdx) + 2} / ${
-                Math.max(selectStart.dayIdx, selectEnd.dayIdx) + 3
-              }`,
-              backgroundColor: "rgba(25,118,210,0.12)",
-              border: "2px solid #1976d2",
-              borderRadius: "12px",
-              pointerEvents: "none",
-              zIndex: 20,
-            }}
+          <SelectionRect
+            $rowStart={Math.min(selectStart.hour, selectEnd.hour) + 1}
+            $rowEnd={Math.max(selectStart.hour, selectEnd.hour) + 2}
+            $colStart={Math.min(selectStart.dayIdx, selectEnd.dayIdx) + 2}
+            $colEnd={Math.max(selectStart.dayIdx, selectEnd.dayIdx) + 3}
           />
         )}
       </TimeSelectionOverlay>

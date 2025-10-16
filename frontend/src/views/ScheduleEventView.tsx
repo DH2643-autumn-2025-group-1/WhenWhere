@@ -148,6 +148,7 @@ export function ScheduleEventView({
           text="+ Add Place"
           variant="outlined"
           style={{ marginBottom: "1rem" }}
+          disabled={places.length >= 5}
         />
         <ButtonComponent
           variant="primary"

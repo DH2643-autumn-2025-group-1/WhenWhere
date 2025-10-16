@@ -76,13 +76,13 @@ export function initAuthListener(model: {
     if (user) {
       model.setuserId(user.uid);
 
-      // ✅ New: clean up and prettify fallback username
+
       let fallbackName: string | undefined = user.displayName || undefined;
 
       if (!fallbackName && user.email) {
-        // Extract part before "@"
+
         const emailName = user.email.split("@")[0];
-        // Replace "." or "_" with spaces and capitalize each part
+
         fallbackName = emailName
           .replace(/[._]+/g, " ")
           .split(" ")

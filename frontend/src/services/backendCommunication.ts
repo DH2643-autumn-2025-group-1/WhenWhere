@@ -17,6 +17,8 @@ export const createEventOnDB = async (eventData: EventData) => {
     body: JSON.stringify(eventData),
   });
   if (!response.ok) {
+    const errorDetails = await response.text();
+    console.error("Error Details:", errorDetails);
     throw new Error("Failed to create event");
   }
   return response.json();
@@ -32,6 +34,7 @@ export const deleteEventOnDB = async (eventId: string) => {
   if (!response.ok) {
     throw new Error("Failed to delete event");
   }
+  return;
 };
 
 export const fetchCreatedEvents = async (userId: string) => {
