@@ -1,17 +1,11 @@
-import {
-  TextField,
-  Typography,
-  IconButton,
-  Alert,
-  Snackbar,
-} from "@mui/material";
+import { TextField, Typography, IconButton } from "@mui/material";
 import { DateCalendar, PickersDay } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import styled from "styled-components";
-import type { ScheduleEventViewProps } from "../presenters/EventPresenter.tsx";
+import type { ScheduleEventProps } from "../presenters/EventPresenter.tsx";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import { ButtonComponent } from "../components/Button";
+import { ButtonComponent } from "../components/Button.tsx";
 import { Location } from "./Location.tsx";
 
 const Container = styled.div`
@@ -57,35 +51,12 @@ const CalendarWrapper = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
-const LargeAlert = styled(Alert)`
-  min-width: 450px !important;
-  font-size: 16px;
-  padding: 20px 30px;
-  border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-
-  .MuiAlert-message {
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 1.4;
-  }
-
-  .MuiAlert-icon {
-    font-size: 24px;
-  }
-
-  .MuiAlert-action {
-    padding-left: 16px;
-  }
-`;
-
-export function ScheduleEventView({
+export function ScheduleEvent({
   places,
   selectedDates,
   title,
   description,
   isSubmitting,
-  snackbar,
   onAddPlace,
   onRemovePlace,
   onDateClick,
@@ -93,8 +64,7 @@ export function ScheduleEventView({
   onTitleChange,
   onDescriptionChange,
   onSubmit,
-  onCloseSnackbar,
-}: ScheduleEventViewProps) {
+}: ScheduleEventProps) {
   return (
     <Container>
       <Form>
@@ -190,17 +160,6 @@ export function ScheduleEventView({
           />
         </LocalizationProvider>
       </CalendarWrapper>
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={onCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <LargeAlert onClose={onCloseSnackbar} severity={snackbar.severity}>
-          {snackbar.message}
-        </LargeAlert>
-      </Snackbar>
     </Container>
   );
 }
