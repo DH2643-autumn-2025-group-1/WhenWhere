@@ -15,6 +15,7 @@ export interface Place {
 
 export interface Availability {
   userId: string;
+  username?: string;
   availableSlots: Date[];
   votedLocation?: Place;
 }
@@ -45,6 +46,7 @@ const PlaceSchema = new Schema({
 
 const AvailabilitySchema = new Schema({
   userId: { type: String },
+  username: { type: String },
   availableSlots: [Date],
   votedLocation: PlaceSchema,
 });

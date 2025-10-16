@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import type { EventModelType, Place } from "../models/EventModel";
 import VoteTimeAndPlace from "../views/VoteTimeAndPlace";
@@ -6,6 +6,8 @@ import { saveAvailabilityOnDB } from "../services/backendCommunication";
 import { getShareHashFromSearch, makeResultPath } from "../utils/shareHash";
 import { LoadingView } from "../components/utils/Loading";
 import { observer } from "mobx-react-lite";
+import { AvailabilityPresenter } from "./AvailabilityPresenter";
+import { VoteLocationPresenter } from "./VoteLocationPresenter";
 
 export const VoteTimeAndPlacePresenter = observer(
   ({ model }: { model: EventModelType }) => {
@@ -15,6 +17,13 @@ export const VoteTimeAndPlacePresenter = observer(
     const [isLoading, setIsLoading] = useState(false);
     const [selectedDates, setSelectedDates] = useState<Date[]>([]);
     const [votedLocation, setVotedLocation] = useState<Place | null>(null);
+    const [haveVotedTime, setHaveVotedTime] = useState(false);
+    const [haveVotedLocation, setHaveVotedLocation] = useState(false);
+    const resultsPath = shareHash ? makeResultPath(shareHash) : "/event-result";
+    const places = useMemo(
+      () => model.currentEvent?.places || [],
+      [model.currentEvent?.places],
+    );
 
     useEffect(() => {
       if (!shareHash) return;
@@ -37,15 +46,16 @@ export const VoteTimeAndPlacePresenter = observer(
         .finally(() => setIsLoading(false));
     }, [model, shareHash, navigate]);
 
-    const resultsPath = shareHash ? makeResultPath(shareHash) : "/event-result";
-
-    if (isLoading) {
-      return <LoadingView />;
-    }
+    useEffect(() => {
+      if (!places || places.length === 0) {
+        setHaveVotedLocation(true);
+      }
+    }, [setHaveVotedLocation, places]);
 
     const handleSubmit = async () => {
       const eventId = model.currentEvent?._id;
       const userId = model.userId;
+      const username = model.username ?? undefined;
       if (!eventId || !userId) {
         navigate(resultsPath);
         return;
@@ -54,6 +64,7 @@ export const VoteTimeAndPlacePresenter = observer(
         const updatedEvent = await saveAvailabilityOnDB(
           eventId,
           userId,
+          username,
           selectedDates,
           votedLocation,
         );
@@ -62,15 +73,30 @@ export const VoteTimeAndPlacePresenter = observer(
         navigate(resultsPath);
       }
     };
+    if (isLoading) {
+      return <LoadingView />;
+    }
 
     return (
       <VoteTimeAndPlace
-        model={model}
-        places={model.currentEvent?.places}
+        availabilitySlot={
+          <AvailabilityPresenter
+            setHaveVotedTime={setHaveVotedTime}
+            onSelectedChange={setSelectedDates}
+            model={model}
+          />
+        }
+        locationSlot={
+          <VoteLocationPresenter
+            setHaveVotedLocation={setHaveVotedLocation}
+            places={places}
+            onLocationChange={setVotedLocation}
+          />
+        }
         resultsPath={resultsPath}
-        onSelectedDatesChange={setSelectedDates}
-        onLocationVote={setVotedLocation}
         onSubmit={handleSubmit}
+        submitDisabled={!haveVotedTime || !haveVotedLocation}
+        shareUrl={shareHash ? window.location.href : undefined}
       />
     );
   },

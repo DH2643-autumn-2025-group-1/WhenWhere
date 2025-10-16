@@ -7,12 +7,14 @@ export function ButtonComponent({
   onClickFunction,
   variant,
   style,
+  fullwidth,
 }: {
   text: string;
   disabled?: boolean;
   onClickFunction: () => void;
   variant?: "outlined" | "primary" | "negative";
   style?: React.CSSProperties;
+  fullwidth?: boolean;
 }) {
   return (
     <StyledButton
@@ -22,7 +24,7 @@ export function ButtonComponent({
       $primary={variant === "primary"}
       $negative={variant === "negative"}
       style={style}
-      fullWidth
+      fullWidth={fullwidth}
     >
       {text}
     </StyledButton>
