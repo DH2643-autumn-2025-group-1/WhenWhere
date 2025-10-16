@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { VoteLocationPresenter } from "../presenters/VoteLocationPresenter";
-import type { EventModelType } from "../models/EventModel";
+import type { EventModelType, Place } from "../models/EventModel";
 import TextBoxWithActions from "../components/TextBoxWithActions";
 
 const Container = styled.div`
@@ -38,13 +38,15 @@ function VoteTimeAndPlace({
   resultsPath = "/event-result",
   shareUrl,
   onSelectedDatesChange,
+  onLocationVote,
   onSubmit,
 }: {
   model: EventModelType;
-  places: string[] | undefined;
+  places?: Place[];
   resultsPath?: string;
   shareUrl?: string;
   onSelectedDatesChange?: (dates: Date[]) => void;
+  onLocationVote?: (place: Place | null) => void;
   onSubmit?: () => void;
 }) {
   const [haveVotedLocation, setHaveVotedLocation] = useState(false);
@@ -68,6 +70,7 @@ function VoteTimeAndPlace({
         <VoteLocationPresenter
           setHaveVotedLocation={setHaveVotedLocation}
           places={places || []}
+          onLocationChange={onLocationVote}
         />
         {shareUrl && (
           <TextBoxWithActions title="Shareable voting link" value={shareUrl} />

@@ -2,6 +2,7 @@ import * as React from "react";
 import { Typography, Link } from "@mui/material";
 import { SignInPage } from "@toolpad/core/SignInPage";
 import { useNavigate, useSearchParams } from "react-router";
+import { FirebaseError } from "firebase/app";
 import {
   signInWithGoogle,
   signInWithGithub,
@@ -16,6 +17,31 @@ import {
 } from "../../styles/authStyles";
 
 type AuthMode = "signin" | "signup";
+
+// Map Firebase auth error codes to messages
+function getFriendlyAuthError(error: unknown, isSignUp: boolean): string {
+  const fallback = isSignUp
+    ? "Failed to sign up. Please try again."
+    : "Failed to sign in. Please try again.";
+
+  const code = error instanceof FirebaseError ? error.code : null;
+
+  const messages: Record<string, string> = {
+    "auth/invalid-credential": "Invalid email or password.",
+    "auth/user-not-found": "No account found with that email.",
+    "auth/wrong-password": "Incorrect password.",
+    "auth/too-many-requests": "Too many attempts. Try again later.",
+    "auth/network-request-failed": "Network error. Check your connection.",
+    "auth/popup-closed-by-user": "Sign-in popup was closed.",
+    "auth/popup-blocked": "Popup was blocked by the browser.",
+    "auth/cancelled-popup-request": "Sign-in popup was cancelled.",
+    "auth/email-already-in-use": "That email is already in use.",
+    "auth/weak-password": "Password is too weak.",
+    "auth/invalid-email": "Invalid email address.",
+  };
+
+  return code && messages[code] ? messages[code] : fallback;
+}
 
 const Title = ({ mode }: { mode: AuthMode }) => (
   <StyledTitle variant="h5">
@@ -76,7 +102,6 @@ const ToggleSignInLink = ({
 export default function AuthPage() {
   const navigate = useNavigate();
   const [mode, setMode] = React.useState<AuthMode>("signin");
-  const [, /* loading */ setLoading] = React.useState(false);
   const [searchParams] = useSearchParams();
   const callbackUrlParam = searchParams.get("callbackUrl") || "/";
 
@@ -95,16 +120,12 @@ export default function AuthPage() {
     provider: { id: string },
     formData: FormData | null,
   ) => {
-    setLoading(true);
     try {
       let user = null;
       const email = formData?.get("email") as string;
       const password = formData?.get("password") as string;
 
       if (isSignUpMode) {
-        if (!email || !password) {
-          return { error: "Email and password are required" };
-        }
         user = await signUp(email, password);
       } else {
         switch (provider.id) {
@@ -118,9 +139,6 @@ export default function AuthPage() {
             user = await signInWithAnonymous();
             break;
           case "credentials":
-            if (!email || !password) {
-              return { error: "Email and password are required" };
-            }
             user = await signIn(email, password);
             break;
           default:
@@ -137,11 +155,8 @@ export default function AuthPage() {
       };
     } catch (error) {
       return {
-        error:
-          error instanceof Error ? error.message : "An unknown error occurred",
+        error: getFriendlyAuthError(error, isSignUpMode),
       };
-    } finally {
-      setLoading(false);
     }
   };
 
