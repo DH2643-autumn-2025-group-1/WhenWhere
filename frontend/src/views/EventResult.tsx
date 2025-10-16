@@ -263,6 +263,9 @@ export function EventResult({
           </div>
         </WinningCardsContainer>
       </EventResultComponent>
+      {shareUrl && (
+        <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
+      )}
       <VoteLocation places={places} isvoting={false} />
       <Panel>
         <h2 style={{ margin: 0 }}>Calendar results for: {eventTitle}</h2>
@@ -276,9 +279,6 @@ export function EventResult({
           />
         </CalendarWrapper>
       </Panel>
-      {shareUrl && (
-        <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
-      )}
     </Container>
   );
 }

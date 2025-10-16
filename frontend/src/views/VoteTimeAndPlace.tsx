@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { AvailabilityPresenter } from "../presenters/AvailabilityPresenter";
 import { VoteLocationPresenter } from "../presenters/VoteLocationPresenter";
 import type { Place } from "../models/EventModel";
+import TextBoxWithActions from "../components/TextBoxWithActions";
 
 const Container = styled.div`
   display: flex;
@@ -40,12 +41,14 @@ function VoteTimeAndPlace({
   onSelectedDatesChange,
   onLocationVote,
   onSubmit,
+  shareUrl,
 }: {
   places?: Place[];
   resultsPath?: string;
   onSelectedDatesChange?: (dates: Date[]) => void;
   onLocationVote?: (place: Place | null) => void;
   onSubmit?: () => void;
+  shareUrl: string;
 }) {
   const [haveVotedLocation, setHaveVotedLocation] = useState(false);
   const [haveVotedTime, setHaveVotedTime] = useState(false);
@@ -70,7 +73,9 @@ function VoteTimeAndPlace({
           places={places || []}
           onLocationChange={onLocationVote}
         />
-
+        {shareUrl && (
+          <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
+        )}
         <ButtonComponent
           onClickFunction={onSubmit ? onSubmit : () => navigate(resultsPath)}
           text="Submit and see results"
