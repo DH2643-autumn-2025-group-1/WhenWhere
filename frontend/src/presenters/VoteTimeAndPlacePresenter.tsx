@@ -65,6 +65,7 @@ export const VoteTimeAndPlacePresenter = observer(
 
     return (
       <VoteTimeAndPlace
+        model={model}
         places={model.currentEvent?.places}
         resultsPath={resultsPath}
         onSelectedDatesChange={setSelectedDates}

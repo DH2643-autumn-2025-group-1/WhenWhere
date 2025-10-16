@@ -16,6 +16,7 @@ import {
 import { enGB } from "date-fns/locale";
 import { AvailabilityCalendar } from "../views/AvailabilityCalendar";
 import { observer } from "mobx-react-lite";
+import type { EventModelType } from "../models/EventModel";
 
 type SelectionIndex = { dayIdx: number; hour: number };
 
@@ -55,9 +56,11 @@ function toggleSlots(prev: TimeSlot[], range: TimeSlot[]): TimeSlot[] {
 
 export const AvailabilityPresenter = observer(
   ({
+    model,
     setHaveVotedTime,
     onSelectedChange,
   }: Readonly<{
+    model?: EventModelType;
     setHaveVotedTime: (value: boolean) => void;
     onSelectedChange?: (dates: Date[]) => void;
   }>) => {
