@@ -23,7 +23,7 @@ export interface ScheduleEventProps {
   onSubmit: () => void;
 }
 
-export const EventPresenter = observer(
+export const ScheduleEventPresenter = observer(
   ({ model }: { model: EventModelType }) => {
     if (!model) {
       console.error("Model prop is undefined");
@@ -75,11 +75,13 @@ export const EventPresenter = observer(
     const createEvent = async (eventData: EventData): Promise<void> => {
       try {
         if (!eventData.title.trim()) {
-          throw new Error("Event title is required");
+          showSnackbar("Title is required", "error");
+          return;
         }
 
         if (eventData.dateOptions.length === 0) {
-          throw new Error("At least one date must be selected");
+          showSnackbar("At least one date must be selected", "error");
+          return;
         }
 
         const today = new Date();
@@ -89,7 +91,8 @@ export const EventPresenter = observer(
           const d = new Date(date);
           d.setHours(0, 0, 0, 0);
           if (d < today) {
-            throw new Error("Selected dates cannot be in the past");
+            showSnackbar("Selected dates cannot be in the past", "error");
+            return;
           }
         }
 
@@ -106,25 +109,20 @@ export const EventPresenter = observer(
         };
         const created = await model.createEvent(finalEventData);
 
-        // Reset form
         setTitle("");
         setDescription("");
         setPlaces([]);
         setSelectedDates([]);
 
-        // navigate to voting view
         const votingPath = makeAvailabilityPath(created.shareHash);
         navigate(votingPath);
 
-        // use global snackbar
         showSnackbar("Event created successfully!", "success");
       } catch (error) {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "An unexpected error occurred";
-
-        showSnackbar(errorMessage, "error");
+        showSnackbar(
+          error instanceof Error ? error.message : String(error),
+          "error",
+        );
       }
     };
 

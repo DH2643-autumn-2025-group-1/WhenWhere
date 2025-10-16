@@ -8,7 +8,7 @@ import { Route, Routes } from "react-router";
 import { theme } from "../styles/theme.ts";
 import { Login } from "./Login.tsx";
 import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
-import { EventPresenter } from "../presenters/EventPresenter.tsx";
+import { ScheduleEventPresenter } from "../presenters/ScheduleEventPresenter.tsx";
 import { StyledEngineProvider } from "@mui/styled-engine-sc";
 import { HeaderPresenter } from "../presenters/HeaderPresenter.tsx";
 import { ProtectedRoute } from "../components/utils/ProtectedRoute.tsx";
@@ -56,7 +56,7 @@ export function Root({ model }: { model: EventModelType }) {
                 path="/create-event"
                 element={
                   <ProtectedRoute>
-                    <EventPresenter model={model} />
+                    <ScheduleEventPresenter model={model} />
                   </ProtectedRoute>
                 }
               />
