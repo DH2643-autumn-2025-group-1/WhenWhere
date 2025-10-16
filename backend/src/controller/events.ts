@@ -98,8 +98,8 @@ router.put("/:id/availability", async (req, res) => {
       if (votedLocation) {
         userAvailability.votedLocation = votedLocation;
       }
-       if (username) {
-        userAvailability.username = username; 
+      if (username) {
+        userAvailability.username = username;
       }
     } else {
       event.availability.push({

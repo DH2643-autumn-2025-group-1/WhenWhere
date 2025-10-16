@@ -21,7 +21,11 @@ type CalendarProps = {
   weekAnchor?: Date;
   events?: CalendarEvent[];
   onNavigateWeek?: (nextAnchor: Date) => void;
-  heatmapData?: { userId: string; username?: string; availableSlots: Date[] | string[] }[];
+  heatmapData?: {
+    userId: string;
+    username?: string;
+    availableSlots: Date[] | string[];
+  }[];
   currentUserId?: string | null;
 };
 
@@ -264,7 +268,6 @@ const Calendar: React.FC<CalendarProps> = ({
   weekAnchor: externalAnchor,
   onNavigateWeek,
   heatmapData,
-  currentUserId,
 }) => {
   const [internalAnchor, setInternalAnchor] = useState<Date>(
     externalAnchor ?? new Date(),
@@ -313,13 +316,13 @@ const Calendar: React.FC<CalendarProps> = ({
   }, [heatmapData, weekDays]);
 
   const userNameMap = useMemo(() => {
-  if (!heatmapData) return {};
-  const map: Record<string, string> = {};
-  for (const entry of heatmapData) {
-    map[entry.userId] = entry.username || "Anonymous";
-  }
-  return map;
-}, [heatmapData]);
+    if (!heatmapData) return {};
+    const map: Record<string, string> = {};
+    for (const entry of heatmapData) {
+      map[entry.userId] = entry.username || "Anonymous";
+    }
+    return map;
+  }, [heatmapData]);
 
   const navigateWeek = useCallback(
     (direction: "prev" | "next") => {

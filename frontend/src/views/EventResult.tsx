@@ -39,7 +39,11 @@ export interface EventResultViewProps {
   readonly eventTitle: string;
   readonly shareUrl?: string;
   readonly event?: {
-    availability?: { userId: string; username?: string; availableSlots: Date[] | string[] }[];
+    availability?: {
+      userId: string;
+      username?: string;
+      availableSlots: Date[] | string[];
+    }[];
   } | null;
   readonly currentUserId?: string | null;
 }
