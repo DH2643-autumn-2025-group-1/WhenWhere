@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import AuthPage from "../components/utils/AuthPage";
+import AuthPage from "../components/utils/authPage";
+import { useLocation } from "react-router";
 
 const Container = styled.div`
   display: flex;
@@ -47,13 +48,23 @@ const Text = styled.p`
 `;
 
 export function Login() {
+  let userArrivedViaLink = false;
+  const location = useLocation();
+  const urlParams = location.search;
+  if (urlParams.includes("event-result")) {
+    userArrivedViaLink = true;
+  }
+
   return (
     <Container>
       <TitleAndText>
         <Title>WhenWhere</Title>
         <Text>
-          You have been invited to a meeting. Login to mark your availibility to
-          the meeting and vote for place of the meeting.
+          {userArrivedViaLink
+            ? `You have been invited to an event. Login to mark your availability and vote for a location.`
+            : `
+          Welcome to WhenWhere! Please login to create events, mark your 
+          availability, vote for event locations and share a link of the event to your friends or colleagues.`}
         </Text>
       </TitleAndText>
       <AuthPage />
