@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { theme } from "../styles/theme";
@@ -230,6 +230,11 @@ export function EventResult({
   shareUrl,
   event,
   userId,
+  weekAnchor,
+  isDayAllowed,
+  onNavigateWeek,
+  minWeekStart,
+  maxWeekStart,
 }: {
   winningSlots: { slot: string; people: string[] }[];
   topLocation: Place | null;
@@ -240,8 +245,12 @@ export function EventResult({
     availability?: { userId: string; availableSlots: Date[] | string[] }[];
   } | null;
   userId?: string | null;
+  weekAnchor: Date;
+  isDayAllowed: (day: Date) => boolean;
+  onNavigateWeek: (date: Date) => void;
+  minWeekStart?: Date;
+  maxWeekStart?: Date;
 }) {
-  const [weekAnchor, setWeekAnchor] = useState(() => new Date());
   const trophyColors = ["#FFD700", "#B0BEC5", "#CD7F32"];
   const onMobile =
     window.innerWidth < Number(theme.breakpoints.tablet.replace("px", ""));
@@ -313,9 +322,12 @@ export function EventResult({
             <Calendar
               key={`${JSON.stringify(event?.availability || [])}-${weekAnchor.getTime()}`}
               weekAnchor={weekAnchor}
-              onNavigateWeek={(next) => setWeekAnchor(next)}
+              onNavigateWeek={onNavigateWeek}
               heatmapData={event?.availability}
               currentUserId={userId}
+              minWeekStart={minWeekStart}
+              maxWeekStart={maxWeekStart}
+              isDayAllowed={isDayAllowed}
             />
           </CalendarWrapper>
         </Panel>

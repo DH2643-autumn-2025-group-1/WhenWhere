@@ -1,5 +1,5 @@
 import type { EventModelType } from "../models/EventModel";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router";
 import {
   getShareHashFromSearch,
@@ -9,12 +9,15 @@ import {
 import { EventResult } from "../views/EventResult";
 import { LoadingView } from "../components/utils/Loading";
 import { observer } from "mobx-react-lite";
+import { isSameDay, startOfDay, startOfWeek } from "date-fns";
+import { enGB } from "date-fns/locale";
 
 export const EventResultPresenter = observer(
   ({ model }: { model: EventModelType }) => {
     const location = useLocation();
     const shareHash = getShareHashFromSearch(location.search);
     const [isLoading, setIsLoading] = useState(false);
+    const [weekAnchor, setWeekAnchor] = useState(() => new Date());
 
     useEffect(() => {
       if (!shareHash) return;
@@ -26,6 +29,35 @@ export const EventResultPresenter = observer(
         .catch(console.error)
         .finally(() => setIsLoading(false));
     }, [model, shareHash]);
+
+    const allowedDays = useMemo(() => {
+      const opts = model.currentEvent?.dateOptions || [];
+      return opts.map((d) => startOfDay(new Date(d)));
+    }, [model.currentEvent?.dateOptions]);
+
+    const minWeekStart = useMemo(() => {
+      if (!allowedDays.length) return undefined;
+      const min = allowedDays.reduce((a, b) => (a < b ? a : b), allowedDays[0]);
+      return startOfWeek(min, { weekStartsOn: 1, locale: enGB });
+    }, [allowedDays]);
+
+    const maxWeekStart = useMemo(() => {
+      if (!allowedDays.length) return undefined;
+      const max = allowedDays.reduce((a, b) => (a > b ? a : b), allowedDays[0]);
+      return startOfWeek(max, { weekStartsOn: 1, locale: enGB });
+    }, [allowedDays]);
+
+    useEffect(() => {
+      if (!allowedDays.length) return;
+      const now = startOfDay(new Date());
+      const sorted = [...allowedDays].sort((a, b) => a.getTime() - b.getTime());
+      const firstFuture = sorted.find((d) => d >= now) ?? sorted[0];
+      const targetWeek = startOfWeek(firstFuture, {
+        weekStartsOn: 1,
+        locale: enGB,
+      });
+      setWeekAnchor(targetWeek);
+    }, [allowedDays]);
 
     const shareUrl = shareHash
       ? makeAbsolute(makeAvailabilityPath(shareHash))
@@ -84,6 +116,10 @@ export const EventResultPresenter = observer(
     const topLocation = getMostVotedLocation();
     const winningSlots = getWinningSlots();
 
+    const isDayAllowed = (day: Date) => {
+      return allowedDays.some((d) => isSameDay(d, day));
+    };
+
     return (
       <EventResult
         eventTitle={model.currentEvent?.title ?? ""}
@@ -93,6 +129,11 @@ export const EventResultPresenter = observer(
         places={model.currentEvent?.places || []}
         userId={model.userId}
         event={model.currentEvent}
+        weekAnchor={weekAnchor}
+        isDayAllowed={isDayAllowed}
+        onNavigateWeek={setWeekAnchor}
+        minWeekStart={minWeekStart}
+        maxWeekStart={maxWeekStart}
       />
     );
   },
