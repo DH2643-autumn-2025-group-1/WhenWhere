@@ -8,9 +8,12 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser);
-    });
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (firebaseUser: User | null) => {
+        setUser(firebaseUser);
+      },
+    );
     return () => unsubscribe();
   }, []);
 

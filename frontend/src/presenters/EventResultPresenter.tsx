@@ -98,7 +98,7 @@ export const EventResultPresenter = observer(
           if (!slotPeople[slotKey]) {
             slotPeople[slotKey] = [];
           }
-          slotPeople[slotKey].push(availability.userId);
+          slotPeople[slotKey].push(availability.username || "Anonymous");
         });
       });
 
@@ -123,7 +123,7 @@ export const EventResultPresenter = observer(
         winningSlots={winningSlots}
         topLocation={topLocation}
         places={model.currentEvent?.places || []}
-        currentUserId={model.userId}
+        userId={model.userId}
         event={model.currentEvent}
         weekAnchor={weekAnchor}
         onNavigateWeek={setWeekAnchor}

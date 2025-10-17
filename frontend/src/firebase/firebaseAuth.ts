@@ -67,14 +67,14 @@ let authListenerInitialized = false;
  * Pass the model so this module stays decoupled.
  */
 export function initAuthListener(model: {
-  setuserId: (id: string | null) => void;
+  setUserId: (id: string | null) => void;
   setUsername?: (name: string | null) => void;
 }) {
   if (authListenerInitialized) return;
   const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, (user: User | null) => {
     if (user) {
-      model.setuserId(user.uid);
+      model.setUserId(user.uid);
 
       let fallbackName: string | undefined = user.displayName || undefined;
 
@@ -85,7 +85,7 @@ export function initAuthListener(model: {
           .replace(/[._]+/g, " ")
           .split(" ")
           .map(
-            (word) =>
+            (word: string) =>
               word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
           )
           .join(" ");
@@ -93,7 +93,7 @@ export function initAuthListener(model: {
 
       if (model.setUsername) model.setUsername(fallbackName || "Anonymous");
     } else {
-      model.setuserId(null);
+      model.setUserId(null);
       if (model.setUsername) model.setUsername(null);
     }
   });

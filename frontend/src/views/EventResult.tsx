@@ -58,7 +58,7 @@ export interface EventResultViewProps {
       availableSlots: Date[] | string[];
     }[];
   } | null;
-  readonly currentUserId?: string | null;
+  readonly userId?: string | null;
 }
 const WinningCardsContainer = styled.div`
   display: flex;
@@ -96,6 +96,7 @@ const WinnerText = styled.h2`
   font-size: 20px;
   font-weight: 600;
   color: #333;
+  text-transform: capitalize;
 `;
 
 const TimeContainer = styled.div`
@@ -228,7 +229,7 @@ export function EventResult({
   eventTitle,
   shareUrl,
   event,
-  currentUserId,
+  userId,
   weekAnchor,
   onNavigateWeek,
   minWeekStart,
@@ -242,7 +243,7 @@ export function EventResult({
   event?: {
     availability?: { userId: string; availableSlots: Date[] | string[] }[];
   } | null;
-  currentUserId?: string | null;
+  userId?: string | null;
   weekAnchor: Date;
   onNavigateWeek: (date: Date) => void;
   minWeekStart?: Date;
@@ -321,7 +322,7 @@ export function EventResult({
               weekAnchor={weekAnchor}
               onNavigateWeek={onNavigateWeek}
               heatmapData={event?.availability}
-              currentUserId={currentUserId}
+              currentUserId={userId}
               minWeekStart={minWeekStart}
               maxWeekStart={maxWeekStart}
             />
