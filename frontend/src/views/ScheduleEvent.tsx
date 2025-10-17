@@ -152,11 +152,16 @@ export function ScheduleEvent({
         </Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateCalendar
-            onChange={(date) => onDateClick(date)}
+            onChange={(date) => {
+              onDateClick(date);
+            }}
             displayWeekNumber
             slots={{
               day: (props) => {
                 const date = props.day;
+                const now = new Date();
+                now.setHours(0, 0, 0, 0);
+                const isPast = date.isBefore(now, "day");
                 const isSelected = selectedDates.some((d) =>
                   d.isSame(date, "day"),
                 );
@@ -165,6 +170,7 @@ export function ScheduleEvent({
                   <PickersDay
                     {...props}
                     selected={isSelected}
+                    disabled={isPast}
                     sx={{
                       bgcolor: isSelected ? "primary.main" : undefined,
                       color: isSelected ? "white" : undefined,
