@@ -75,6 +75,8 @@ export const saveAvailabilityOnDB = async (
   if (availableSlots) body.availableSlots = availableSlots;
   if (votedLocation) body.votedLocation = votedLocation;
 
+  console.log("Saving availability with body:", body);
+
   const response = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/events/${eventId}/availability`,
     {
