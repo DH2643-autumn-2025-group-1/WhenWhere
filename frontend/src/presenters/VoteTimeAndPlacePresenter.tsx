@@ -61,10 +61,14 @@ export const VoteTimeAndPlacePresenter = observer(
         navigate(resultsPath);
         return;
       }
-      const newVotedLocation: Place = {
-        ...votedLocation,
-        votes: [...new Set([...(votedLocation?.votes ?? []), userId])],
-      } as Place;
+
+      const newVotedLocation =
+        places.length > 0 && votedLocation
+          ? {
+              ...votedLocation,
+              votes: [...new Set([...(votedLocation.votes ?? []), userId])],
+            }
+          : null;
 
       try {
         const updatedEvent = await saveAvailabilityOnDB(
