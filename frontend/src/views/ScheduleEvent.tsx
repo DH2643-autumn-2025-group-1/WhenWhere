@@ -1,4 +1,4 @@
-import { TextField, Typography, IconButton } from "@mui/material";
+import { TextField, Typography, IconButton, Switch } from "@mui/material";
 import { DateCalendar, PickersDay } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -51,6 +51,12 @@ const CalendarWrapper = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
+const SwitchContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 export function ScheduleEvent({
   places,
   selectedDates,
@@ -64,6 +70,7 @@ export function ScheduleEvent({
   onTitleChange,
   onDescriptionChange,
   onSubmit,
+  setShouldIncludeDigital,
 }: ScheduleEventProps) {
   return (
     <Container>
@@ -94,6 +101,18 @@ export function ScheduleEvent({
         <Typography variant="h6" gutterBottom>
           Places
         </Typography>
+        <SwitchContainer>
+          <span>Include digital as location:</span>
+          <Switch
+            onChange={(_, checked) => {
+              if (checked) {
+                setShouldIncludeDigital(true);
+              } else {
+                setShouldIncludeDigital(false);
+              }
+            }}
+          />
+        </SwitchContainer>
         {places.map((place, index) => (
           <PlaceContainer key={index}>
             <Location

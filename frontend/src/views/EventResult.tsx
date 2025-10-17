@@ -96,6 +96,7 @@ const WinnerText = styled.h2`
   font-size: 20px;
   font-weight: 600;
   color: #333;
+  text-transform: capitalize;
 `;
 
 const TimeContainer = styled.div`
