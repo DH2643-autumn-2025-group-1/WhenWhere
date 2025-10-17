@@ -29,6 +29,7 @@ type CalendarProps = {
   currentUserId?: string | null;
   minWeekStart?: Date;
   maxWeekStart?: Date;
+  isDayAllowed?: (day: Date) => boolean;
 };
 
 const CalendarContainer = styled(Box)`
@@ -171,6 +172,22 @@ const EventOverlay = styled(Box)<{ $dayIndex: number }>`
   pointer-events: none;
 `;
 
+const DisabledDayOverlay = styled(Box)<{ $dayIndex: number }>`
+  grid-row: 2 / span 24;
+  grid-column: ${(props) => props.$dayIndex + 2};
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.06),
+    rgba(0, 0, 0, 0.06) 8px,
+    rgba(0, 0, 0, 0.08) 8px,
+    rgba(0, 0, 0, 0.08) 16px
+  );
+  border-radius: 12px;
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
+`;
+
 const StyledEventBlock = styled(Box)<{
   $topPct: number;
   $heightPct: number;
@@ -272,6 +289,7 @@ const Calendar: React.FC<CalendarProps> = ({
   heatmapData,
   minWeekStart,
   maxWeekStart,
+  isDayAllowed,
 }) => {
   const [internalAnchor, setInternalAnchor] = useState<Date>(
     externalAnchor ?? new Date(),
@@ -432,6 +450,18 @@ const Calendar: React.FC<CalendarProps> = ({
             </React.Fragment>
           );
         })}
+
+        {isDayAllowed &&
+          weekDays.map((day, dayIndex) => {
+            const allowed = isDayAllowed(day);
+            if (allowed) return null;
+            return (
+              <DisabledDayOverlay
+                key={`disabled-${day.toISOString()}`}
+                $dayIndex={dayIndex}
+              />
+            );
+          })}
 
         {weekDays.map((day, dayIndex) => {
           const dayEvents = events

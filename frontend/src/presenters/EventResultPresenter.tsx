@@ -9,7 +9,7 @@ import {
 import { EventResult } from "../views/EventResult";
 import { LoadingView } from "../components/utils/Loading";
 import { observer } from "mobx-react-lite";
-import { startOfDay, startOfWeek } from "date-fns";
+import { isSameDay, startOfDay, startOfWeek } from "date-fns";
 import { enGB } from "date-fns/locale";
 
 export const EventResultPresenter = observer(
@@ -116,6 +116,10 @@ export const EventResultPresenter = observer(
     const topLocation = getMostVotedLocation();
     const winningSlots = getWinningSlots();
 
+    const isDayAllowed = (day: Date) => {
+      return allowedDays.some((d) => isSameDay(d, day));
+    };
+
     return (
       <EventResult
         eventTitle={model.currentEvent?.title ?? ""}
@@ -126,6 +130,7 @@ export const EventResultPresenter = observer(
         userId={model.userId}
         event={model.currentEvent}
         weekAnchor={weekAnchor}
+        isDayAllowed={isDayAllowed}
         onNavigateWeek={setWeekAnchor}
         minWeekStart={minWeekStart}
         maxWeekStart={maxWeekStart}

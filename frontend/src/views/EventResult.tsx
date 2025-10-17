@@ -231,6 +231,7 @@ export function EventResult({
   event,
   userId,
   weekAnchor,
+  isDayAllowed,
   onNavigateWeek,
   minWeekStart,
   maxWeekStart,
@@ -245,6 +246,7 @@ export function EventResult({
   } | null;
   userId?: string | null;
   weekAnchor: Date;
+  isDayAllowed: (day: Date) => boolean;
   onNavigateWeek: (date: Date) => void;
   minWeekStart?: Date;
   maxWeekStart?: Date;
@@ -325,6 +327,7 @@ export function EventResult({
               currentUserId={userId}
               minWeekStart={minWeekStart}
               maxWeekStart={maxWeekStart}
+              isDayAllowed={isDayAllowed}
             />
           </CalendarWrapper>
         </Panel>
