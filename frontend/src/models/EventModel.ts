@@ -5,7 +5,7 @@ import {
   fetchInvitedEvents,
   fetchEventByHash,
 } from "../services/backendCommunication";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 export interface EventData {
   title: string;
@@ -68,9 +68,11 @@ export const eventModel = {
 
   async deleteEvent(eventId: string): Promise<void> {
     const response = await deleteEventOnDB(eventId);
-    this.myEvents = this.myEvents.filter(
-      (event) => event._id.toString() !== eventId,
-    );
+    runInAction(() => {
+      this.myEvents = this.myEvents.filter(
+        (event) => event._id.toString() !== eventId,
+      );
+    });
     return response;
   },
 

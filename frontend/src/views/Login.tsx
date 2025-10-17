@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import AuthPage from "../components/utils/authPage";
-import { useLocation } from "react-router";
 
 const Container = styled.div`
   display: flex;
@@ -47,14 +46,7 @@ const Text = styled.p`
   font-size: 18px;
 `;
 
-export function Login() {
-  let userArrivedViaLink = false;
-  const location = useLocation();
-  const urlParams = location.search;
-  if (urlParams.includes("event-result")) {
-    userArrivedViaLink = true;
-  }
-
+export function Login({ userArrivedViaLink }: { userArrivedViaLink: boolean }) {
   return (
     <Container>
       <TitleAndText>
