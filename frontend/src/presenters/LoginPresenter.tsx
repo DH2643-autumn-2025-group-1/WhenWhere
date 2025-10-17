@@ -7,7 +7,8 @@ export function LoginPresenter() {
   const callbackUrl = params.get("callbackUrl") || "";
 
   const userArrivedViaLink =
-    callbackUrl.includes("event-result") || callbackUrl.includes("availability");
+    callbackUrl.includes("event-result") ||
+    callbackUrl.includes("availability");
 
   return <Login userArrivedViaLink={userArrivedViaLink} />;
 }
