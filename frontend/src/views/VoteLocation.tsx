@@ -68,25 +68,23 @@ const PlaceItem = styled.div<{
 
 export function VoteLocation({
   places,
-  setHaveVotedLocation,
   isvoting,
   onLocationChange,
 }: {
   places?: Place[];
   setHaveVotedLocation?: (voted: boolean) => void;
-  onLocationChange?: (location: Place | null) => void;
+  onLocationChange?: (location: Place) => void;
   isvoting: boolean;
 }) {
   const [chosenPlace, setChosenPlace] = useState<string | null>(null);
 
-  function handlePlaceSelection(place: Place) {
-    setChosenPlace(place.name);
-    setHaveVotedLocation?.(true);
-    onLocationChange?.(place);
-  }
-
   if (!isvoting && (!places || places.length === 0)) {
     return null;
+  }
+
+  function handlePlaceSelection(place: Place) {
+    setChosenPlace(place.name);
+    onLocationChange?.(place);
   }
 
   return (
