@@ -72,7 +72,7 @@ export function initAuthListener(model: {
 }) {
   if (authListenerInitialized) return;
   const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, (user: User | null) => {
     if (user) {
       model.setUserId(user.uid);
 
@@ -85,7 +85,7 @@ export function initAuthListener(model: {
           .replace(/[._]+/g, " ")
           .split(" ")
           .map(
-            (word) =>
+            (word: string) =>
               word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
           )
           .join(" ");

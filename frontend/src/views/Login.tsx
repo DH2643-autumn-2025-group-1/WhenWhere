@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import AuthPage from "../components/utils/AuthPage";
+import AuthPage from "../components/utils/authPage";
 
 const Container = styled.div`
   display: flex;
