@@ -83,7 +83,7 @@ export const VoteTimeAndPlacePresenter = observer(
       } finally {
         navigate(resultsPath);
       }
-  };
+    };
     if (isLoading) {
       return <LoadingView />;
     }

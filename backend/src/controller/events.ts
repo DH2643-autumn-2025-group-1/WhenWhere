@@ -102,7 +102,6 @@ router.put("/:id/availability", async (req, res) => {
         userAvailability.username = username;
       }
     } else {
-
       if (votedLocation && event.places.length > 0) {
         const place = event.places.find((p) => p.name === votedLocation.name);
         if (place) {
