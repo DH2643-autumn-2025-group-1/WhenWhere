@@ -62,7 +62,6 @@ export const VoteTimeAndPlacePresenter = observer(
         return;
       }
 
-      // Only create votedLocation if places exist
       const newVotedLocation =
         places.length > 0 && votedLocation
           ? {
