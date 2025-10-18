@@ -258,7 +258,7 @@ export function EventResult({
   return (
     <Container>
       <EventResultComponent>
-        <Title>Where and When will "{eventTitle}" be:</Title>
+        <Title>When and Where will "{eventTitle}" be:</Title>
         <WinningCardsContainer>
           {topLocation && (
             <div>
