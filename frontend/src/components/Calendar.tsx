@@ -188,6 +188,26 @@ const DisabledDayOverlay = styled(Box)<{ $dayIndex: number }>`
   z-index: 1;
 `;
 
+const DisabledHourOverlay = styled(Box)<{
+  $dayIndex: number;
+  $rowStart: number;
+  $rowEnd: number;
+}>`
+  grid-row: ${(props) => `${props.$rowStart} / ${props.$rowEnd}`};
+  grid-column: ${(props) => props.$dayIndex + 2};
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.06),
+    rgba(0, 0, 0, 0.06) 8px,
+    rgba(0, 0, 0, 0.08) 8px,
+    rgba(0, 0, 0, 0.08) 16px
+  );
+  border-radius: 12px;
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
+`;
+
 const StyledEventBlock = styled(Box)<{
   $topPct: number;
   $heightPct: number;
@@ -462,6 +482,23 @@ const Calendar: React.FC<CalendarProps> = ({
               />
             );
           })}
+
+        {weekDays.map((day, dayIndex) => {
+          const now = new Date();
+          const isToday = isSameDay(day, now);
+          if (!isToday || !isDayAllowed || !isDayAllowed(day)) return null;
+
+          const currentHour = now.getHours();
+
+          return (
+            <DisabledHourOverlay
+              key={`disabled-hours-${day.toISOString()}`}
+              $dayIndex={dayIndex}
+              $rowStart={2}
+              $rowEnd={currentHour + 3}
+            />
+          );
+        })}
 
         {weekDays.map((day, dayIndex) => {
           const dayEvents = events
