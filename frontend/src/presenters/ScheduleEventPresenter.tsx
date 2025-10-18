@@ -7,6 +7,7 @@ import { makeAvailabilityPath } from "../utils/shareHash";
 import { useNavigate } from "react-router";
 import type { Place } from "../models/EventModel";
 import { useSnackbar } from "../contexts/useSnackbar";
+import { LoadingView } from "../components/utils/Loading";
 
 export interface ScheduleEventProps {
   places: Place[];
@@ -163,6 +164,9 @@ export const ScheduleEventPresenter = observer(
       setShouldIncludeDigital: setShouldIncludeDigital,
     };
 
+    if (isSubmitting) {
+      return <LoadingView />;
+    }
     return <ScheduleEvent {...viewProps} />;
   },
 );
