@@ -92,6 +92,7 @@ export const VoteTimeAndPlacePresenter = observer(
 
     return (
       <VoteTimeAndPlace
+        eventTitle={model.currentEvent?.title ?? ""}
         availabilitySlot={
           <AvailabilityPresenter
             setHaveVotedTime={setHaveVotedTime}

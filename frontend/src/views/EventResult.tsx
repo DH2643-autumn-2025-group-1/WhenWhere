@@ -258,7 +258,7 @@ export function EventResult({
   return (
     <Container>
       <EventResultComponent>
-        <Title>Event Result:</Title>
+        <Title>When and Where will "{eventTitle}" be:</Title>
         <WinningCardsContainer>
           {topLocation && (
             <div>
@@ -313,11 +313,11 @@ export function EventResult({
       </EventResultComponent>
       <ContentContainer>
         {shareUrl && onMobile && (
-          <TextBoxWithActions title="Shareable voting link" value={shareUrl} />
+          <TextBoxWithActions title="Share the vote with:" value={shareUrl} />
         )}
         {onMobile && <VoteLocation places={places} isvoting={false} />}
         <Panel>
-          <h2 style={{ margin: 0 }}>Calendar results for: {eventTitle}</h2>
+          <h2 style={{ margin: 0 }}>Distribution of votes for time:</h2>
           <CalendarWrapper>
             <Calendar
               key={`${JSON.stringify(event?.availability || [])}-${weekAnchor.getTime()}`}
@@ -333,10 +333,7 @@ export function EventResult({
         </Panel>
         <PlaceAndLinkContainer>
           {shareUrl && !onMobile && (
-            <TextBoxWithActions
-              title="Shareable voting link"
-              value={shareUrl}
-            />
+            <TextBoxWithActions title="Share the vote with:" value={shareUrl} />
           )}
           {!onMobile && <VoteLocation places={places} isvoting={false} />}
         </PlaceAndLinkContainer>

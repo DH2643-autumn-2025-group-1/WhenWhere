@@ -3,11 +3,14 @@ import type { EventModelType, Event } from "../models/EventModel";
 import { HomePage } from "../views/Homepage";
 import { observer } from "mobx-react-lite";
 import { LoadingView } from "../components/utils/Loading";
+import { useNavigate } from "react-router";
+import { makeAvailabilityPath } from "../utils/shareHash";
 
 export const HomepagePresenter = observer(
   ({ model }: { model: EventModelType }) => {
     const [loading, setLoading] = useState(true);
     const userId = model.getUserId();
+    const navigate = useNavigate();
 
     useEffect(() => {
       async function loadEvents() {
@@ -45,6 +48,7 @@ export const HomepagePresenter = observer(
         myEvents={model.myEvents}
         onSelectEvent={(event: Event) => {
           model.currentEvent = event;
+          navigate(makeAvailabilityPath(event.shareHash));
         }}
       />
     );
