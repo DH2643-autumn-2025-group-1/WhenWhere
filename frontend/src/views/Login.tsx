@@ -46,14 +46,17 @@ const Text = styled.p`
   font-size: 18px;
 `;
 
-export function Login() {
+export function Login({ userArrivedViaLink }: { userArrivedViaLink: boolean }) {
   return (
     <Container>
       <TitleAndText>
         <Title>WhenWhere</Title>
         <Text>
-          You have been invited to a meeting. Login to mark your availibility to
-          the meeting and vote for place of the meeting.
+          {userArrivedViaLink
+            ? `You have been invited to an event. Login to mark your availability and vote for a location.`
+            : `
+          Welcome to WhenWhere! Please login to create events, mark your 
+          availability, vote for event locations and share a link of the event to your friends or colleagues.`}
         </Text>
       </TitleAndText>
       <AuthPage />

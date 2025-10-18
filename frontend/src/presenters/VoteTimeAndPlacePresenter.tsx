@@ -8,6 +8,7 @@ import { LoadingView } from "../components/utils/Loading";
 import { observer } from "mobx-react-lite";
 import { AvailabilityPresenter } from "./AvailabilityPresenter";
 import { VoteLocationPresenter } from "./VoteLocationPresenter";
+import { runInAction } from "mobx";
 
 export const VoteTimeAndPlacePresenter = observer(
   ({ model }: { model: EventModelType }) => {
@@ -78,7 +79,9 @@ export const VoteTimeAndPlacePresenter = observer(
           selectedDates,
           newVotedLocation,
         );
-        model.updateCurrentEvent(updatedEvent);
+        runInAction(() => {
+          model.currentEvent = updatedEvent;
+        });
       } finally {
         navigate(resultsPath);
       }

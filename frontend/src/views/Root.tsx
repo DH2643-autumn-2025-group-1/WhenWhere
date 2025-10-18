@@ -6,7 +6,6 @@ import {
 } from "@mui/material";
 import { Route, Routes } from "react-router";
 import { theme } from "../styles/theme.ts";
-import { Login } from "./Login.tsx";
 import { HomepagePresenter } from "../presenters/HomepagePresenter.tsx";
 import { ScheduleEventPresenter } from "../presenters/ScheduleEventPresenter.tsx";
 import { StyledEngineProvider } from "@mui/styled-engine-sc";
@@ -15,6 +14,7 @@ import { ProtectedRoute } from "../components/utils/ProtectedRoute.tsx";
 import { EventResultPresenter } from "../presenters/EventResultPresenter.tsx";
 import type { EventModelType } from "../models/EventModel";
 import { VoteTimeAndPlacePresenter } from "../presenters/VoteTimeAndPlacePresenter.tsx";
+import { LoginPresenter } from "../presenters/LoginPresenter.tsx";
 import { SnackbarProvider } from "../contexts/SnackbarContext.tsx";
 
 const muiTheme = createTheme({});
@@ -35,7 +35,7 @@ export function Root({ model }: { model: EventModelType }) {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/sign-in" element={<Login />} />
+              <Route path="/sign-in" element={<LoginPresenter />} />
               <Route
                 path="/event-result"
                 element={
