@@ -7,6 +7,7 @@ import {
   ThemeProvider as MuiThemeProvider,
   THEME_ID,
 } from "@mui/material";
+import { StyledEngineProvider } from "@mui/styled-engine-sc";
 import { theme } from "./styles/theme.ts";
 import { initAuthListener } from "./firebase/firebaseAuth";
 import { eventModel } from "./models/EventModel.ts";
@@ -24,20 +25,36 @@ const GlobalStyle = createGlobalStyle<{ appBarHeight?: number }>`
   body {
     width: 100%;
     background-color: ${(props) => props.theme.colors.background};
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
 `;
 
-const muiTheme = createTheme({});
+const muiTheme = createTheme({
+  typography: {
+    fontFamily: [
+      "Inter",
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+    ].join(","),
+  },
+});
 
 initAuthListener(eventModel);
 
 ReactDOM.createRoot(root).render(
   <BrowserRouter>
-    <ThemeProvider theme={theme}>
-      <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
-        <GlobalStyle />
-        <Root model={eventModel} />
-      </MuiThemeProvider>
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <MuiThemeProvider theme={{ [THEME_ID]: muiTheme }}>
+          <GlobalStyle />
+          <Root model={eventModel} />
+        </MuiThemeProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   </BrowserRouter>,
 );
