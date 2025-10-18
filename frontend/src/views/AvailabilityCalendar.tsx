@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Box } from "@mui/material";
 import Calendar from "../components/Calendar";
+import { isSameDay } from "date-fns";
 
 const CalendarWrapper = styled(Box)`
   display: flex;
@@ -73,6 +74,26 @@ const SelectionRect = styled(Box)<{
   border-radius: 12px;
   pointer-events: none;
   z-index: 20;
+`;
+
+const DisabledHourOverlay = styled(Box)<{
+  $rowStart: number;
+  $rowEnd: number;
+  $dayIndex: number;
+}>`
+  grid-row: ${(p) => `${p.$rowStart} / ${p.$rowEnd}`};
+  grid-column: ${(p) => p.$dayIndex + 2};
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.06),
+    rgba(0, 0, 0, 0.06) 8px,
+    rgba(0, 0, 0, 0.08) 8px,
+    rgba(0, 0, 0, 0.08) 16px
+  );
+  border-radius: 12px;
+  pointer-events: none;
+  position: relative;
+  z-index: 15;
 `;
 
 type SelectionIndex = { dayIdx: number; hour: number };
@@ -170,6 +191,22 @@ export function AvailabilityCalendar({
             })}
           </React.Fragment>
         ))}
+        {weekDays.map((day, dayIndex) => {
+          const now = new Date();
+          const isToday = isSameDay(day, now);
+          if (!isToday || !isDayAllowed(day)) return null;
+
+          const currentHour = now.getHours();
+
+          return (
+            <DisabledHourOverlay
+              key={`disabled-hours-${day.toISOString()}`}
+              $dayIndex={dayIndex}
+              $rowStart={1}
+              $rowEnd={currentHour + 2}
+            />
+          );
+        })}
         {isSelecting && selectStart && selectEnd && (
           <SelectionRect
             $rowStart={Math.min(selectStart.hour, selectEnd.hour) + 1}
