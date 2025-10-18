@@ -1,73 +1,93 @@
-# React + TypeScript + Vite
+# WhenWhere
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A collaborative event scheduling application that helps groups coordinate meetings by finding optimal times and locations.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Create events with multiple date/time options and location suggestions
+- Vote on availability and preferred locations
+- Share events via unique links
+- Firebase authentication
+- Google Maps integration for location selection
 
-## React Compiler
+## Technology Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend
 
-## Expanding the ESLint configuration
+- React 19 + TypeScript + Vite
+- MobX (state management)
+- Material-UI + Styled Components
+- Firebase Authentication
+- Google Maps API
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Backend
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js + Express 5
+- MongoDB + Mongoose
+- TypeScript
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Architecture
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**Frontend**: MVP (Model-View-Presenter) pattern
+
+- **Models**: MobX stores for reactive state
+- **Views**: Pure presentation components
+- **Presenters**: Business logic and data fetching
+
+**Backend**: Service layer pattern with Express controllers
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js >= 20.0.0
+- MongoDB
+- Firebase project
+- Google Maps API key
+
+### Installation
+
+1. Clone and install dependencies:
+
+```bash
+git clone https://github.com/joel90688/WhenWhere.git
+cd WhenWhere
+npm run install:all
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Configure environment variables:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**Backend** (`backend/.env`):
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+MONGO_URI=your_mongodb_connection_string
+PORT=5000
 ```
+
+**Frontend**: Update Firebase config in `frontend/src/firebase/firebaseConfig.ts`
+
+3. Run development servers:
+
+```bash
+npm run dev
+```
+
+- Frontend: http://localhost:5173
+- Backend: http://localhost:5000
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+## Available Scripts
+
+- `npm run dev` - Start frontend and backend dev servers
+- `npm run build` - Build both frontend and backend
+- `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
+
+## License
+
+ISC
