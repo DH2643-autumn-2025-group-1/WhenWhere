@@ -7,6 +7,7 @@ import { makeAvailabilityPath } from "../utils/shareHash";
 import { useNavigate } from "react-router";
 import type { Place } from "../models/EventModel";
 import { useSnackbar } from "../contexts/useSnackbar";
+import { LoadingView } from "../components/utils/Loading";
 
 export interface ScheduleEventProps {
   places: Place[];
@@ -89,15 +90,6 @@ export const ScheduleEventPresenter = observer(
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        for (const date of eventData.dateOptions) {
-          const d = new Date(date);
-          d.setHours(0, 0, 0, 0);
-          if (d < today) {
-            showSnackbar("Selected dates cannot be in the past", "error");
-            return;
-          }
-        }
-
         const validPlaces = eventData.places.filter(
           (place) =>
             place && typeof place === "object" && Object.keys(place).length > 0,
@@ -172,6 +164,9 @@ export const ScheduleEventPresenter = observer(
       setShouldIncludeDigital: setShouldIncludeDigital,
     };
 
+    if (isSubmitting) {
+      return <LoadingView />;
+    }
     return <ScheduleEvent {...viewProps} />;
   },
 );

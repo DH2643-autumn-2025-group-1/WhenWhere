@@ -66,7 +66,18 @@ const PlaceAutocomplete = ({
         const gPlace = placeAutocomplete.getPlace();
 
         if (!gPlace || !gPlace.name) {
-          onPlaceSelect(null);
+          const customPlaceName = inputRef.current?.value?.trim();
+
+          if (customPlaceName) {
+            const customPlace: Place = {
+              name: customPlaceName,
+              html_attributions: [],
+              votes: [],
+            };
+            onPlaceSelect(customPlace);
+          } else {
+            onPlaceSelect(null);
+          }
           return;
         }
 
@@ -90,6 +101,21 @@ const PlaceAutocomplete = ({
     });
   }, [onPlaceSelect, placeAutocomplete]);
 
+  const handleBlur = () => {
+    if (!inputRef.current || !onPlaceSelect) return;
+
+    const inputValue = inputRef.current.value.trim();
+
+    if (inputValue) {
+      const customPlace: Place = {
+        name: inputValue,
+        html_attributions: [],
+        votes: [],
+      };
+      onPlaceSelect(customPlace);
+    }
+  };
+
   return (
     <div className="autocomplete-container">
       <TextField
@@ -99,6 +125,7 @@ const PlaceAutocomplete = ({
         fullWidth
         margin="normal"
         defaultValue={defaultValue}
+        onBlur={handleBlur}
       />
     </div>
   );
