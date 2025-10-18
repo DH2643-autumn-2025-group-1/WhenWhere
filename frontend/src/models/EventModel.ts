@@ -65,8 +65,10 @@ class EventModel {
 
   async createEvent(eventData: EventData): Promise<Event> {
     const response = await createEventOnDB(eventData);
-    this.myEvents.push(response);
-    this.currentEvent = response;
+    runInAction(() => {
+      this.myEvents.push(response);
+      this.currentEvent = response;
+    });
     return response;
   }
 
@@ -85,7 +87,9 @@ class EventModel {
       throw new Error("User ID is not set");
     }
     const events = await fetchCreatedEvents(this.userId);
-    this.myEvents = events;
+    runInAction(() => {
+      this.myEvents = events;
+    });
   }
 
   async fetchFriendsEvents() {
@@ -93,12 +97,16 @@ class EventModel {
       throw new Error("User ID is not set");
     }
     const events = await fetchInvitedEvents(this.userId);
-    this.friendsEvents = events;
+    runInAction(() => {
+      this.friendsEvents = events;
+    });
   }
 
   async fetchEventByHash(shareHash: string) {
     const ev = await fetchEventByHash(shareHash);
-    this.currentEvent = ev;
+    runInAction(() => {
+      this.currentEvent = ev;
+    });
     return ev;
   }
 

@@ -60,6 +60,7 @@ function VoteTimeAndPlace({
   availabilitySlot,
   locationSlot,
   submitDisabled,
+  eventTitle,
 }: {
   resultsPath?: string;
   onSubmit?: () => void;
@@ -67,19 +68,20 @@ function VoteTimeAndPlace({
   availabilitySlot: ReactNode;
   locationSlot: ReactNode;
   submitDisabled?: boolean;
+  eventTitle: string;
 }) {
   const navigate = useNavigate();
 
   return (
     <Container>
-      <Title>Vote for your preferred times and location</Title>
+      <Title>Vote for When and Where "{eventTitle}" will be:</Title>
       <ContentContainer>
         {availabilitySlot}
         <PlaceAndSubmitContainer>
           <LinkAndLocationContainer>
             {shareUrl && (
               <TextBoxWithActions
-                title="Shareable voting link"
+                title="Share the vote with:"
                 value={shareUrl}
               />
             )}
