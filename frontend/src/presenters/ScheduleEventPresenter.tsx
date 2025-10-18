@@ -1,23 +1,20 @@
 import { useState } from "react";
 import { Dayjs } from "dayjs";
 import { type EventData, type EventModelType } from "../models/EventModel";
-import { ScheduleEventView } from "../views/ScheduleEventView";
+import { ScheduleEvent } from "../views/ScheduleEvent";
 import { observer } from "mobx-react-lite";
 import { makeAvailabilityPath } from "../utils/shareHash";
 import { useNavigate } from "react-router";
 import type { Place } from "../models/EventModel";
+import { useSnackbar } from "../contexts/useSnackbar";
+import { LoadingView } from "../components/utils/Loading";
 
-export interface ScheduleEventViewProps {
+export interface ScheduleEventProps {
   places: Place[];
   selectedDates: Dayjs[];
   title: string;
   description: string;
   isSubmitting: boolean;
-  snackbar: {
-    open: boolean;
-    message: string;
-    severity: "success" | "error";
-  };
   onAddPlace: () => void;
   onPlaceChange: (index: number, value: Place) => void;
   onRemovePlace: (index: number) => void;
@@ -25,10 +22,10 @@ export interface ScheduleEventViewProps {
   onTitleChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onSubmit: () => void;
-  onCloseSnackbar: () => void;
+  setShouldIncludeDigital: (value: boolean) => void;
 }
 
-export const EventPresenter = observer(
+export const ScheduleEventPresenter = observer(
   ({ model }: { model: EventModelType }) => {
     if (!model) {
       console.error("Model prop is undefined");
@@ -39,12 +36,9 @@ export const EventPresenter = observer(
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-    const [snackbar, setSnackbar] = useState<{
-      open: boolean;
-      message: string;
-      severity: "success" | "error";
-    }>({ open: false, message: "", severity: "success" });
+    const [shouldIncludeDigital, setShouldIncludeDigital] = useState(false);
     const navigate = useNavigate();
+    const { showSnackbar } = useSnackbar();
 
     const handleAddPlace = () => {
       setPlaces([...places, { name: "", votes: [] }]);
@@ -84,12 +78,17 @@ export const EventPresenter = observer(
     const createEvent = async (eventData: EventData): Promise<void> => {
       try {
         if (!eventData.title.trim()) {
-          throw new Error("Event title is required");
+          showSnackbar("Title is required", "error");
+          return;
         }
 
         if (eventData.dateOptions.length === 0) {
-          throw new Error("At least one date must be selected");
+          showSnackbar("At least one date must be selected", "error");
+          return;
         }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
         const validPlaces = eventData.places.filter(
           (place) =>
@@ -104,28 +103,20 @@ export const EventPresenter = observer(
         };
         const created = await model.createEvent(finalEventData);
 
-        // Navigate user to the voting page after successful creation, this will however omit the snackbar alert which is why we might want a global snackbar in root if possible.
-        const votingPath = makeAvailabilityPath(created.shareHash);
-        navigate(votingPath);
-
-        setSnackbar({
-          open: true,
-          message: "Event created successfully!",
-          severity: "success",
-        });
-
-        // Reset form
         setTitle("");
         setDescription("");
         setPlaces([]);
         setSelectedDates([]);
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "An unexpected error occurred";
 
-        setSnackbar({ open: true, message: errorMessage, severity: "error" });
+        const votingPath = makeAvailabilityPath(created.shareHash);
+        navigate(votingPath);
+
+        showSnackbar("Event created successfully!", "success");
+      } catch (error) {
+        showSnackbar(
+          error instanceof Error ? error.message : String(error),
+          "error",
+        );
       }
     };
 
@@ -135,14 +126,12 @@ export const EventPresenter = observer(
       const creatorId = model.getUserId();
 
       if (!creatorId) {
-        setSnackbar({
-          open: true,
-          message: "You must be signed in to create an event.",
-          severity: "error",
-        });
+        showSnackbar("You must be signed in to create an event.", "error");
         setIsSubmitting(false);
         return;
       }
+
+      if (shouldIncludeDigital) places.push({ name: "digital", votes: [] });
 
       const eventData: EventData = {
         title,
@@ -159,17 +148,12 @@ export const EventPresenter = observer(
       }
     };
 
-    const handleCloseSnackbar = () => {
-      setSnackbar({ ...snackbar, open: false });
-    };
-
-    const viewProps: ScheduleEventViewProps = {
+    const viewProps: ScheduleEventProps = {
       places,
       selectedDates,
       title,
       description,
       isSubmitting,
-      snackbar,
       onAddPlace: handleAddPlace,
       onPlaceChange: handlePlaceChange,
       onRemovePlace: handleRemovePlace,
@@ -177,9 +161,12 @@ export const EventPresenter = observer(
       onTitleChange: handleTitleChange,
       onDescriptionChange: handleDescriptionChange,
       onSubmit: handleSubmit,
-      onCloseSnackbar: handleCloseSnackbar,
+      setShouldIncludeDigital: setShouldIncludeDigital,
     };
 
-    return <ScheduleEventView {...viewProps} />;
+    if (isSubmitting) {
+      return <LoadingView />;
+    }
+    return <ScheduleEvent {...viewProps} />;
   },
 );

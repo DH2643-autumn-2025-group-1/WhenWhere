@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { theme } from "../styles/theme";
@@ -58,7 +58,7 @@ export interface EventResultViewProps {
       availableSlots: Date[] | string[];
     }[];
   } | null;
-  readonly currentUserId?: string | null;
+  readonly userId?: string | null;
 }
 const WinningCardsContainer = styled.div`
   display: flex;
@@ -96,6 +96,7 @@ const WinnerText = styled.h2`
   font-size: 20px;
   font-weight: 600;
   color: #333;
+  text-transform: capitalize;
 `;
 
 const TimeContainer = styled.div`
@@ -228,7 +229,12 @@ export function EventResult({
   eventTitle,
   shareUrl,
   event,
-  currentUserId,
+  userId,
+  weekAnchor,
+  isDayAllowed,
+  onNavigateWeek,
+  minWeekStart,
+  maxWeekStart,
 }: {
   winningSlots: { slot: string; people: string[] }[];
   topLocation: Place | null;
@@ -238,9 +244,13 @@ export function EventResult({
   event?: {
     availability?: { userId: string; availableSlots: Date[] | string[] }[];
   } | null;
-  currentUserId?: string | null;
+  userId?: string | null;
+  weekAnchor: Date;
+  isDayAllowed: (day: Date) => boolean;
+  onNavigateWeek: (date: Date) => void;
+  minWeekStart?: Date;
+  maxWeekStart?: Date;
 }) {
-  const [weekAnchor, setWeekAnchor] = useState(() => new Date());
   const trophyColors = ["#FFD700", "#B0BEC5", "#CD7F32"];
   const onMobile =
     window.innerWidth < Number(theme.breakpoints.tablet.replace("px", ""));
@@ -312,9 +322,12 @@ export function EventResult({
             <Calendar
               key={`${JSON.stringify(event?.availability || [])}-${weekAnchor.getTime()}`}
               weekAnchor={weekAnchor}
-              onNavigateWeek={(next) => setWeekAnchor(next)}
+              onNavigateWeek={onNavigateWeek}
               heatmapData={event?.availability}
-              currentUserId={currentUserId}
+              currentUserId={userId}
+              minWeekStart={minWeekStart}
+              maxWeekStart={maxWeekStart}
+              isDayAllowed={isDayAllowed}
             />
           </CalendarWrapper>
         </Panel>

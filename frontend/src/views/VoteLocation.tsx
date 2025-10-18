@@ -68,25 +68,23 @@ const PlaceItem = styled.div<{
 
 export function VoteLocation({
   places,
-  setHaveVotedLocation,
   isvoting,
   onLocationChange,
 }: {
   places?: Place[];
   setHaveVotedLocation?: (voted: boolean) => void;
-  onLocationChange?: (location: Place | null) => void;
+  onLocationChange?: (location: Place) => void;
   isvoting: boolean;
 }) {
   const [chosenPlace, setChosenPlace] = useState<string | null>(null);
 
-  function handlePlaceSelection(place: Place) {
-    setChosenPlace(place.name);
-    setHaveVotedLocation?.(true);
-    onLocationChange?.(place);
-  }
-
   if (!isvoting && (!places || places.length === 0)) {
     return null;
+  }
+
+  function handlePlaceSelection(place: Place) {
+    setChosenPlace(place.name);
+    onLocationChange?.(place);
   }
 
   return (
@@ -110,10 +108,8 @@ export function VoteLocation({
               $isvoting={isvoting}
               $colorstrength={place.votes.length}
             >
-              {place?.name.charAt(0).toUpperCase() +
-                place?.name.slice(1) +
-                ", " +
-                place.formatted_address}
+              {place?.name.charAt(0).toUpperCase() + place?.name.slice(1)}
+              {place.formatted_address && ", " + place.formatted_address}
               {!isvoting &&
                 ` ― ${place.votes.length} vote${place.votes.length === 1 ? "" : "s"}`}
             </PlaceItem>

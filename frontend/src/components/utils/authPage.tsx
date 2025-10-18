@@ -153,7 +153,7 @@ export default function AuthPage() {
       return {
         error: isSignUpMode ? "Failed to sign up" : "Failed to sign in",
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         error: getFriendlyAuthError(error, isSignUpMode),
       };

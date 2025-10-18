@@ -60,21 +60,6 @@ const TimeSlot = styled(Box)<{
   }
 `;
 
-const DisabledDayOverlay = styled(Box)<{ $dayIndex: number }>`
-  grid-row: 1 / 25;
-  grid-column: ${(p) => `${p.$dayIndex + 2} / ${p.$dayIndex + 3}`};
-  background: repeating-linear-gradient(
-    45deg,
-    rgba(0, 0, 0, 0.06),
-    rgba(0, 0, 0, 0.06) 8px,
-    rgba(0, 0, 0, 0.08) 8px,
-    rgba(0, 0, 0, 0.08) 16px
-  );
-  border-radius: 12px;
-  pointer-events: none;
-  position: relative;
-`;
-
 const SelectionRect = styled(Box)<{
   $rowStart: number;
   $rowEnd: number;
@@ -144,6 +129,7 @@ export function AvailabilityCalendar({
         onNavigateWeek={handleNavigateWeek}
         minWeekStart={minWeekStart}
         maxWeekStart={maxWeekStart}
+        isDayAllowed={isDayAllowed}
       />
       <TimeSelectionOverlay
         $topPx={overlayTopPx}
@@ -159,16 +145,6 @@ export function AvailabilityCalendar({
           cursor: isSelecting ? "crosshair" : "default",
         }}
       >
-        {weekDays.map((day, dayIndex) => {
-          const allowed = isDayAllowed(day);
-          if (allowed) return null;
-          return (
-            <DisabledDayOverlay
-              key={`disabled-${day.toISOString()}`}
-              $dayIndex={dayIndex}
-            />
-          );
-        })}
         {hours.map((hour) => (
           <React.Fragment key={hour}>
             <Box style={{ pointerEvents: "none" }} />

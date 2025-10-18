@@ -57,17 +57,27 @@ export const VoteTimeAndPlacePresenter = observer(
       const eventId = model.currentEvent?._id;
       const userId = model.userId;
       const username = model.username ?? undefined;
+
       if (!eventId || !userId) {
         navigate(resultsPath);
         return;
       }
+
+      const newVotedLocation =
+        places.length > 0 && votedLocation
+          ? {
+              ...votedLocation,
+              votes: [...new Set([...(votedLocation.votes ?? []), userId])],
+            }
+          : null;
+
       try {
         const updatedEvent = await saveAvailabilityOnDB(
           eventId,
           userId,
           username,
           selectedDates,
-          votedLocation,
+          newVotedLocation,
         );
         runInAction(() => {
           model.currentEvent = updatedEvent;

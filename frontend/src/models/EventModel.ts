@@ -40,31 +40,35 @@ export interface Place {
   votes: string[];
 }
 
-export const eventModel = {
-  userId: null as string | null,
-  username: null as string | null,
-  myEvents: [] as Event[],
-  friendsEvents: [] as Event[],
-  currentEvent: null as Event | null,
+class EventModel {
+  userId: string | null = null;
+  username: string | null = null;
+  myEvents: Event[] = [];
+  friendsEvents: Event[] = [];
+  currentEvent: Event | null = null;
+
+  constructor() {
+    makeAutoObservable(this);
+  }
 
   setUsername(name: string | null) {
     this.username = name;
-  },
+  }
 
-  setuserId(id: string | null) {
+  setUserId(id: string | null) {
     this.userId = id;
-  },
+  }
 
   getUserId() {
     return this.userId;
-  },
+  }
 
   async createEvent(eventData: EventData): Promise<Event> {
     const response = await createEventOnDB(eventData);
     this.myEvents.push(response);
     this.currentEvent = response;
     return response;
-  },
+  }
 
   async deleteEvent(eventId: string): Promise<void> {
     const response = await deleteEventOnDB(eventId);
@@ -74,7 +78,7 @@ export const eventModel = {
       );
     });
     return response;
-  },
+  }
 
   async fetchMyEvents() {
     if (!this.userId) {
@@ -82,7 +86,7 @@ export const eventModel = {
     }
     const events = await fetchCreatedEvents(this.userId);
     this.myEvents = events;
-  },
+  }
 
   async fetchFriendsEvents() {
     if (!this.userId) {
@@ -90,19 +94,23 @@ export const eventModel = {
     }
     const events = await fetchInvitedEvents(this.userId);
     this.friendsEvents = events;
-  },
+  }
 
   async fetchEventByHash(shareHash: string) {
     const ev = await fetchEventByHash(shareHash);
     this.currentEvent = ev;
     return ev;
-  },
+  }
 
   addPlace(place: Place) {
     if (this.currentEvent) {
       this.currentEvent.places.push({ ...place, votes: [] });
     }
-  },
+  }
+
+  updateCurrentEvent(event: Event) {
+    this.currentEvent = event;
+  }
 
   hasUserVoted(): boolean {
     if (!this.currentEvent || !this.userId) return false;
@@ -110,9 +118,9 @@ export const eventModel = {
     return this.currentEvent.availability?.some(
       (entry) => entry.userId === this.userId,
     );
-  },
-};
+  }
+}
 
-makeAutoObservable(eventModel);
+export const eventModel = new EventModel();
 
 export type EventModelType = typeof eventModel;
