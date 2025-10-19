@@ -2,13 +2,9 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router";
 import { Root } from "./views/Root.tsx";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
-import {
-  createTheme,
-  ThemeProvider as MuiThemeProvider,
-  THEME_ID,
-} from "@mui/material";
+import { ThemeProvider as MuiThemeProvider, THEME_ID } from "@mui/material";
 import { StyledEngineProvider } from "@mui/styled-engine-sc";
-import { theme } from "./styles/theme.ts";
+import { theme, muiTheme } from "./styles/theme.ts";
 import { initAuthListener } from "./firebase/firebaseAuth";
 import { eventModel } from "./models/EventModel.ts";
 
@@ -28,12 +24,6 @@ const GlobalStyle = createGlobalStyle<{ appBarHeight?: number }>`
     font-family: ${(props) => props.theme.fonts.family};
   }
 `;
-
-const muiTheme = createTheme({
-  typography: {
-    fontFamily: theme.fonts.family,
-  },
-});
 
 initAuthListener(eventModel);
 

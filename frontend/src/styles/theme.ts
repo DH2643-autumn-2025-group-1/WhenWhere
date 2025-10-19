@@ -1,3 +1,5 @@
+import { createTheme } from "@mui/material";
+
 export const theme = {
   colors: {
     primary: "#4a90e2",
@@ -30,3 +32,9 @@ export const theme = {
 };
 
 export type ThemeType = typeof theme;
+
+export const muiTheme = createTheme({
+  typography: {
+    fontFamily: theme.fonts.family,
+  },
+});
