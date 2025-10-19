@@ -17,7 +17,7 @@ export async function verifyFirebaseToken(
     req.firebaseUser = decoded;
 
     // Note: Improvement could be to only use the decoded UID in requests.
-    
+
     next();
   } catch {
     return res.status(401).json({ error: "Invalid or expired token" });
