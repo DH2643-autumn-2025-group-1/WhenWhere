@@ -1,7 +1,12 @@
 import type { EventData, Place } from "../models/EventModel";
+import { getAuthHeader } from "../firebase/firebaseAuth";
 
 export const fetchEvents = async () => {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/events`);
+  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/events`, {
+    headers: {
+      ...(await getAuthHeader()),
+    },
+  });
   if (!response.ok) {
     throw new Error("Failed to fetch events");
   }
@@ -12,6 +17,7 @@ export const createEventOnDB = async (eventData: EventData) => {
   const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/events`, {
     method: "POST",
     headers: {
+      ...(await getAuthHeader()),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(eventData),
@@ -29,6 +35,9 @@ export const deleteEventOnDB = async (eventId: string) => {
     `${import.meta.env.VITE_BACKEND_URL}/events/${eventId}`,
     {
       method: "DELETE",
+      headers: {
+        ...(await getAuthHeader()),
+      },
     },
   );
   if (!response.ok) {
@@ -40,6 +49,11 @@ export const deleteEventOnDB = async (eventId: string) => {
 export const fetchCreatedEvents = async (userId: string) => {
   const response = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/events/created/${userId}`,
+    {
+      headers: {
+        ...(await getAuthHeader()),
+      },
+    },
   );
   if (!response.ok) {
     throw new Error("Failed to fetch created events");
@@ -50,6 +64,11 @@ export const fetchCreatedEvents = async (userId: string) => {
 export const fetchInvitedEvents = async (userId: string) => {
   const response = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/events/invited/${userId}`,
+    {
+      headers: {
+        ...(await getAuthHeader()),
+      },
+    },
   );
   if (!response.ok) {
     throw new Error("Failed to fetch invited events");
@@ -70,7 +89,6 @@ export const saveAvailabilityOnDB = async (
     availableSlots?: Date[];
     votedLocation?: Place | null;
   } = { userId };
-
   if (username) body.username = username;
   if (availableSlots) body.availableSlots = availableSlots;
   if (votedLocation) body.votedLocation = votedLocation;
@@ -79,7 +97,10 @@ export const saveAvailabilityOnDB = async (
     `${import.meta.env.VITE_BACKEND_URL}/events/${eventId}/availability`,
     {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        ...(await getAuthHeader()),
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(body),
     },
   );
@@ -94,6 +115,11 @@ export const saveAvailabilityOnDB = async (
 export const fetchEventByHash = async (shareHash: string) => {
   const response = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/events/hash/${shareHash}`,
+    {
+      headers: {
+        ...(await getAuthHeader()),
+      },
+    },
   );
   if (!response.ok) {
     throw new Error("Failed to fetch event by hash");

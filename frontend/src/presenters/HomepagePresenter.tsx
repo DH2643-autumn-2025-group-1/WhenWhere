@@ -47,7 +47,7 @@ export const HomepagePresenter = observer(
         friendsEvents={model.friendsEvents}
         myEvents={model.myEvents}
         onSelectEvent={(event: Event) => {
-          model.currentEvent = event;
+          model.updateCurrentEvent(event);
           navigate(makeAvailabilityPath(event.shareHash));
         }}
       />

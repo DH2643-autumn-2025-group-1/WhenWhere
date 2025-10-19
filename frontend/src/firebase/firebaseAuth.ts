@@ -99,3 +99,10 @@ export function initAuthListener(model: {
   });
   authListenerInitialized = true;
 }
+
+export async function getAuthHeader(): Promise<Record<string, string>> {
+  const user = getAuth().currentUser;
+  if (!user) throw new Error("Not authenticated");
+  const token = await user.getIdToken();
+  return { Authorization: `Bearer ${token}` };
+}
