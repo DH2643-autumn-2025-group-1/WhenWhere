@@ -99,11 +99,10 @@ class EventModel {
     const events: Event[] = await fetchInvitedEvents(this.userId);
     runInAction(() => {
       this.friendsEvents = events.filter(
-        (event: Event) => event.creatorId !== this.userId
+        (event: Event) => event.creatorId !== this.userId,
       );
     });
   }
-
 
   async fetchEventByHash(shareHash: string) {
     const ev = await fetchEventByHash(shareHash);
