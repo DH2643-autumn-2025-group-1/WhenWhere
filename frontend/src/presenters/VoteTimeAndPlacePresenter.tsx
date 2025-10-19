@@ -50,6 +50,9 @@ export const VoteTimeAndPlacePresenter = observer(
     useEffect(() => {
       if (!places || places.length === 0) {
         setHaveVotedLocation(true);
+      } else if (places.length === 1) {
+        setVotedLocation(places[0]);
+        setHaveVotedLocation(true);
       }
     }, [setHaveVotedLocation, places]);
 

@@ -87,13 +87,22 @@ export function VoteLocation({
     onLocationChange?.(place);
   }
 
+  const isSinglePlace = places && places.length === 1;
+  const showAsDisplay = !isvoting || isSinglePlace;
+
+  const getTitleText = () => {
+    if (isSinglePlace && isvoting) {
+      return `Event location:`;
+    }
+    if (isvoting) {
+      return `Vote for location:`;
+    }
+    return `Distribution of votes for location:`;
+  };
+
   return (
     <Container $isvoting={isvoting}>
-      <Title $isvoting={isvoting}>
-        {isvoting
-          ? `Vote for location:`
-          : `Distribution of votes for location:`}
-      </Title>
+      <Title $isvoting={showAsDisplay}>{getTitleText()}</Title>
       {!places || places?.length === 0 ? (
         <NoPlacesText>No places to vote for.</NoPlacesText>
       ) : (
@@ -103,9 +112,9 @@ export function VoteLocation({
               key={index}
               $active={place.name === chosenPlace}
               onClick={() => {
-                if (isvoting) handlePlaceSelection(place);
+                if (isvoting && !isSinglePlace) handlePlaceSelection(place);
               }}
-              $isvoting={isvoting}
+              $isvoting={isvoting && !isSinglePlace}
               $colorstrength={place.votes.length}
             >
               {place?.name.charAt(0).toUpperCase() + place?.name.slice(1)}
