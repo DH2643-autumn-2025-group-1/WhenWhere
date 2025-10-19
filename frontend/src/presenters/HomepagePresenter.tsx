@@ -5,12 +5,14 @@ import { observer } from "mobx-react-lite";
 import { LoadingView } from "../components/utils/Loading";
 import { useNavigate } from "react-router";
 import { makeAvailabilityPath } from "../utils/shareHash";
+import { useSnackbar } from "../contexts/useSnackbar";
 
 export const HomepagePresenter = observer(
   ({ model }: { model: EventModelType }) => {
     const [loading, setLoading] = useState(true);
     const userId = model.getUserId();
     const navigate = useNavigate();
+    const { showSnackbar } = useSnackbar();
 
     useEffect(() => {
       async function loadEvents() {
@@ -33,8 +35,16 @@ export const HomepagePresenter = observer(
       loadEvents();
     }, [model, userId]);
 
-    function deleteEvent(id: string) {
-      model.deleteEvent(id);
+    async function deleteEvent(id: string) {
+      try {
+        await model.deleteEvent(id);
+        showSnackbar("Event removed successfully", "success");
+      } catch (error) {
+        showSnackbar(
+          error instanceof Error ? error.message : String(error),
+          "error",
+        );
+      }
     }
 
     if (loading) {
