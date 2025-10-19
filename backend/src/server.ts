@@ -5,7 +5,7 @@ import cors from "cors";
 import express from "express";
 import { connectDB } from "./database";
 import eventsRouter from "./controller/events";
-import { verifyFirebaseToken } from "./firebaseAdmin";
+import { verifyFirebaseToken } from "./firebase/firebaseVerification";
 
 const app = express();
 app.use(cors());
