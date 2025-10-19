@@ -5,7 +5,7 @@ import cors from "cors";
 import express from "express";
 import { connectDB } from "./database";
 import eventsRouter from "./controller/events";
-import { scheduleExpiredEventCleanup } from "./cleanup/cleanupExpiredEvents"; 
+import { scheduleExpiredEventCleanup } from "./cleanup/cleanupExpiredEvents";
 
 const app = express();
 app.use(cors());
@@ -13,7 +13,7 @@ app.use(express.json());
 
 connectDB(process.env.MONGO_URI as string);
 
-scheduleExpiredEventCleanup(); 
+scheduleExpiredEventCleanup();
 
 app.use("/events", eventsRouter);
 
