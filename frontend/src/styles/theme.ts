@@ -18,6 +18,10 @@ export const theme = {
     large: "20px",
     xlarge: "24px",
   },
+  fonts: {
+    family:
+      "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+  },
   breakpoints: {
     mobile: "600px",
     tablet: "900px",

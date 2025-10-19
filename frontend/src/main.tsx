@@ -25,22 +25,13 @@ const GlobalStyle = createGlobalStyle<{ appBarHeight?: number }>`
   body {
     width: 100%;
     background-color: ${(props) => props.theme.colors.background};
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: ${(props) => props.theme.fonts.family};
   }
 `;
 
 const muiTheme = createTheme({
   typography: {
-    fontFamily: [
-      "Inter",
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-    ].join(","),
+    fontFamily: theme.fonts.family,
   },
 });
 
