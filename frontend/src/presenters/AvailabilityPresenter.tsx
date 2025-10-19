@@ -95,7 +95,15 @@ export const AvailabilityPresenter = observer(
     }, [model?.currentEvent?.dateOptions]);
 
     const isDayAllowed = useCallback(
-      (day: Date) => allowedDays.some((d) => isSameDay(d, day)),
+      (day: Date) => {
+        const now = new Date();
+        const todayStart = startOfDay(now);
+
+        if (isBefore(day, todayStart)) {
+          return false;
+        }
+        return allowedDays.some((d) => isSameDay(d, day));
+      },
       [allowedDays],
     );
 
