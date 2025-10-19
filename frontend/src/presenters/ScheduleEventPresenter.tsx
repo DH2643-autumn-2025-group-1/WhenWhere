@@ -131,12 +131,14 @@ export const ScheduleEventPresenter = observer(
         return;
       }
 
-      if (shouldIncludeRemote) places.push({ name: "Remote", votes: [] });
+      const placesWithRemote = shouldIncludeRemote
+        ? [...places, { name: "Remote", votes: [] }]
+        : places;
 
       const eventData: EventData = {
         title,
         description,
-        places,
+        places: placesWithRemote,
         dateOptions: selectedDates.map((date) => date.toDate()),
         creatorId,
       };
