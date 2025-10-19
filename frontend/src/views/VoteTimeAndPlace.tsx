@@ -3,6 +3,8 @@ import { ButtonComponent } from "../components/Button";
 import { type ReactNode } from "react";
 import { useNavigate } from "react-router";
 import TextBoxWithActions from "../components/TextBoxWithActions";
+import { Card } from "../components/StyledComponents";
+import EventIcon from "@mui/icons-material/Event";
 
 const Container = styled.div`
   display: flex;
@@ -53,6 +55,28 @@ const PlaceAndSubmitContainer = styled.div`
   }
 `;
 
+const EventDetailsCard = styled(Card)`
+  width: 100%;
+  gap: ${(props) => props.theme.spacing.small};
+`;
+
+const EventTitle = styled.h3`
+  font-size: ${(props) => props.theme.fontSizes.large};
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.small};
+`;
+
+const EventDescription = styled.p`
+  font-size: ${(props) => props.theme.fontSizes.medium};
+  color: #7f8c8d;
+  margin: 0;
+  line-height: 1.5;
+`;
+
 function VoteTimeAndPlace({
   resultsPath = "/event-result",
   onSubmit,
@@ -61,6 +85,7 @@ function VoteTimeAndPlace({
   locationSlot,
   submitDisabled,
   eventTitle,
+  eventDescription,
 }: {
   resultsPath?: string;
   onSubmit?: () => void;
@@ -69,6 +94,7 @@ function VoteTimeAndPlace({
   locationSlot: ReactNode;
   submitDisabled?: boolean;
   eventTitle: string;
+  eventDescription?: string;
 }) {
   const navigate = useNavigate();
 
@@ -87,6 +113,15 @@ function VoteTimeAndPlace({
             )}
             {locationSlot}
           </LinkAndLocationContainer>
+          <EventDetailsCard>
+            <EventTitle>
+              <EventIcon fontSize="small" />
+              {eventTitle}
+            </EventTitle>
+            {eventDescription && (
+              <EventDescription>{eventDescription}</EventDescription>
+            )}
+          </EventDetailsCard>
           <ButtonComponent
             onClickFunction={onSubmit ? onSubmit : () => navigate(resultsPath)}
             text="Submit and see results"
