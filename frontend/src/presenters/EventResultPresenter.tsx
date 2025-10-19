@@ -9,7 +9,7 @@ import {
 import { EventResult } from "../views/EventResult";
 import { LoadingView } from "../components/utils/Loading";
 import { observer } from "mobx-react-lite";
-import { isSameDay, startOfDay, startOfWeek } from "date-fns";
+import { isBefore, isSameDay, startOfDay, startOfWeek } from "date-fns";
 import { enGB } from "date-fns/locale";
 
 export const EventResultPresenter = observer(
@@ -117,6 +117,11 @@ export const EventResultPresenter = observer(
     const winningSlots = getWinningSlots();
 
     const isDayAllowed = (day: Date) => {
+      const now = new Date();
+      const todayStart = startOfDay(now);
+      if (isBefore(day, todayStart)) {
+        return false;
+      }
       return allowedDays.some((d) => isSameDay(d, day));
     };
 

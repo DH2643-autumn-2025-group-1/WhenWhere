@@ -96,9 +96,11 @@ class EventModel {
     if (!this.userId) {
       throw new Error("User ID is not set");
     }
-    const events = await fetchInvitedEvents(this.userId);
+    const events: Event[] = await fetchInvitedEvents(this.userId);
     runInAction(() => {
-      this.friendsEvents = events;
+      this.friendsEvents = events.filter(
+        (event: Event) => event.creatorId !== this.userId,
+      );
     });
   }
 

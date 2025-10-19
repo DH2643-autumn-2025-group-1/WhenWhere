@@ -1,3 +1,5 @@
+import { createTheme } from "@mui/material";
+
 export const theme = {
   colors: {
     primary: "#4a90e2",
@@ -18,6 +20,10 @@ export const theme = {
     large: "20px",
     xlarge: "24px",
   },
+  fonts: {
+    family:
+      "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+  },
   breakpoints: {
     mobile: "600px",
     tablet: "900px",
@@ -26,3 +32,9 @@ export const theme = {
 };
 
 export type ThemeType = typeof theme;
+
+export const muiTheme = createTheme({
+  typography: {
+    fontFamily: theme.fonts.family,
+  },
+});
