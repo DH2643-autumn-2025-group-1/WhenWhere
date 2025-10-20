@@ -6,6 +6,7 @@ import { VoteLocation } from "./VoteLocation";
 import type { Place } from "../models/EventModel";
 import TextBoxWithActions from "../components/TextBoxWithActions";
 import Calendar from "../components/Calendar";
+import { EventDetailsCard } from "../components/EventDetailsCard";
 
 const Container = styled.div`
   display: flex;
@@ -50,6 +51,7 @@ const CalendarWrapper = styled.div`
 
 export interface EventResultViewProps {
   readonly eventTitle: string;
+  readonly eventDescription?: string;
   readonly shareUrl?: string;
   readonly event?: {
     availability?: {
@@ -227,6 +229,7 @@ export function EventResult({
   topLocation,
   places,
   eventTitle,
+  eventDescription,
   shareUrl,
   event,
   userId,
@@ -240,6 +243,7 @@ export function EventResult({
   topLocation: Place | null;
   places: Place[];
   eventTitle: string;
+  eventDescription?: string;
   shareUrl?: string;
   event?: {
     availability?: { userId: string; availableSlots: Date[] | string[] }[];
@@ -336,6 +340,7 @@ export function EventResult({
             <TextBoxWithActions title="Share the vote with:" value={shareUrl} />
           )}
           {!onMobile && <VoteLocation places={places} isvoting={false} />}
+          <EventDetailsCard title={eventTitle} description={eventDescription} />
         </PlaceAndLinkContainer>
       </ContentContainer>
     </Container>
