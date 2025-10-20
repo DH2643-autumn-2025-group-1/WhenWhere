@@ -42,7 +42,7 @@ export const VoteTimeAndPlacePresenter = observer(
             navigate(makeResultPath(shareHash), { replace: true });
           }
         })
-        .catch(console.error)
+        .catch(() => {})
         .finally(() => setIsLoading(false));
     }, [model, shareHash, navigate]);
 

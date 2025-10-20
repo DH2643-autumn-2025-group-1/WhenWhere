@@ -22,8 +22,8 @@ export const HomepagePresenter = observer(
               model.fetchMyEvents(),
               model.fetchFriendsEvents(),
             ]);
-          } catch (error) {
-            console.error("Failed to load events:", error);
+          } catch {
+            // Error handled silently
           } finally {
             setLoading(false);
           }

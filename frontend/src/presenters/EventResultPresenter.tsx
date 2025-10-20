@@ -27,7 +27,7 @@ export const EventResultPresenter = observer(
       setIsLoading(true);
       model
         .fetchEventByHash(shareHash)
-        .catch(console.error)
+        .catch(() => {})
         .finally(() => setIsLoading(false));
     }, [model, shareHash]);
 
