@@ -61,7 +61,7 @@ export async function signInWithAnonymous() {
   return user;
 }
 
-let authListenerInitialized = false;
+ // Listener initialization is performed once from app entry (main.tsx)
 
 /**
  * Pass the model so this module stays decoupled.
@@ -70,26 +70,26 @@ export function initAuthListener(model: {
   setUserId: (id: string | null) => void;
   setUsername?: (name: string | null) => void;
 }) {
-  if (authListenerInitialized) return;
   const auth = getAuth();
   onAuthStateChanged(auth, (user: User | null) => {
     if (user) {
       model.setUserId(user.uid);
 
-      let fallbackName: string | undefined = user.displayName || undefined;
-
-      if (!fallbackName && user.email) {
-        const emailName = user.email.split("@")[0];
-
-        fallbackName = emailName
-          .replace(/[._]+/g, " ")
-          .split(" ")
-          .map(
-            (word: string) =>
-              word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
-          )
-          .join(" ");
-      }
+      const fallbackName: string | undefined = (() => {
+        if (user.displayName) return user.displayName;
+        if (user.email) {
+          const emailName = user.email.split("@")[0];
+          return emailName
+            .replace(/[._]+/g, " ")
+            .split(" ")
+            .map(
+              (word: string) =>
+                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+            )
+            .join(" ");
+        }
+        return undefined;
+      })();
 
       if (model.setUsername) model.setUsername(fallbackName || "Anonymous");
     } else {
@@ -97,7 +97,6 @@ export function initAuthListener(model: {
       if (model.setUsername) model.setUsername(null);
     }
   });
-  authListenerInitialized = true;
 }
 
 export async function getAuthHeader(): Promise<Record<string, string>> {

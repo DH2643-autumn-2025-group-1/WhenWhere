@@ -24,15 +24,16 @@ export class UserService {
       return this.userNameCache.get(userId)!;
     }
 
-    let displayName: string;
-
-    if (userId === currentUserId) {
-      const auth = getAuth();
-      const currentUser = auth.currentUser;
-      displayName = currentUser?.displayName || currentUser?.email || "You";
-    } else {
-      displayName = `Anonymous User`;
-    }
+    const displayName: string =
+      userId === currentUserId
+        ? (() => {
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+            return (
+              currentUser?.displayName || currentUser?.email || "You"
+            );
+          })()
+        : "Anonymous User";
 
     this.userNameCache.set(userId, displayName);
     return displayName;

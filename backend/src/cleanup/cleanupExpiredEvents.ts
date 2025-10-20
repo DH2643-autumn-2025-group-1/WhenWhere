@@ -10,7 +10,7 @@ export function scheduleExpiredEventCleanup() {
     const now = new Date();
     try {
       const events = await Event.find({});
-      let deletedCount = 0;
+      const deletions: string[] = [];
 
       for (const event of events) {
         if (Array.isArray(event.dateOptions) && event.dateOptions.length > 0) {
@@ -24,7 +24,7 @@ export function scheduleExpiredEventCleanup() {
           // Delete the event only if the latest date has passed
           if (latestDate < now) {
             await Event.deleteOne({ _id: event._id });
-            deletedCount++;
+            deletions.push(event.title ?? String(event._id));
             console.log(
               `[Cleanup] Deleted expired event "${event.title}" (last date: ${latestDate.toISOString()})`,
             );
@@ -32,9 +32,9 @@ export function scheduleExpiredEventCleanup() {
         }
       }
 
-      if (deletedCount > 0) {
+      if (deletions.length > 0) {
         console.log(
-          `[Cleanup] Total deleted events this hour: ${deletedCount}`,
+          `[Cleanup] Total deleted events this hour: ${deletions.length}`,
         );
       }
     } catch (err) {
