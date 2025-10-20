@@ -8,6 +8,10 @@ import { useNavigate } from "react-router";
 import type { Place } from "../models/EventModel";
 import { useSnackbar } from "../contexts/useSnackbar";
 import { LoadingView } from "../components/utils/Loading";
+import { LocationPresenter } from "./LocationPresenter";
+import { APIProvider } from "@vis.gl/react-google-maps";
+
+const API_KEY = import.meta.env.VITE_REACT_GOOGLE_PLACES_API_KEY;
 
 export interface ScheduleEventProps {
   places: Place[];
@@ -23,6 +27,11 @@ export interface ScheduleEventProps {
   onDescriptionChange: (value: string) => void;
   onSubmit: () => void;
   setShouldIncludeRemote: (value: boolean) => void;
+  renderPlaceInput: (
+    value: Place,
+    label: string,
+    onSelect: (value: Place | null) => void,
+  ) => JSX.Element;
 }
 
 export const ScheduleEventPresenter = observer(
@@ -164,11 +173,22 @@ export const ScheduleEventPresenter = observer(
       onDescriptionChange: handleDescriptionChange,
       onSubmit: handleSubmit,
       setShouldIncludeRemote: setShouldIncludeRemote,
+      renderPlaceInput: (value, label, onSelect) => (
+        <LocationPresenter
+          value={value}
+          label={label}
+          onSelectFuntion={onSelect}
+        />
+      ),
     };
 
     if (isSubmitting) {
       return <LoadingView />;
     }
-    return <ScheduleEvent {...viewProps} />;
+    return (
+      <APIProvider apiKey={API_KEY} libraries={["places"]}>
+        <ScheduleEvent {...viewProps} />
+      </APIProvider>
+    );
   },
 );

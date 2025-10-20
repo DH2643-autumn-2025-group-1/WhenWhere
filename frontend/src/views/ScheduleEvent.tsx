@@ -9,7 +9,6 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ComputerIcon from "@mui/icons-material/Computer";
 import { ButtonComponent } from "../components/Button.tsx";
-import { Location } from "./Location.tsx";
 import {
   PageWrapper,
   Container,
@@ -97,6 +96,7 @@ export function ScheduleEvent({
   onDescriptionChange,
   onSubmit,
   setShouldIncludeRemote,
+  renderPlaceInput,
 }: ScheduleEventProps) {
   return (
     <PageWrapper>
@@ -152,15 +152,16 @@ export function ScheduleEvent({
 
           {places.map((place, index) => (
             <PlaceContainer key={index}>
-              <Location
-                value={place}
-                label={`Place ${index + 1}`}
-                onSelectFuntion={(value) =>
-                  value
-                    ? onPlaceChange(index, value)
-                    : console.error("No place selected")
-                }
-              />
+              {
+                renderPlaceInput(
+                  place,
+                  `Place ${index + 1}`,
+                  (value) =>
+                    value
+                      ? onPlaceChange(index, value)
+                      : console.error("No place selected"),
+                )
+              }
               <IconButton
                 aria-label="remove place"
                 onClick={() => onRemovePlace(index)}
