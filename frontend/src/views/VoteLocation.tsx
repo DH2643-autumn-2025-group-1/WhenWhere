@@ -3,16 +3,11 @@ import styled, { css } from "styled-components";
 import { theme } from "../styles/theme";
 import { darken, lighten } from "polished";
 import type { Place } from "../models/EventModel";
+import { Card } from "../components/StyledComponents";
 
-const Container = styled.div<{ $isvoting?: boolean }>`
-  display: flex;
-  flex-direction: column;
+const Container = styled(Card)<{ $isvoting?: boolean }>`
   justify-content: center;
   gap: ${(props) => props.theme.spacing.xlarge};
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 20px;
-  padding: ${(props) => props.theme.spacing.large};
   width: 100%;
 `;
 
