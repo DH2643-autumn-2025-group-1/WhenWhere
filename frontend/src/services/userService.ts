@@ -29,9 +29,7 @@ export class UserService {
         ? (() => {
             const auth = getAuth();
             const currentUser = auth.currentUser;
-            return (
-              currentUser?.displayName || currentUser?.email || "You"
-            );
+            return currentUser?.displayName || currentUser?.email || "You";
           })()
         : "Anonymous User";
 

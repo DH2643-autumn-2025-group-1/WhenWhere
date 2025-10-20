@@ -108,8 +108,8 @@ const Logo = styled.img`
   height: 48px;
   width: auto;
   object-fit: contain;
-  max-width: 100%;          
-  align-self: flex-start;   
+  max-width: 100%;
+  align-self: flex-start;
   cursor: pointer;
   user-select: none;
   transition: transform 0.2s ease;
@@ -138,7 +138,10 @@ export function Login({
   return (
     <Container>
       <TitleAndText>
-        <Logo src="/WhenWhere-logo-transparent-black-shaved.png" alt="WhenWhere" />
+        <Logo
+          src="/WhenWhere-logo-transparent-black-shaved.png"
+          alt="WhenWhere"
+        />
         <Text>
           {userArrivedViaLink
             ? `You have been invited to an event. Login to mark your availability and vote for a location.`
