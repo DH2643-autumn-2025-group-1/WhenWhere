@@ -26,7 +26,7 @@ export interface ScheduleEventProps {
   onTitleChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onSubmit: () => void;
-  setShouldIncludeDigital: (value: boolean) => void;
+  setShouldIncludeRemote: (value: boolean) => void;
   renderPlaceInput: (
     value: Place,
     label: string,
@@ -45,7 +45,7 @@ export const ScheduleEventPresenter = observer(
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-    const [shouldIncludeDigital, setShouldIncludeDigital] = useState(false);
+    const [shouldIncludeRemote, setShouldIncludeRemote] = useState(false);
     const navigate = useNavigate();
     const { showSnackbar } = useSnackbar();
 
@@ -140,12 +140,14 @@ export const ScheduleEventPresenter = observer(
         return;
       }
 
-      if (shouldIncludeDigital) places.push({ name: "digital", votes: [] });
+      const placesWithRemote = shouldIncludeRemote
+        ? [...places, { name: "Remote", votes: [] }]
+        : places;
 
       const eventData: EventData = {
         title,
         description,
-        places,
+        places: placesWithRemote,
         dateOptions: selectedDates.map((date) => date.toDate()),
         creatorId,
       };
@@ -170,7 +172,7 @@ export const ScheduleEventPresenter = observer(
       onTitleChange: handleTitleChange,
       onDescriptionChange: handleDescriptionChange,
       onSubmit: handleSubmit,
-      setShouldIncludeDigital: setShouldIncludeDigital,
+      setShouldIncludeRemote: setShouldIncludeRemote,
       renderPlaceInput: (value, label, onSelect) => (
         <LocationPresenter
           value={value}

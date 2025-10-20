@@ -4,56 +4,82 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import styled from "styled-components";
 import type { ScheduleEventProps } from "../presenters/ScheduleEventPresenter.tsx";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import EventIcon from "@mui/icons-material/Event";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import ComputerIcon from "@mui/icons-material/Computer";
 import { ButtonComponent } from "../components/Button.tsx";
+import {
+  PageWrapper,
+  Container,
+  Card,
+  CardHeader,
+  IconWrapper,
+  Title,
+  StyledRemoveIcon,
+} from "../components/StyledComponents";
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${(props) => props.theme.spacing.large};
-  margin: ${(props) => props.theme.spacing.xlarge};
+const FormCard = styled(Card)`
+  gap: ${(props) => props.theme.spacing.medium};
 
   @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
+    max-width: 450px;
   }
 `;
 
-const Form = styled.div`
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  padding: ${(props) => props.theme.spacing.large};
-  width: 100%;
+const FormCardHeader = styled(CardHeader)`
+  margin-bottom: ${(props) => props.theme.spacing.medium};
+`;
 
-  @media (min-width: ${(props) => props.theme.breakpoints.tablet}) {
-    width: 100%;
-    max-width: 400px;
-  }
+const SectionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.small};
+  margin-top: ${(props) => props.theme.spacing.medium};
+  margin-bottom: ${(props) => props.theme.spacing.small};
+  color: #2c3e50;
+  font-weight: 600;
 `;
 
 const PlaceContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.2rem;
-`;
-
-const CalendarWrapper = styled.div`
-  background-color: white;
-  padding: ${(props) => props.theme.spacing.large};
-  border-radius: 20px;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  gap: ${(props) => props.theme.spacing.small};
 `;
 
 const SwitchContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: ${(props) => props.theme.spacing.small};
+  background: ${(props) => props.theme.colors.secondary};
+  border-radius: 6px;
+  margin-bottom: ${(props) => props.theme.spacing.medium};
+  font-weight: 500;
+  color: #2c3e50;
+`;
+
+const SwitchLabel = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.small};
+`;
+
+const StyledPickersDay = styled(PickersDay)<{ $isSelected: boolean }>`
+  &&.MuiPickersDay-root {
+    background-color: ${(props) =>
+      props.$isSelected ? props.theme.colors.primary : "transparent"};
+    color: ${(props) => (props.$isSelected ? "white" : "inherit")};
+
+    &:hover {
+      background-color: ${(props) =>
+        props.$isSelected ? "#357abd" : "rgba(0, 0, 0, 0.04)"};
+    }
+
+    &.Mui-disabled {
+      color: rgba(0, 0, 0, 0.38);
+    }
+  }
 `;
 
 export function ScheduleEvent({
@@ -69,118 +95,133 @@ export function ScheduleEvent({
   onTitleChange,
   onDescriptionChange,
   onSubmit,
-  setShouldIncludeDigital,
+  setShouldIncludeRemote,
   renderPlaceInput,
 }: ScheduleEventProps) {
   return (
-    <Container>
-      <Form>
-        <Typography variant="h4" gutterBottom>
-          Schedule an Event
-        </Typography>
+    <PageWrapper>
+      <Container>
+        <FormCard>
+          <FormCardHeader>
+            <IconWrapper>
+              <EventIcon />
+            </IconWrapper>
+            <Title>Schedule an Event</Title>
+          </FormCardHeader>
 
-        <TextField
-          label="Event Title"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={title}
-          onChange={(e) => onTitleChange(e.target.value)}
-          required
-        />
-        <TextField
-          label="Event Description (Optional)"
-          variant="outlined"
-          fullWidth
-          multiline
-          rows={4}
-          margin="normal"
-          value={description}
-          onChange={(e) => onDescriptionChange(e.target.value)}
-        />
-        <Typography variant="h6" gutterBottom>
-          Places
-        </Typography>
-        <SwitchContainer>
-          <span>Include digital as location:</span>
-          <Switch
-            onChange={(_, checked) => {
-              if (checked) {
-                setShouldIncludeDigital(true);
-              } else {
-                setShouldIncludeDigital(false);
+          <TextField
+            label="Event Title"
+            variant="outlined"
+            fullWidth
+            value={title}
+            onChange={(e) => onTitleChange(e.target.value)}
+            required
+          />
+          <TextField
+            label="Event Description (Optional)"
+            variant="outlined"
+            fullWidth
+            multiline
+            rows={4}
+            value={description}
+            onChange={(e) => onDescriptionChange(e.target.value)}
+          />
+
+          <SectionHeader>
+            <LocationOnIcon fontSize="small" />
+            <Typography variant="h6" style={{ margin: 0 }}>
+              Places
+            </Typography>
+          </SectionHeader>
+
+          <SwitchContainer>
+            <SwitchLabel>
+              <ComputerIcon fontSize="small" />
+              <span>Include "Remote" as a location</span>
+            </SwitchLabel>
+            <Switch
+              onChange={(_, checked) => {
+                if (checked) {
+                  setShouldIncludeRemote(true);
+                } else {
+                  setShouldIncludeRemote(false);
+                }
+              }}
+            />
+          </SwitchContainer>
+
+          {places.map((place, index) => (
+            <PlaceContainer key={index}>
+              {
+                renderPlaceInput(
+                  place,
+                  `Place ${index + 1}`,
+                  (value) =>
+                    value
+                      ? onPlaceChange(index, value)
+                      : console.error("No place selected"),
+                )
               }
-            }}
-          />
-        </SwitchContainer>
-        {places.map((place, index) => (
-          <PlaceContainer key={index}>
-            {renderPlaceInput(place, `Place ${index + 1}`, (value) =>
-              value
-                ? onPlaceChange(index, value)
-                : console.error("No place selected"),
-            )}
-            <IconButton
-              aria-label="remove place"
-              onClick={() => onRemovePlace(index)}
-            >
-              <RemoveCircleOutlineIcon />
-            </IconButton>
-          </PlaceContainer>
-        ))}
-        <ButtonComponent
-          onClickFunction={onAddPlace}
-          text="+ Add Place"
-          variant="outlined"
-          style={{ marginBottom: "1rem" }}
-          disabled={places.length >= 5}
-        />
-        <ButtonComponent
-          variant="primary"
-          onClickFunction={onSubmit}
-          disabled={isSubmitting}
-          text={isSubmitting ? "Creating Event..." : "Submit"}
-        />
-      </Form>
-      <CalendarWrapper>
-        <Typography variant="h6" gutterBottom>
-          Select Potential Dates
-        </Typography>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateCalendar
-            onChange={(date) => {
-              onDateClick(date);
-            }}
-            displayWeekNumber
-            slots={{
-              day: (props) => {
-                const date = props.day;
-                const now = new Date();
-                now.setHours(0, 0, 0, 0);
-                const isPast = date.isBefore(now, "day");
-                const isSelected = selectedDates.some((d) =>
-                  d.isSame(date, "day"),
-                );
+              <IconButton
+                aria-label="remove place"
+                onClick={() => onRemovePlace(index)}
+              >
+                <StyledRemoveIcon />
+              </IconButton>
+            </PlaceContainer>
+          ))}
 
-                return (
-                  <PickersDay
-                    {...props}
-                    selected={isSelected}
-                    disabled={isPast}
-                    sx={{
-                      bgcolor: isSelected ? "primary.main" : undefined,
-                      color: isSelected ? "white" : undefined,
-                      "&:hover": {
-                        bgcolor: isSelected ? "primary.dark" : "action.hover",
-                      },
-                    }}
-                  />
-                );
-              },
-            }}
+          <ButtonComponent
+            onClickFunction={onAddPlace}
+            text="+ Add Place"
+            variant="outlined"
+            disabled={places.length >= 5}
           />
-        </LocalizationProvider>
-      </CalendarWrapper>
-    </Container>
+          <ButtonComponent
+            variant="primary"
+            onClickFunction={onSubmit}
+            disabled={isSubmitting}
+            text={isSubmitting ? "Creating Event..." : "Submit"}
+            fullwidth={true}
+          />
+        </FormCard>
+        <Card>
+          <CardHeader>
+            <IconWrapper>
+              <CalendarMonthIcon />
+            </IconWrapper>
+            <Title>Select Dates</Title>
+          </CardHeader>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateCalendar
+              onChange={(date) => {
+                onDateClick(date);
+              }}
+              displayWeekNumber
+              slots={{
+                day: (props) => {
+                  const date = props.day;
+                  const now = new Date();
+                  now.setHours(0, 0, 0, 0);
+                  const isPast = date.isBefore(now, "day");
+                  const isSelected = selectedDates.some((d) =>
+                    d.isSame(date, "day"),
+                  );
+
+                  return (
+                    <StyledPickersDay
+                      {...props}
+                      selected={isSelected}
+                      disabled={isPast}
+                      $isSelected={isSelected}
+                    />
+                  );
+                },
+              }}
+            />
+          </LocalizationProvider>
+        </Card>
+      </Container>
+    </PageWrapper>
   );
 }
