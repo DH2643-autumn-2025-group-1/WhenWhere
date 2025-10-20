@@ -4,6 +4,7 @@ import {
   fetchCreatedEvents,
   fetchInvitedEvents,
   fetchEventByHash,
+  saveAvailabilityOnDB,
 } from "../services/backendCommunication";
 import { makeAutoObservable, runInAction } from "mobx";
 
@@ -120,6 +121,29 @@ class EventModel {
 
   updateCurrentEvent(event: Event) {
     this.currentEvent = event;
+  }
+
+  async updateAvailability(
+    availableSlots: Date[],
+    votedLocation: Place | null,
+    username?: string,
+  ): Promise<Event> {
+    const eventId = this.currentEvent?._id;
+    const userId = this.userId;
+    if (!eventId || !userId) {
+      throw new Error("Missing eventId or userId");
+    }
+    const updated = await saveAvailabilityOnDB(
+      eventId,
+      userId,
+      username,
+      availableSlots,
+      votedLocation,
+    );
+    runInAction(() => {
+      this.currentEvent = updated;
+    });
+    return updated;
   }
 
   hasUserVoted(): boolean {

@@ -2,13 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import type { EventModelType, Place } from "../models/EventModel";
 import VoteTimeAndPlace from "../views/VoteTimeAndPlace";
-import { saveAvailabilityOnDB } from "../services/backendCommunication";
 import { getShareHashFromSearch, makeResultPath } from "../utils/shareHash";
 import { LoadingView } from "../components/utils/Loading";
 import { observer } from "mobx-react-lite";
 import { AvailabilityPresenter } from "./AvailabilityPresenter";
 import { VoteLocationPresenter } from "./VoteLocationPresenter";
-import { runInAction } from "mobx";
 import { NotFound } from "../components/utils/NotFound";
 
 export const VoteTimeAndPlacePresenter = observer(
@@ -76,16 +74,7 @@ export const VoteTimeAndPlacePresenter = observer(
           : null;
 
       try {
-        const updatedEvent = await saveAvailabilityOnDB(
-          eventId,
-          userId,
-          username,
-          selectedDates,
-          newVotedLocation,
-        );
-        runInAction(() => {
-          model.currentEvent = updatedEvent;
-        });
+        await model.updateAvailability(selectedDates, newVotedLocation, username);
       } finally {
         navigate(resultsPath);
       }
