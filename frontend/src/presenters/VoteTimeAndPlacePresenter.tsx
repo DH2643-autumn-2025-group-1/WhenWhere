@@ -90,7 +90,7 @@ export const VoteTimeAndPlacePresenter = observer(
         navigate(resultsPath);
       }
     };
-    
+
     if (!shareHash) {
       return (
         <NotFound message="Error: No event was found. The link is missing its hash." />
