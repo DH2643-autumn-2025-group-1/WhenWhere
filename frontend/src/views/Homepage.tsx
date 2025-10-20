@@ -4,7 +4,6 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import EventIcon from "@mui/icons-material/Event";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import GroupIcon from "@mui/icons-material/Group";
-import { useNavigate } from "react-router";
 import { useState } from "react";
 import AlertDialog from "../components/Dialog";
 import type { Event } from "../models/EventModel";
@@ -15,13 +14,14 @@ export function HomePage({
   friendsEvents,
   deleteEvent,
   onSelectEvent,
+  onCreateEvent,
 }: {
   myEvents: Array<Event>;
   friendsEvents: Array<Event>;
   deleteEvent: (id: string) => void;
   onSelectEvent: (event: Event) => void;
+  onCreateEvent: () => void;
 }) {
-  const navigate = useNavigate();
   const [indexOpenWarningDialog, setIndexOpenWarningDialog] = useState<
     string | null
   >(null);
@@ -86,7 +86,7 @@ export function HomePage({
             variant="primary"
             disabled={!myEvents}
             text="Create event"
-            onClickFunction={() => navigate("create-event")}
+            onClickFunction={onCreateEvent}
             fullwidth={true}
           />
         </Card>
