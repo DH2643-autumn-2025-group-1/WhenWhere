@@ -61,7 +61,7 @@ export async function signInWithAnonymous() {
   return user;
 }
 
- // Listener initialization is performed once from app entry (main.tsx)
+// Listener initialization is performed once from app entry (main.tsx)
 
 /**
  * Pass the model so this module stays decoupled.

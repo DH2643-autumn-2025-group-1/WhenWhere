@@ -352,10 +352,7 @@ const Calendar: React.FC<CalendarProps> = ({
       }
     }
 
-    const max = counts.reduce(
-      (acc, col) => Math.max(acc, ...col),
-      0,
-    );
+    const max = counts.reduce((acc, col) => Math.max(acc, ...col), 0);
     return { heatmapCounts: counts, heatmapUsers: usersAt, maxCount: max };
   }, [heatmapData, weekDays]);
 
