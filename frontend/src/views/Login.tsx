@@ -82,12 +82,6 @@ const ToggleSignInLink = ({
 
 type AuthMode = "signin" | "signup";
 
-const TitleComponent = styled.h1`
-  all: unset;
-  font-size: 42px;
-  font-weight: bold;
-`;
-
 const TitleAndText = styled.div`
   display: flex;
   flex-direction: column;
@@ -108,6 +102,19 @@ const TitleAndText = styled.div`
 const Text = styled.p`
   all: unset;
   font-size: 18px;
+`;
+
+const Logo = styled.img`
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  max-width: 100%;
+  align-self: flex-start;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease;
+  margin-left: 4px;
+  align-self: flex-start;
 `;
 
 export function Login({
@@ -131,7 +138,10 @@ export function Login({
   return (
     <Container>
       <TitleAndText>
-        <TitleComponent>WhenWhere</TitleComponent>
+        <Logo
+          src="/WhenWhere-logo-transparent-black-shaved.png"
+          alt="WhenWhere"
+        />
         <Text>
           {userArrivedViaLink
             ? `You have been invited to an event. Login to mark your availability and vote for a location.`

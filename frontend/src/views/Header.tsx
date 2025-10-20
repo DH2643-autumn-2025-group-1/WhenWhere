@@ -21,12 +21,14 @@ const StyledAppBar = styled(AppBar)`
   flex-wrap: wrap;
 `;
 
-const Title = styled.h1`
-  all: unset;
-  font-size: ${(props) => props.theme.fontSizes.xlarge};
+const Logo = styled.img`
+  height: 48px;
   cursor: pointer;
-  &&:hover {
-    color: ${(props) => props.theme.colors.secondary};
+  user-select: none;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
   }
 `;
 
@@ -45,7 +47,11 @@ export function HeaderView({
 }: HeaderViewProps) {
   return (
     <StyledAppBar position="static" id="appBar">
-      <Title onClick={onTitleClick}>WhenWhere</Title>
+      <Logo
+        src="/WhenWhere-logo-transparent-text.png"
+        alt="WhenWhere"
+        onClick={onTitleClick}
+      />
       <LinkContainer>
         {isAuthenticated && (
           <ButtonComponent
