@@ -57,8 +57,8 @@ export default function TextBoxWithActions(props: TextBoxWithActionsProps) {
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
-    } catch (err) {
-      console.error("Failed to copy text:", err);
+    } catch {
+      // Error handled silently
     }
   };
 

@@ -153,9 +153,7 @@ export function ScheduleEvent({
           {places.map((place, index) => (
             <PlaceContainer key={index}>
               {renderPlaceInput(place, `Place ${index + 1}`, (value) =>
-                value
-                  ? onPlaceChange(index, value)
-                  : console.error("No place selected"),
+                value ? onPlaceChange(index, value) : undefined,
               )}
               <IconButton
                 aria-label="remove place"

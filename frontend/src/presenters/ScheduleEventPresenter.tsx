@@ -37,7 +37,6 @@ export interface ScheduleEventProps {
 export const ScheduleEventPresenter = observer(
   ({ model }: { model: EventModelType }) => {
     if (!model) {
-      console.error("Model prop is undefined");
       return null;
     }
     const [places, setPlaces] = useState<Place[]>([]);
