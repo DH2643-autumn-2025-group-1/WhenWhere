@@ -1,13 +1,13 @@
 import { styled } from "styled-components";
 import { AppBar } from "@mui/material";
 import { ButtonComponent } from "../components/Button";
-import { useLocation } from "react-router";
 
 interface HeaderViewProps {
   isAuthenticated: boolean;
   onTitleClick: () => void;
   onAuthButtonClick: () => void;
   onCreateEventClick: () => void;
+  showAuthButton: boolean; // new prop to control visibility
 }
 
 const StyledAppBar = styled(AppBar)`
@@ -36,34 +36,13 @@ const LinkContainer = styled.div`
   gap: ${(props) => props.theme.spacing.large};
 `;
 
-/**
-import { css } from "styled-components";
-
-const NavigationLink = styled.span<{ $active?: boolean }>`
-  font-size: ${(props) => props.theme.fontSizes.large};
-  cursor: pointer;
-
-  ${(props) =>
-    props.$active &&
-    css`
-      color: ${props.theme.colors.secondary};
-      font-weight: bold;
-    `};
-
-  &&:hover {
-    color: ${(props) => props.theme.colors.secondary};
-  }
-`;
-*/
-
 export function HeaderView({
   isAuthenticated,
   onTitleClick,
   onAuthButtonClick,
   onCreateEventClick,
+  showAuthButton,
 }: HeaderViewProps) {
-  const location = useLocation();
-  const isSignInRoute = location.pathname === "/sign-in";
   return (
     <StyledAppBar position="static" id="appBar">
       <Title onClick={onTitleClick}>WhenWhere</Title>
@@ -75,7 +54,7 @@ export function HeaderView({
             onClickFunction={onCreateEventClick}
           />
         )}
-        {!isSignInRoute && (
+        {showAuthButton && (
           <ButtonComponent
             variant={isAuthenticated ? "negative" : "outlined"}
             text={isAuthenticated ? "Sign out" : "Sign in"}
