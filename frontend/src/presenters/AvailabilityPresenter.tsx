@@ -33,25 +33,21 @@ function buildRangeSlots(
   startHour: number,
   endHour: number,
 ): TimeSlot[] {
-  const slots: TimeSlot[] = [];
-  for (let d = startDay; d <= endDay; d++) {
-    for (let h = startHour; h <= endHour; h++) {
-      slots.push({ day: weekDays[d], hour: h, minute: 0 });
-    }
-  }
-  return slots;
+  const days = Array.from({ length: endDay - startDay + 1 }, (_, i) => startDay + i);
+  const hours = Array.from({ length: endHour - startHour + 1 }, (_, i) => startHour + i);
+  return days.flatMap((d) =>
+    hours.map((h) => ({ day: weekDays[d], hour: h, minute: 0 }))
+  );
 }
 
 function toggleSlots(prev: TimeSlot[], range: TimeSlot[]): TimeSlot[] {
-  const next = [...prev];
-  range.forEach((slot) => {
-    const idx = next.findIndex(
-      (s) => isSameDay(s.day, slot.day) && s.hour === slot.hour,
-    );
-    if (idx >= 0) next.splice(idx, 1);
-    else next.push(slot);
-  });
-  return next;
+  const setKey = (s: TimeSlot) => `${startOfDay(s.day).getTime()}-${s.hour}`;
+  const existing = new Map(prev.map((s) => [setKey(s), s] as const));
+  const toggledKeys = new Set(range.map(setKey));
+  // Remove keys that are toggled if they exist; add if they don't
+  const kept = prev.filter((s) => !toggledKeys.has(setKey(s)));
+  const additions = range.filter((s) => !existing.has(setKey(s)));
+  return [...kept, ...additions];
 }
 
 export const AvailabilityPresenter = observer(

@@ -65,30 +65,25 @@ export function LoginPresenter() {
     formData: FormData | null,
   ) => {
     try {
-      let user = null;
       const email = formData?.get("email") as string;
       const password = formData?.get("password") as string;
 
-      if (isSignUpMode) {
-        user = await signUp(email, password);
-      } else {
-        switch (provider.id) {
-          case "google":
-            user = await signInWithGoogle();
-            break;
-          case "github":
-            user = await signInWithGithub();
-            break;
-          case "anonymous":
-            user = await signInWithAnonymous();
-            break;
-          case "credentials":
-            user = await signIn(email, password);
-            break;
-          default:
-            throw new Error("Unknown provider");
-        }
-      }
+      const user = isSignUpMode
+        ? await signUp(email, password)
+        : await (async () => {
+            switch (provider.id) {
+              case "google":
+                return signInWithGoogle();
+              case "github":
+                return signInWithGithub();
+              case "anonymous":
+                return signInWithAnonymous();
+              case "credentials":
+                return signIn(email, password);
+              default:
+                throw new Error("Unknown provider");
+            }
+          })();
 
       if (user) {
         navigate(callbackUrlParam, { replace: true });
