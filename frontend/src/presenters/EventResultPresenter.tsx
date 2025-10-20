@@ -139,6 +139,7 @@ export const EventResultPresenter = observer(
     return (
       <EventResult
         eventTitle={model.currentEvent?.title ?? ""}
+        eventDescription={model.currentEvent?.description}
         shareUrl={shareUrl}
         winningSlots={winningSlots}
         topLocation={topLocation}

@@ -1,13 +1,17 @@
 import * as React from "react";
-import { Box, IconButton, Stack, Tooltip } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+  TextField,
+} from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 /* import RestartAltIcon from "@mui/icons-material/RestartAlt"; */
-import {
-  StyledPaper,
-  StyledTitle,
-  StyledTextField,
-} from "../styles/TextBoxWithActions";
 import styled from "styled-components";
+import { Card } from "./StyledComponents";
+import { styled as muiStyled } from "@mui/material/styles";
 
 type TextBoxWithActionsProps = {
   value?: string;
@@ -22,6 +26,26 @@ const StyledBox = styled(Box)`
   gap: 1;
   width: 100%;
 `;
+
+const StyledCard = styled(Card)`
+  width: 100%;
+  gap: ${(props) => props.theme.spacing.small};
+  align-items: flex-start;
+`;
+
+const StyledTitle = styled(Typography)`
+  font-weight: 500;
+  color: #2c3e50;
+  align-self: center;
+  text-align: center;
+`;
+
+const StyledTextField = muiStyled(TextField)(() => ({
+  "& .MuiInputBase-input": {
+    textAlign: "center",
+    minWidth: "4ch",
+  },
+}));
 
 export default function TextBoxWithActions(props: TextBoxWithActionsProps) {
   const text = props.value ?? "";
@@ -48,7 +72,7 @@ export default function TextBoxWithActions(props: TextBoxWithActionsProps) {
   }; */
 
   return (
-    <StyledPaper elevation={3}>
+    <StyledCard>
       {props.title && (
         <StyledTitle variant="subtitle2">{props.title}</StyledTitle>
       )}
@@ -85,6 +109,6 @@ export default function TextBoxWithActions(props: TextBoxWithActionsProps) {
             */}
         </Stack>
       </StyledBox>
-    </StyledPaper>
+    </StyledCard>
   );
 }
