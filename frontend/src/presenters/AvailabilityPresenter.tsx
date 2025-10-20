@@ -33,10 +33,16 @@ function buildRangeSlots(
   startHour: number,
   endHour: number,
 ): TimeSlot[] {
-  const days = Array.from({ length: endDay - startDay + 1 }, (_, i) => startDay + i);
-  const hours = Array.from({ length: endHour - startHour + 1 }, (_, i) => startHour + i);
+  const days = Array.from(
+    { length: endDay - startDay + 1 },
+    (_, i) => startDay + i,
+  );
+  const hours = Array.from(
+    { length: endHour - startHour + 1 },
+    (_, i) => startHour + i,
+  );
   return days.flatMap((d) =>
-    hours.map((h) => ({ day: weekDays[d], hour: h, minute: 0 }))
+    hours.map((h) => ({ day: weekDays[d], hour: h, minute: 0 })),
   );
 }
 
