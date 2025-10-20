@@ -9,6 +9,7 @@ import { observer } from "mobx-react-lite";
 import { AvailabilityPresenter } from "./AvailabilityPresenter";
 import { VoteLocationPresenter } from "./VoteLocationPresenter";
 import { runInAction } from "mobx";
+import { NotFound } from "../components/utils/NotFound";
 
 export const VoteTimeAndPlacePresenter = observer(
   ({ model }: { model: EventModelType }) => {
@@ -89,8 +90,18 @@ export const VoteTimeAndPlacePresenter = observer(
         navigate(resultsPath);
       }
     };
+    if (!shareHash) {
+      return (
+        <NotFound message="Error: No event was found. The link is missing its hash." />
+      );
+    }
+
     if (isLoading) {
       return <LoadingView />;
+    }
+
+    if (!model.currentEvent) {
+      return <NotFound message="Error: No event was found for this link." />;
     }
 
     return (

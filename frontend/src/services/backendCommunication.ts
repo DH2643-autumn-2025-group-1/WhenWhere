@@ -121,6 +121,9 @@ export const fetchEventByHash = async (shareHash: string) => {
       },
     },
   );
+  if (response.status === 404) {
+    return null;
+  }
   if (!response.ok) {
     throw new Error("Failed to fetch event by hash");
   }

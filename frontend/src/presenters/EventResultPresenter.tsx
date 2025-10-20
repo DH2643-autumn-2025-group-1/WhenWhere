@@ -11,6 +11,7 @@ import { LoadingView } from "../components/utils/Loading";
 import { observer } from "mobx-react-lite";
 import { isBefore, isSameDay, startOfDay, startOfWeek } from "date-fns";
 import { enGB } from "date-fns/locale";
+import { NotFound } from "../components/utils/NotFound";
 
 export const EventResultPresenter = observer(
   ({ model }: { model: EventModelType }) => {
@@ -63,8 +64,18 @@ export const EventResultPresenter = observer(
       ? makeAbsolute(makeAvailabilityPath(shareHash))
       : undefined;
 
+    if (!shareHash) {
+      return (
+        <NotFound message="Error: No event was found. The link is missing its hash." />
+      );
+    }
+
     if (isLoading) {
       return <LoadingView />;
+    }
+
+    if (!model.currentEvent) {
+      return <NotFound message="Error: No event was found for this link." />;
     }
 
     function getMostVotedLocation() {
