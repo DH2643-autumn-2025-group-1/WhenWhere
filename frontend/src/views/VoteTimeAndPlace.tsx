@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { ButtonComponent } from "../components/Button";
 import { type ReactNode } from "react";
-import { useNavigate } from "react-router";
 import TextBoxWithActions from "../components/TextBoxWithActions";
 
 const Container = styled.div`
@@ -54,7 +53,6 @@ const PlaceAndSubmitContainer = styled.div`
 `;
 
 function VoteTimeAndPlace({
-  resultsPath = "/event-result",
   onSubmit,
   shareUrl,
   availabilitySlot,
@@ -62,16 +60,13 @@ function VoteTimeAndPlace({
   submitDisabled,
   eventTitle,
 }: {
-  resultsPath?: string;
-  onSubmit?: () => void;
+  onSubmit: () => void;
   shareUrl?: string;
   availabilitySlot: ReactNode;
   locationSlot: ReactNode;
   submitDisabled?: boolean;
   eventTitle: string;
 }) {
-  const navigate = useNavigate();
-
   return (
     <Container>
       <Title>Vote for When and Where "{eventTitle}" will be:</Title>
@@ -88,7 +83,7 @@ function VoteTimeAndPlace({
             {locationSlot}
           </LinkAndLocationContainer>
           <ButtonComponent
-            onClickFunction={onSubmit ? onSubmit : () => navigate(resultsPath)}
+            onClickFunction={onSubmit}
             text="Submit and see results"
             disabled={submitDisabled}
             variant="primary"

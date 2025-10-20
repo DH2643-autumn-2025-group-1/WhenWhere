@@ -90,6 +90,7 @@ export const VoteTimeAndPlacePresenter = observer(
         navigate(resultsPath);
       }
     };
+    
     if (!shareHash) {
       return (
         <NotFound message="Error: No event was found. The link is missing its hash." />
@@ -121,7 +122,6 @@ export const VoteTimeAndPlacePresenter = observer(
             onLocationChange={setVotedLocation}
           />
         }
-        resultsPath={resultsPath}
         onSubmit={handleSubmit}
         submitDisabled={!haveVotedTime || !haveVotedLocation}
         shareUrl={shareHash ? window.location.href : undefined}
