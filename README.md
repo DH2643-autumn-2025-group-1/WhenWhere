@@ -52,6 +52,7 @@ A collaborative event scheduling application that helps groups coordinate meetin
 ```bash
 git clone https://github.com/joel90688/WhenWhere.git
 cd WhenWhere
+npm i
 npm run install:all
 ```
 
