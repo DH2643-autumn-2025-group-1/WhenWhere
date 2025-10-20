@@ -66,6 +66,23 @@ const SwitchLabel = styled.div`
   gap: ${(props) => props.theme.spacing.small};
 `;
 
+const StyledPickersDay = styled(PickersDay)<{ $isSelected: boolean }>`
+  &&.MuiPickersDay-root {
+    background-color: ${(props) =>
+      props.$isSelected ? props.theme.colors.primary : "transparent"};
+    color: ${(props) => (props.$isSelected ? "white" : "inherit")};
+
+    &:hover {
+      background-color: ${(props) =>
+        props.$isSelected ? "#357abd" : "rgba(0, 0, 0, 0.04)"};
+    }
+
+    &.Mui-disabled {
+      color: rgba(0, 0, 0, 0.38);
+    }
+  }
+`;
+
 export function ScheduleEvent({
   places,
   selectedDates,
@@ -191,17 +208,11 @@ export function ScheduleEvent({
                   );
 
                   return (
-                    <PickersDay
+                    <StyledPickersDay
                       {...props}
                       selected={isSelected}
                       disabled={isPast}
-                      sx={{
-                        bgcolor: isSelected ? "primary.main" : undefined,
-                        color: isSelected ? "white" : undefined,
-                        "&:hover": {
-                          bgcolor: isSelected ? "primary.dark" : "action.hover",
-                        },
-                      }}
+                      $isSelected={isSelected}
                     />
                   );
                 },
