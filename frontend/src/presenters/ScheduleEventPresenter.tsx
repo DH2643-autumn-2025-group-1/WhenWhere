@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type JSX } from "react";
 import { Dayjs } from "dayjs";
 import { type EventData, type EventModelType } from "../models/EventModel";
 import { ScheduleEvent } from "../views/ScheduleEvent";
