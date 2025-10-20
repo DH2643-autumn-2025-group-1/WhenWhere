@@ -101,7 +101,10 @@ export const ScheduleEventPresenter = observer(
 
         const validPlaces = eventData.places.filter(
           (place) =>
-            place && typeof place === "object" && Object.keys(place).length > 0,
+            place &&
+            typeof place === "object" &&
+            place.name &&
+            place.name.trim().length > 0,
         );
 
         const finalEventData: EventData = {
