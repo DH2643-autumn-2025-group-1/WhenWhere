@@ -37,8 +37,8 @@ export function scheduleExpiredEventCleanup() {
           `[Cleanup] Total deleted events this hour: ${deletions.length}`,
         );
       }
-    } catch {
-      // Error handled silently
+    } catch (err) {
+      console.error("[Cleanup] Failed to delete expired events:", err);
     }
   });
 
