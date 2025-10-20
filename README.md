@@ -47,6 +47,12 @@ A collaborative event scheduling application that helps groups coordinate meetin
 
 ### Installation
 
+Note: If docker is installed, run this after cloning:
+
+```bash
+docker compose up
+```
+
 1. Clone and install dependencies:
 
 ```bash
