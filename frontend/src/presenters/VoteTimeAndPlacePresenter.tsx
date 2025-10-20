@@ -74,7 +74,11 @@ export const VoteTimeAndPlacePresenter = observer(
           : null;
 
       try {
-        await model.updateAvailability(selectedDates, newVotedLocation, username);
+        await model.updateAvailability(
+          selectedDates,
+          newVotedLocation,
+          username,
+        );
       } finally {
         navigate(resultsPath);
       }
