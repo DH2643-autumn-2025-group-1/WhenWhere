@@ -6,7 +6,6 @@ import styled from "styled-components";
 import type { ScheduleEventProps } from "../presenters/ScheduleEventPresenter.tsx";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { ButtonComponent } from "../components/Button.tsx";
-import { Location } from "./Location.tsx";
 
 const Container = styled.div`
   display: flex;
@@ -71,6 +70,7 @@ export function ScheduleEvent({
   onDescriptionChange,
   onSubmit,
   setShouldIncludeDigital,
+  renderPlaceInput,
 }: ScheduleEventProps) {
   return (
     <Container>
@@ -115,15 +115,14 @@ export function ScheduleEvent({
         </SwitchContainer>
         {places.map((place, index) => (
           <PlaceContainer key={index}>
-            <Location
-              value={place}
-              label={`Place ${index + 1}`}
-              onSelectFuntion={(value) =>
+            {renderPlaceInput(
+              place,
+              `Place ${index + 1}`,
+              (value) =>
                 value
                   ? onPlaceChange(index, value)
-                  : console.error("No place selected")
-              }
-            />
+                  : console.error("No place selected"),
+            )}
             <IconButton
               aria-label="remove place"
               onClick={() => onRemovePlace(index)}
