@@ -37,6 +37,10 @@ export const HomepagePresenter = observer(
       model.deleteEvent(id);
     }
 
+    function onCreateEvent() {
+      navigate("create-event");
+    }
+
     if (loading) {
       return <LoadingView />;
     }
@@ -50,6 +54,7 @@ export const HomepagePresenter = observer(
           model.updateCurrentEvent(event);
           navigate(makeAvailabilityPath(event.shareHash));
         }}
+        onCreateEvent={onCreateEvent}
       />
     );
   },

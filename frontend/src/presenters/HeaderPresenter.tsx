@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { getAuth, signOut } from "firebase/auth";
 import { HeaderView } from "../views/Header";
 import { observer } from "mobx-react-lite";
@@ -7,8 +7,12 @@ import type { EventModelType } from "../models/EventModel";
 export const HeaderPresenter = observer(
   ({ model }: Readonly<{ model: EventModelType }>) => {
     const navigate = useNavigate();
+    const location = useLocation();
     const auth = getAuth();
     const isAuthenticated = !!model.userId;
+
+    const isSignInRoute = location.pathname === "/sign-in";
+    const showAuthButton = !isSignInRoute;
 
     const handleTitleClick = () => navigate("/");
 
@@ -28,6 +32,7 @@ export const HeaderPresenter = observer(
         onTitleClick={handleTitleClick}
         onAuthButtonClick={handleAuthButtonClick}
         onCreateEventClick={handleCreateEventClick}
+        showAuthButton={showAuthButton}
       />
     );
   },

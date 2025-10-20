@@ -1,5 +1,11 @@
 import styled from "styled-components";
-import AuthPage from "../components/utils/authPage";
+import { SignInPage } from "@toolpad/core/SignInPage";
+import { Typography, Link } from "@mui/material";
+import {
+  StyledTitle,
+  StyledSubtitle,
+  StyledButton,
+} from "../styles/authStyles";
 
 const Container = styled.div`
   display: flex;
@@ -18,7 +24,65 @@ const Container = styled.div`
   }
 `;
 
-const Title = styled.h1`
+const Title = ({ mode }: { mode: AuthMode }) => (
+  <StyledTitle variant="h5">
+    {mode === "signup" ? "Create an Account" : "Sign In"}
+  </StyledTitle>
+);
+
+const Subtitle = ({ mode }: { mode: AuthMode }) => (
+  <StyledSubtitle variant="body2">
+    {mode === "signup"
+      ? "Sign up to access all features"
+      : "Sign in to continue"}
+  </StyledSubtitle>
+);
+
+const CustomButton = ({ mode }: { mode: AuthMode }) => (
+  <StyledButton type="submit" variant="outlined" color="inherit" fullWidth>
+    {mode === "signup"
+      ? "Sign Up With Credentials"
+      : "Sign In With Credentials"}
+  </StyledButton>
+);
+
+const ToggleAuthModeLink = ({
+  setMode,
+}: {
+  setMode: (mode: AuthMode) => void;
+}) => (
+  <Typography variant="subtitle2" color="text.primary" align="center">
+    <Link
+      component="button"
+      variant="body2"
+      onClick={() => setMode("signup")}
+      underline="hover"
+    >
+      Don't have an account? Sign up
+    </Link>
+  </Typography>
+);
+
+const ToggleSignInLink = ({
+  setMode,
+}: {
+  setMode: (mode: AuthMode) => void;
+}) => (
+  <Typography variant="subtitle2" color="text.primary" align="center">
+    <Link
+      component="button"
+      variant="body2"
+      onClick={() => setMode("signin")}
+      underline="hover"
+    >
+      Already have an account? Sign in
+    </Link>
+  </Typography>
+);
+
+type AuthMode = "signin" | "signup";
+
+const TitleComponent = styled.h1`
   all: unset;
   font-size: 42px;
   font-weight: bold;
@@ -46,11 +110,28 @@ const Text = styled.p`
   font-size: 18px;
 `;
 
-export function Login({ userArrivedViaLink }: { userArrivedViaLink: boolean }) {
+export function Login({
+  userArrivedViaLink,
+  mode,
+  setMode,
+  providers,
+  signIn,
+}: {
+  userArrivedViaLink: boolean;
+  mode: AuthMode;
+  setMode: (mode: AuthMode) => void;
+  providers: { id: string; name: string }[];
+  signIn: (
+    provider: { id: string },
+    formData: FormData | null,
+  ) => Promise<object | { error: string }>;
+}) {
+  const isSignUpMode = mode === "signup";
+
   return (
     <Container>
       <TitleAndText>
-        <Title>WhenWhere</Title>
+        <TitleComponent>WhenWhere</TitleComponent>
         <Text>
           {userArrivedViaLink
             ? `You have been invited to an event. Login to mark your availability and vote for a location.`
@@ -59,7 +140,24 @@ export function Login({ userArrivedViaLink }: { userArrivedViaLink: boolean }) {
           availability, vote for event locations and share a link of the event to your friends or colleagues.`}
         </Text>
       </TitleAndText>
-      <AuthPage />
+      <div style={{ position: "relative" }}>
+        <SignInPage
+          sx={{ minHeight: 0 }}
+          providers={providers}
+          signIn={signIn}
+          slots={{
+            title: () => <Title mode={mode} />,
+            subtitle: () => <Subtitle mode={mode} />,
+            submitButton: () => <CustomButton mode={mode} />,
+            signUpLink: () =>
+              isSignUpMode ? (
+                <ToggleSignInLink setMode={setMode} />
+              ) : (
+                <ToggleAuthModeLink setMode={setMode} />
+              ),
+          }}
+        />
+      </div>
     </Container>
   );
 }
