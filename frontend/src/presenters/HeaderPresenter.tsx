@@ -32,6 +32,7 @@ export const HeaderPresenter = observer(
         onTitleClick={handleTitleClick}
         onAuthButtonClick={handleAuthButtonClick}
         onCreateEventClick={handleCreateEventClick}
+        onAboutButtonClick={() => navigate("/about")}
         showAuthButton={showAuthButton}
       />
     );

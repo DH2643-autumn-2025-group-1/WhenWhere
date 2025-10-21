@@ -7,6 +7,7 @@ interface HeaderViewProps {
   onTitleClick: () => void;
   onAuthButtonClick: () => void;
   onCreateEventClick: () => void;
+  onAboutButtonClick: () => void;
   showAuthButton: boolean; // new prop to control visibility
 }
 
@@ -43,6 +44,7 @@ export function HeaderView({
   onTitleClick,
   onAuthButtonClick,
   onCreateEventClick,
+  onAboutButtonClick,
   showAuthButton,
 }: HeaderViewProps) {
   return (
@@ -60,6 +62,11 @@ export function HeaderView({
             onClickFunction={onCreateEventClick}
           />
         )}
+        <ButtonComponent
+          variant="outlined"
+          text="About"
+          onClickFunction={onAboutButtonClick}
+        />
         {showAuthButton && (
           <ButtonComponent
             variant={isAuthenticated ? "negative" : "outlined"}
