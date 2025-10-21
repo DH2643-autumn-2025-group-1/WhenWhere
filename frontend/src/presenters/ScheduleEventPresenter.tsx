@@ -26,6 +26,7 @@ export interface ScheduleEventProps {
   onTitleChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onSubmit: () => void;
+  shouldIncludeRemote: boolean;
   setShouldIncludeRemote: (value: boolean) => void;
   renderPlaceInput: (
     value: Place,
@@ -56,7 +57,6 @@ export const ScheduleEventPresenter = observer(
       const updatedPlaces = [...places];
       updatedPlaces[index] = value;
       setPlaces(updatedPlaces);
-      model.addPlace(value);
     };
 
     const handleRemovePlace = (index: number) => {
@@ -174,6 +174,7 @@ export const ScheduleEventPresenter = observer(
       onTitleChange: handleTitleChange,
       onDescriptionChange: handleDescriptionChange,
       onSubmit: handleSubmit,
+      shouldIncludeRemote: shouldIncludeRemote,
       setShouldIncludeRemote: setShouldIncludeRemote,
       renderPlaceInput: (value, label, onSelect) => (
         <LocationPresenter

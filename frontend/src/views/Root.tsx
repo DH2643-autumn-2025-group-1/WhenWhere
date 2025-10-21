@@ -8,6 +8,7 @@ import type { EventModelType } from "../models/EventModel";
 import { VoteTimeAndPlacePresenter } from "../presenters/VoteTimeAndPlacePresenter.tsx";
 import { LoginPresenter } from "../presenters/LoginPresenter.tsx";
 import { SnackbarProvider } from "../contexts/SnackbarContext.tsx";
+import { AboutPresenter } from "../presenters/AboutPresenter.tsx";
 
 export function Root({ model }: { model: EventModelType }) {
   return (
@@ -48,6 +49,7 @@ export function Root({ model }: { model: EventModelType }) {
               </ProtectedRoute>
             }
           />
+          <Route path="/about" element={<AboutPresenter />} />
         </Routes>
       </SnackbarProvider>
     </>
