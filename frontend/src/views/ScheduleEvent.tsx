@@ -95,6 +95,7 @@ export function ScheduleEvent({
   onTitleChange,
   onDescriptionChange,
   onSubmit,
+  shouldIncludeRemote,
   setShouldIncludeRemote,
   renderPlaceInput,
 }: ScheduleEventProps) {
@@ -140,6 +141,7 @@ export function ScheduleEvent({
               <span>Include "Remote" as a location</span>
             </SwitchLabel>
             <Switch
+              checked={shouldIncludeRemote}
               onChange={(_, checked) => {
                 if (checked) {
                   setShouldIncludeRemote(true);
@@ -151,7 +153,7 @@ export function ScheduleEvent({
           </SwitchContainer>
 
           {places.map((place, index) => (
-            <PlaceContainer key={index}>
+            <PlaceContainer key={place.name}>
               {renderPlaceInput(place, `Place ${index + 1}`, (value) =>
                 value ? onPlaceChange(index, value) : undefined,
               )}
