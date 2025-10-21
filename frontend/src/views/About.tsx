@@ -16,6 +16,7 @@ const StepsContainer = styled.div`
   align-items: start;
   width: 100%;
   gap: ${(props) => props.theme.spacing.medium};
+  max-width: 900px;
 `;
 
 const StepTitle = styled.h3`
@@ -44,7 +45,7 @@ export function About() {
           the three most voted times. If mutliple time slots have the same
           number of votes, the earliest ones are chosen. You can also see the
           calender view of all votes, together with the location votes. You can
-          access the invite link herre as well.
+          access the invite link here as well.
         </span>
         <StepTitle>Have gotten an invite link?</StepTitle>
         <span>
